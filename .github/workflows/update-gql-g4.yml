@@ -15,7 +15,7 @@ jobs:
 
       - name: Download GQL.g4 from opengql/grammar
         run: |
-          wget -O GQL.g4 https://raw.githubusercontent.com/opengql/grammar/main/path/to/GQL.g4
+          wget -O GQL.g4 https://raw.githubusercontent.com/opengql/grammar/main/GQL.g4
 
       - name: Commit and push updated GQL.g4
         run: |

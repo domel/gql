@@ -1,0 +1,33 @@
+name: Synchronizacja GQL.g4
+
+on:
+  workflow_dispatch: # Umożliwia ręczne uruchomienie workflow
+  repository_dispatch:
+    from: opengql/grammar # Uruchamia się, gdy opengql/grammar wyśle zdarzenie
+
+jobs:
+  sync-gql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie pliku GQL.g4
+        uses: actions/checkout@v3
+        with:
+          repository: opengql/grammar
+          ref: master # gałąź z której pobieramy plik
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: opengql_grammar
+
+      - name: Przeniesienie pliku
+        run: |
+          mv ./opengql_grammar/GQL.g4 ./
+          
+      - name: Commit i push zmian
+        uses: actions/commit@v3
+        with:
+          message: "Zaktualizowano plik GQL.g4"
+
+      - name: Push zmian
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master

@@ -13,9 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download GQL.g4 from opengql/grammar
+      - name: Check if GQL.g4 exists
         run: |
-          wget -O GQL.g4 https://raw.githubusercontent.com/opengql/grammar/main/GQL.g4
+          if [ ! -f "GQL.g4" ]; then
+            wget -O GQL.g4 https://raw.githubusercontent.com/opengql/grammar/main/GQL.g4
+          fi
 
       - name: Commit and push updated GQL.g4
         run: |

@@ -26,4 +26,3 @@ jobs:
         with:
           commit_message: "Zaktualizowano plik GQL.g4"
           branch: master
-

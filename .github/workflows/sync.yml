@@ -17,17 +17,13 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           path: opengql_grammar
 
-      - name: Przeniesienie pliku
+      - name: Przeniesienie pliku GQL.g4
         run: |
           mv ./opengql_grammar/GQL.g4 ./
-          
-      - name: Commit i push zmian
-        uses: actions/commit@v3
-        with:
-          message: "Zaktualizowano plik GQL.g4"
 
-      - name: Push zmian
-        uses: ad-m/github-push-action@master
+      - name: Commit i push zmian
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "Zaktualizowano plik GQL.g4"
           branch: master
+

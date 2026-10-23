@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Constraints — GQL Essentials, by Dominik Tomaszuk.">
+<title>Constraints · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part" open><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html" aria-current="page"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Constraints</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Types, Schemas, and Constraints</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x28-30500016"><span class="chapter-number">Chapter 16</span><a></a>Constraints</h1>
+<!-- l. 3 --><p class="noindent">This chapter formalizes integrity constraints for property graphs in GQL and
+explains how they interact with the underlying typing discipline. We begin with
+key and uniqueness constraints based on constraint graph patterns, and then
+describe their enforcement during updates and transactions. Finally, we connect
+these dynamic checks to a lightweight effect system, which approximates write
+footprints and write conflicts without claiming to determine evaluation-order or
+context dependence, or result determinism.
+</p>
+<h2 class="sectionHead" id="x28-30600016.1"><span class="titlemark">16.1   </span> <a></a>Keys and Uniqueness</h2>
+<a id="dx28-306001"></a>
+<a id="dx28-306002"></a>
+<!-- l. 6 --><p class="noindent">Recall from <a href="15-types-and-schemas.html#x27-28100015.3">Section 15.3</a> that a key label set identifies a keyed node or edge type
+in a graph type and is not itself an integrity constraint.
+</p>
+<!-- l. 9 --><p class="noindent"><span class="paragraphHead"><a id="x28-30700016.1"></a><span class="ec-lmbx-12">Remark (scope as a graph pattern).</span></span>
+   The scope of a constraint is a deterministic constraint graph pattern
+<!-- l. 10 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi></math>
+introduced by <span class="ec-lmtt-12">FOR</span>. Its main element variable identifies the constrained node or
+edge; an edge scope also declares its endpoint variables.
+</p>
+<!-- l. 14 --><p class="noindent"><span class="paragraphHead"><a id="x28-30800016.1"></a><span class="ec-lmbx-12">Key specifications.</span></span>
+<a id="dx28-308001"></a>
+<a id="dx28-308002"></a>
+<a id="dx28-308003"></a>
+<a id="dx28-308004"></a>
+   A key or unique specification is a tuple </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 16 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>χ</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>P</mi><mo class="MathClass-punc">,</mo><mover accent="false" class="mml-overline"><mrow><mrow><mi>c</mi></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 19 --><p class="indent">   where <!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="false" class="mml-overline"><mrow><mrow><mi>c</mi></mrow><mo accent="true">¯</mo></mrow></mover> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>c</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>c</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math> is
+a sequence of <!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi> <mo class="MathClass-rel">≥</mo> <mn>0</mn></mrow></math>
+key value components. A component is the main element variable, an endpoint variable
+of an edge scope, or a property reference rooted at one of those variables. For a binding
+<!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math> matched
+by <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi></math>,
+let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 23 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><mi>χ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>b</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>⟦</mi><msub><mrow><mi>c</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mi>⟧</mi></mrow><mrow><mi>b</mi></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mi>⟦</mi><msub><mrow><mi>c</mi></mrow><mrow><mi>n</mi></mrow></msub><msub><mrow><mi>⟧</mi></mrow><mrow><mi>b</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 28 --><p class="indent">   Property references use the expression semantics of GQL: an absent property yields
+<!-- l. 29 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></math> when
+the declared result type is nullable, and otherwise raises the prescribed data exception.
+Thus <!-- l. 30 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>absent</mi></mrow></mstyle></math>
+never becomes a key value component.
+</p>
+<!-- l. 33 --><p class="noindent"><span class="paragraphHead"><a id="x28-30900016.1"></a><span class="ec-lmbx-12">Non-distinctness (for </span><span class="ec-lmtk-10x-x-120">KEY</span><a id="dx28-309001"></a> <span class="ec-lmbx-12">and </span><span class="ec-lmtk-10x-x-120">UNIQUE</span><a id="dx28-309002"></a><span class="ec-lmbx-12">).</span></span>
+                                                                          
+
+                                                                          
+   Write <!-- l. 34 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi> <mo class="MathClass-rel">≈</mo> <mi>b</mi></mrow></math>
+when <!-- l. 34 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi></math>
+and <!-- l. 34 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math>
+are not distinct under GQL’s recursive value-comparison rules, and lift this
+relation pointwise to key tuples: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 36 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-rel">≈</mo><msub><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>b</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow><mrow><mi>i</mi></mrow></msub><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>iff</mtext></mstyle><mspace class="quad" width="1em"></mspace><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>i</mi><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>a</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-rel">≈</mo> <msub><mrow><mi>b</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 40 --><p class="indent">   In particular, two null values are non-distinct; the rule also applies recursively
+to composite supported property values.
+</p>
+<!-- l. 43 --><p class="noindent"><span class="paragraphHead"><a id="x28-31000016.1"></a><span class="ec-lmbx-12">Constraint-scope notation.</span></span>
+   For a deterministic constraint graph pattern
+<!-- l. 44 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>, let
+<!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>match</mi></mrow></mstyle></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+be the set of bindings in its match result over
+<!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>, with multiplicities
+ignored. For <!-- l. 46 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>b</mi> <mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>match</mi></mrow></mstyle></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+<!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>b</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+is the graph element bound to the main element variable of
+<!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>. The predicate
+<!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>nullContaining</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> holds exactly
+when <!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi></mrow></math>
+is the null value or is a composite value having a recursively null-containing
+component.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 52 --><p class="noindent"><span class="paragraphHead"><a id="x28-31100016.1"></a><span class="ec-lmbx-12">Key constraint (</span><span class="ec-lmtk-10x-x-120">KEY</span><a id="dx28-311001"></a><span class="ec-lmbx-12">).</span></span>
+   A graph <!-- l. 53 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>G</mi></math>
+satisfies <!-- l. 53 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>KEY</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>χ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+iff every key tuple is not null-containing and any two constrained elements with
+non-distinct key tuples are identical: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 56 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>b</mi> <mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>match</mi></mrow></mstyle></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">¬</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mstyle mathvariant="sans-serif"><mrow><mi>nullContaining</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><mi>χ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>b</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub> <mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>match</mi></mrow></mstyle></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><mi>χ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≈</mo><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><mi>χ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">⇒</mo><mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 65 --><p class="indent">   Null-containment is recursive, so a composite component containing the null
+value also violates the key constraint.
+</p>
+<!-- l. 68 --><p class="noindent"><span class="paragraphHead"><a id="x28-31200016.1"></a><span class="ec-lmbx-12">Uniqueness constraint (</span><span class="ec-lmtk-10x-x-120">UNIQUE</span><span class="ec-lmbx-12">).</span></span>
+   A graph <!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>G</mi></math>
+satisfies <!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>UNIQUE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>χ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+iff any two constrained elements with non-distinct key tuples are identical:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 71 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub> <mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>match</mi></mrow></mstyle></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><mi>χ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≈</mo><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><mi>χ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">⇒</mo><mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 76 --><p class="indent">   No separate null-containment test is performed for
+<!-- l. 76 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="normal"><mrow><mi>UNIQUE</mi></mrow></mstyle></math>. When
+<!-- l. 77 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi> <mo class="MathClass-rel">=</mo> <mn>0</mn></mrow></math>, all
+empty key tuples compare alike, so either form permits at most one constrained
+element.
+</p>
+<!-- l. 80 --><p class="noindent"><span class="paragraphHead"><a id="x28-31300016.1"></a><span class="ec-lmbx-12">Example: </span><span class="ec-lmtk-10x-x-120">BookHasKey</span><span class="ec-lmbx-12">.</span></span>
+   The <span class="ec-lmtt-12">BookHasKey </span>declaration in <a href="04-gql-by-example.html#x9-190004.2">Section 4.2</a> has the key specification
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 83 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>P</mi></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">(b:Book)</mtext></mstyle><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><msub><mrow><mover accent="false" class="mml-overline"><mrow><mrow><mi>c</mi></mrow><mo accent="true">¯</mo></mrow></mover></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">b.isbn</mtext></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><msub><mrow><mi>χ</mi></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>P</mi></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mover accent="false" class="mml-overline"><mrow><mrow><mi>c</mi></mrow><mo accent="true">¯</mo></mrow></mover></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 89 --><p class="indent">   For the bindings <!-- l. 89 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>β</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></math>
+and <!-- l. 89 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>β</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>
+produced by this constraint pattern for the two book nodes in the library
+example, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 91 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><msub><mrow><mi>χ</mi></mrow><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>β</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">’978-83-123...’</mtext></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><msub><mrow><mstyle mathvariant="bold"><mi>t</mi></mstyle></mrow><mrow><msub><mrow><mi>χ</mi></mrow><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>β</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">’978-83-987...’</mtext></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 99 --><p class="indent">   Both tuples are non-null-containing and they are unequal, so the two
+book nodes satisfy the <span class="ec-lmtt-12">KEY </span>requirement. If two bindings for distinct
+book nodes instead produced the same non-null ISBN tuple, then
+<!-- l. 102 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>β</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">≠</mo><mstyle mathvariant="sans-serif"><mrow><mi>main</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>β</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> would
+violate <!-- l. 103 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>KEY</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>χ</mi></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Book</mtext></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+Under a hypothetical <span class="ec-lmtt-12">UNIQUE </span>declaration with the same specification, equal ISBN
+tuples would be non-distinct and would likewise require the main elements to
+be identical; unlike <span class="ec-lmtt-12">KEY</span>, <span class="ec-lmtt-12">UNIQUE </span>performs no separate null-containment
+test.
+</p>
+<!-- l. 109 --><p class="noindent"><span class="paragraphHead"><a id="x28-31400016.1"></a><span class="ec-lmbx-12">General constraint</span><a id="dx28-314001"></a> <span class="ec-lmbx-12">specifications.</span></span>
+   Let <!-- l. 110 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>CDesc</mi></mrow></mstyle></mrow></math>
+be the disjoint union of the carriers of key-constraint and unique-constraint
+descriptors. Every constraint defined by this edition is of exactly one of those two
+kinds. Its descriptor contains its name, registered-subject set, deterministic scope,
+and key value component specification. Constraints in a graph type apply to
+all graphs registered as subjects of that graph type; constraints defined
+in a graph apply only to that graph. Concrete examples are shown in
+<a href="04-gql-by-example.html#x9-190004.2">Section 4.2</a>.
+</p><!-- l. 118 --><p class="indent">   For each constraint body <!-- l. 118 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>C</mi></mrow></math>,
+let <!-- l. 118 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>CBNF</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>C</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> be
+the implementation-defined, deterministic and idempotent normal form
+representing its equivalence class. Two bodies are <span class="ec-lmri-12">body-equivalent </span>exactly when
+their normal forms are equal; equivalence accounts for both equivalent constraint
+scopes and equivalent key value component specifications. The analogous normal
+form <!-- l. 123 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>CSNF</mi></mrow></mstyle></mrow></math>
+for a constraint specification also retains its constraint name. These normal forms
+determine the scope and requirement information represented in constraint
+                                                                          
+
+                                                                          
+descriptors.
+</p>
+<!-- l. 127 --><p class="noindent"><span class="paragraphHead"><a id="x28-31500016.1"></a><span class="ec-lmbx-12">Syntactic form of constraint specifications.</span></span>
+   Constraint specifications occur as <span class="ec-lmtt-12">CONSTRAINT </span>body items of a nested graph
+type specification and in standalone constraint-management statements:
+</p>
+<!-- l. 130 --><div class="code-wrap"><span id="x28-315022r22"></span><span id="x28-315021r21"></span><span id="x28-315020r20"></span><span id="x28-315019r19"></span><span id="x28-315018r18"></span><span id="x28-315017r17"></span><span id="x28-315016r16"></span><span id="x28-315015r15"></span><span id="x28-315014r14"></span><span id="x28-315013r13"></span><span id="x28-315012r12"></span><span id="x28-315011r11"></span><span id="x28-315010r10"></span><span id="x28-315009r9"></span><span id="x28-315008r8"></span><span id="x28-315007r7"></span><span id="x28-315006r6"></span><span id="x28-315005r5"></span><span id="x28-315004r4"></span><span id="x28-315003r3"></span><span id="x28-315002r2"></span><span id="x28-315001r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>graph-type-body-item ::= ... | "CONSTRAINT" constraint-spec
+constraint-spec ::= constraint-name constraint-body
+constraint-body ::= "FOR" constraint-graph-pattern
+                    "REQUIRE" constraint-requirement
+constraint-requirement ::= key-value-spec "IS" "KEY"
+                         | key-value-spec "IS" "UNIQUE"
+key-value-spec ::= key-value-component
+                 | "(" [ key-value-component-list ] ")"
+key-value-component-list ::= key-value-component
+                             { "," key-value-component }
+key-value-component ::= element-variable [ "." property-name ]
+
+create-constraint-stmt ::=
+  "CREATE" ( "CONSTRAINT" [ "IF" "NOT" "EXISTS" ]
+             | "OR" "REPLACE" "CONSTRAINT" )
+  [ constraint-parent-graph-spec ] constraint-spec
+
+drop-constraint-stmt ::= "DROP" "CONSTRAINT" [ "IF" "EXISTS" ]
+                         [ constraint-parent-graph-spec ] constraint-name
+
+constraint-parent-graph-spec ::= graph-expression "."
+</code></pre></div>
+<!-- l. 153 --><p class="noindent">If the parent graph specification is omitted, <span class="ec-lmtt-12">CURRENT_GRAPH </span>is implicit. Let
+<!-- l. 154 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math> be the
+selected graph’s direct constraint dictionary and, when it has a constraining graph
+type, let <!-- l. 156 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow></msub></mrow></math>
+be that type’s constraint dictionary. Constraint names are unique independently of
+origin, so their domains are disjoint. A plain <span class="ec-lmtt-12">CREATE CONSTRAINT </span>using a name
+                                                                          
+
+                                                                          
+already in <!-- l. 158 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math>
+raises <span class="ec-lmcsc-10x-x-120">G1004</span>; without <span class="ec-lmtt-12">IF NOT EXISTS</span>, a name already in
+<!-- l. 160 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow></msub></mrow></math> is not
+permitted. If the new body is body-equivalent to a constraint in either dictionary
+and <span class="ec-lmtt-12">IF NOT EXISTS </span>is absent, creation raises <span class="ec-lmcsc-10x-x-120">G1006</span>. With <span class="ec-lmtt-12">IF NOT EXISTS</span>, an
+existing name or a body-equivalent constraint in either dictionary makes the
+statement a no-op. <span class="ec-lmtt-12">OR REPLACE </span>can replace only a same-named constraint in
+<!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math>; it
+cannot replace an inherited constraint, and the body-equivalence rule still applies.
+Otherwise, creation validates the constraint against the selected graph before adding
+it to <!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math>;
+dropping removes a direct constraint from that dictionary. An inherited
+constraint cannot be dropped in this way.
+</p><!-- l. 171 -->
+
+<h2 class="sectionHead" id="x28-31600016.2"><span class="titlemark">16.2   </span> <a></a>Constraint Enforcement and Effects</h2>
+<a id="dx28-316001"></a>
+<!-- l. 173 --><p class="noindent"><span class="paragraphHead"><a id="x28-31700016.2"></a><span class="ec-lmbx-12">Graph-type conformance </span><!-- l. 173 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Σ</mi></mrow><mrow><mstyle class="text"><mtext>typing</mtext></mstyle></mrow></msub></mrow></math><span class="ec-lmbx-12">.</span></span>
+   For an optional constraining graph-type reference, define
+<!-- l. 175 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Σ</mi></mrow><mrow><mstyle class="text"><mtext>typing</mtext></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> as follows.
+When <!-- l. 176 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow></math>,
+it is the clause requiring every node and edge to be of a node or edge type specified
+by the resolved graph type, including exact label/property sets, property value
+types, directionality, and endpoint node types, and requiring every constraint of
+that graph type to be satisfied. Failure means that the graph is no longer of its
+constraining graph type and is reported as graph type violation <span class="ec-lmcsc-10x-x-120">G2000</span>. For
+<!-- l. 182 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>none</mi></mrow></mstyle></mrow></math> the
+component is empty.
+</p>
+<!-- l. 184 --><p class="noindent"><span class="paragraphHead"><a id="x28-31800016.2"></a><span class="ec-lmbx-12">Direct graph constraints and graph-type conformance.</span></span>
+<a id="dx28-318001"></a>
+<a id="dx28-318002"></a>
+<a id="dx28-318003"></a>
+   Let <!-- l. 185 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>G</mi><mo class="MathClass-punc">,</mo><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow>
+<mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+be the active graph entry. Its direct constraint set is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 187 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>direct</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="normal"><mrow><mi>ran</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 190 --><p class="indent">   The derived set <!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>active</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+from <a href="15-types-and-schemas.html#x27-29000015.5">Section 15.5</a> remains useful when referring collectively to every
+constraint registered for the graph, but validation retains the two origins:
+graph-type constraints are part of the graph-type-conformance test, while
+<!-- l. 194 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>direct</mi></mrow></mstyle></mrow></msub></mrow></math> is
+validated directly. Define </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 195 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>⟦</mi><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mi>⟧</mi> <mo class="MathClass-rel">=</mo><msub><mrow> <mi mathvariant="normal">Σ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>typing</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∪</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="normal"><mrow>
+<mi>direct</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 200 --><p class="indent">   The first component is empty for an open graph and otherwise states that the
+graph is of its constraining graph type, including satisfaction of that graph type’s
+constraints. The second contains the key or unique constraints defined directly on
+this graph. No declaration from an unrelated graph entry or graph type is
+                                                                          
+
+                                                                          
+consulted.
+</p>
+<!-- l. 206 --><p class="noindent"><span class="paragraphHead"><a id="x28-31900016.2"></a><span class="ec-lmbx-12">Satisfaction of a constraint set.</span></span>
+<a id="dx28-319001"></a>
+   Each semantic clause <!-- l. 207 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>σ</mi> <mo class="MathClass-rel">∈</mo><mi>⟦</mi><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mi>⟧</mi></mrow></math>
+has a satisfaction relation <!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi><mo class="MathClass-rel">⊧</mo><mi>σ</mi></mrow></math>.
+For any set of clauses <!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math>,
+write </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 209 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>G</mi><mo class="MathClass-rel">⊧</mo><mi>S</mi><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>iff</mtext></mstyle><mspace class="quad" width="1em"></mspace><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>σ</mi> <mo class="MathClass-rel">∈</mo> <mi>S</mi><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><mi>G</mi><mo class="MathClass-rel">⊧</mo><mi>σ</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 212 --><p class="indent">   This is the meaning of the satisfaction test used by the enforcement below.
+The effect of these checks on insertion, update, and deletion is illustrated in
+<a href="04-gql-by-example.html#x9-200004.3">Section 4.3</a>.
+</p>
+<!-- l. 214 --><p class="noindent"><span class="paragraphHead"><a id="x28-32000016.2"></a><span class="ec-lmbx-12">Key and uniqueness constraints.</span></span>
+   Every descriptor in <!-- l. 216 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>active</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+contributes exactly the <!-- l. 217 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>KEY</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>χ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+or <!-- l. 217 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>UNIQUE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>χ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+clause described in <a href="#x28-30600016.1">Section 16.1</a>. This uses the descriptor’s deterministic
+constraint graph pattern as scope and retains its complete key value component
+sequence; it is not reduced to a global label/property dictionary.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 222 --><p class="noindent"><span class="paragraphHead"><a id="x28-32100016.2"></a><span class="ec-lmbx-12">Validation predicate.</span></span>
+<a id="dx28-321001"></a>
+   For an active graph entry <!-- l. 223 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></math>
+with pre-state graph <!-- l. 223 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>G</mi></math> and
+a coalesced update delta <!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math>,
+define </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 225 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>ok</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>iff</mtext></mstyle><mspace class="quad" width="1em"></mspace><mi>G</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mstyle class="text"><mtext> is defined and </mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">⊧</mo><mi>⟦</mi><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mi>⟧</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 232 --><p class="noindent"><span class="paragraphHead"><a id="x28-32200016.2"></a><span class="ec-lmbx-12">Constraint enforcement.</span></span>
+   After a primitive data-modifying statement has produced its provisional graph, every
+constraint in <!-- l. 234 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>direct</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+is dynamically validated by that statement’s General Rules; failure raises <span class="ec-lmri-12">integrity
+</span><span class="ec-lmri-12">constraint violation </span>(23000). The separate graph-type-conformance test also
+checks the structural requirements and every constraint of the resolved graph
+type; failure raises <span class="ec-lmri-12">graph type violation </span><span class="ec-lmcsc-10x-x-120">G2000</span>. The statement cannot complete
+successfully while either validation fails.
+</p><!-- l. 241 -->
+
+<h2 class="sectionHead" id="x28-32300016.3"><span class="titlemark">16.3   </span> <a></a>Effect System and Write-Purity</h2>
+<a id="dx28-323001"></a>
+<a id="dx28-323002"></a>
+<!-- l. 243 --><p class="noindent">The following informative effect system is defined only for query statements and
+                                                                          
+
+                                                                          
+data-modifying statements. Catalog-modifying statements are outside its domain
+and retain their statement-specific rules.
+</p><!-- l. 247 --><p class="indent">   Here <!-- l. 247 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Σ</mi></mrow></math>
+is the applicable static graph-type descriptor and
+<!-- l. 248 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">T</mi></mrow></math>
+is a finite typing environment for binding variables. For
+<!-- l. 249 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>, let
+<!-- l. 249 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">T</mi></mrow><mrow><mi>X</mi></mrow></msub></mrow></math> be the
+restriction of <!-- l. 250 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">T</mi></mrow></math>
+to variables whose declared graph-element reference type has kind
+<!-- l. 251 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi></mrow></math>; membership of
+a variable in <!-- l. 251 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">T</mi></mrow><mrow><mi>X</mi></mrow></msub></mrow></math>
+abbreviates membership in the domain of that restricted environment. The carrier of static
+effects is written <!-- l. 253 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝔈</mi></mrow></math>,
+so it is distinct from the typing environment. Effects form a commutative idempotent
+monoid <!-- l. 255 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>𝔈</mi><mo class="MathClass-punc">,</mo><msub><mrow><mo class="MathClass-bin">⊔</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo> <mo class="MathClass-ord">∅</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, where
+<!-- l. 256 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mo class="MathClass-bin">⊔</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mrow></math> combines
+effects and <!-- l. 256 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-ord">∅</mo></mrow></math>
+denotes the absence of effects.
+</p><!-- l. 259 --><p class="indent">   Let <!-- l. 259 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math> range
+over read parts, <!-- l. 259 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+over query or data-modifying statements,
+<!-- l. 260 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi></mrow></math> over primitive
+update-action templates, <!-- l. 260 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+over finite write parts composed of such templates,
+<!-- l. 261 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi mathvariant="bold-script">T</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> over output typing
+environments, and <!-- l. 262 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">∈</mo><mi>𝔈</mi></mrow></math>.
+The rules below use two auxiliary static judgments: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 264 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="normal">Σ</mi><mo class="MathClass-punc">;</mo> <mi mathvariant="bold-script">T</mi> <mo class="MathClass-rel">⊢</mo> <mi>P</mi> <mo class="MathClass-rel">⇒</mo><msup><mrow><mi mathvariant="bold-script">T</mi></mrow><mrow><mi>′</mi></mrow></msup><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="qquad" width="2em"></mspace><mi mathvariant="normal">Σ</mi><mo class="MathClass-punc">;</mo> <mi mathvariant="bold-script">T</mi> <mo class="MathClass-rel">⊢</mo> <mi>a</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>ok</mi></mrow></mstyle><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 269 --><p class="indent">   The first holds when the read part
+<!-- l. 269 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math> is well typed
+under <!-- l. 269 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Σ</mi></mrow></math> and
+<!-- l. 270 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">T</mi></mrow></math>, producing the
+extended environment <!-- l. 270 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi mathvariant="bold-script">T</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>.
+The second holds when every target and embedded expression of the action template
+<!-- l. 271 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi></mrow></math>
+is well typed in the given environment. For a write part
+<!-- l. 272 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>,
+<!-- l. 273 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>fv</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> is the
+set of binding variables occurring free in its action templates.
+</p><!-- l. 276 --><p class="indent">   We use the following effect-oriented judgments: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 277 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="normal">Σ</mi><mo class="MathClass-punc">;</mo> <mi mathvariant="bold-script">T</mi> <mo class="MathClass-rel">⊢</mo> <mi>U</mi> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mrow><mtext>(write-part templates have static effect </mtext><mstyle class="math"><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mstyle><mtext>)</mtext></mrow></mstyle>
+</mrow></math></td></tr></table></div>
+<div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 282 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="normal">Σ</mi><mo class="MathClass-punc">;</mo> <mi mathvariant="bold-script">T</mi> <mo class="MathClass-rel">⊢</mo> <mi>S</mi> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mrow><mtext>(query or data-modifying statements have static effect </mtext><mstyle class="math"><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mstyle><mtext>)</mtext></mrow></mstyle>
+</mrow></math></td></tr></table></div>
+<!-- l. 287 --><p class="indent">   The <span class="ec-lmri-12">static effect </span><!-- l. 287 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mrow></math>
+is a conservative description, derived without executing the statement, of the
+kinds of state changes that the evaluated construct may perform. A statement is
+<span class="ec-lmri-12">write-pure </span>in this effect model iff its static effect is empty, that is, iff
+<!-- l. 291 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-ord">∅</mo></mrow></math>. This
+says only that the statement has no modeled graph-data write. It does not imply
+that evaluated expressions are deterministic, exception-free, independent of
+evaluation order, or independent of observable context.
+</p>
+<!-- l. 296 --><p class="noindent"><span class="paragraphHead"><a id="x28-32400016.3"></a><span class="ec-lmbx-12">Primitive update actions (meta-language).</span></span>
+   The operational semantics of DML (cf. <a href="14-data-modification.html#x25-23200014">Chapter 14</a>) produces a <span class="ec-lmri-12">coalesced update
+</span><span class="ec-lmri-12">delta </span><!-- l. 298 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi></mrow></math>,
+understood as a finite sequence of <span class="ec-lmri-12">primitive actions </span>over the store. We write
+<!-- l. 300 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi> <mo class="MathClass-rel">∈</mo><mi mathvariant="normal">Δ</mi></mrow></math>
+for such actions and use the following representative constructors: Here
+<!-- l. 302 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>i</mi><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math> are node
+identities, <!-- l. 302 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math> is an
+edge identity, <!-- l. 303 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕂</mi></mrow></math> is
+a property key, <!-- l. 303 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>w</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi></mrow></math>
+is a value, <!-- l. 304 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕃</mi></mrow></math> is
+a label, <!-- l. 304 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>d</mi></mrow></math> is
+directedness, <!-- l. 304 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>W</mi></mrow></math>
+is an initializer map from property keys to concrete values, and
+<!-- l. 305 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo> <msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub></mrow></math> are
+the node- and edge-label sets assigned at creation time. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 307 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mi>a</mi><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace></mrow></mtd><mtd columnalign="left"><mrow><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>insNode</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo> <msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><mi>W</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>insEdge</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo> <msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><mi>W</mi><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>d</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>setPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>clearPropsV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>clearPropsE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>delPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>delPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>addLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>delLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>addLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>delLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>delNode</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="sans-serif"><mrow><mi>delEdge</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 325 --><p class="indent">   These constructors are <span class="ec-lmri-12">not </span>user syntax; they are meta-level
+names for the store-level steps that realize the write part
+<!-- l. 326 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>.
+Where we use schematic typing-level actions such as
+<!-- l. 328 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>Create</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>, they are
+understood as abstracting the same runtime updates that are ultimately lowered to the
+corresponding <!-- l. 330 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>insNode</mi></mrow></mstyle></mrow></math>
+or <!-- l. 330 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>insEdge</mi></mrow></mstyle></mrow></math>
+actions.
+</p>
+<!-- l. 332 --><p class="noindent"><span class="paragraphHead"><a id="x28-32500016.3"></a><span class="ec-lmbx-12">Primitive effects and algebra.</span></span>
+   For static analysis, each primitive update action is abstracted by a <span class="ec-lmri-12">primitive
+</span><span class="ec-lmri-12">effect </span>that records its write footprint while omitting runtime-specific information
+such as element identities, endpoint identities, and computed property
+values. We model these effects by a small set of constructors used in the
+meta-language.
+</p><!-- l. 339 --><p class="indent">   Parameters range over vertex-label sets
+<!-- l. 340 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub> <mo class="MathClass-rel">⊆</mo> <mi>𝕃</mi></mrow></math>, edge-label
+sets <!-- l. 341 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-rel">⊆</mo> <mi>𝕃</mi></mrow></math>, property
+keys <!-- l. 341 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕂</mi></mrow></math>, element
+kinds <!-- l. 342 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>, and
+labels <!-- l. 343 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕃</mi></mrow></math>. The
+symbol <!-- l. 343 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow><mrow><mi>Λ</mi></mrow></msub></mrow></math>
+denotes an implementation-agnostic “unknown or unconstrained” label-set
+abstraction. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 345 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace></mrow></mtd><mtd columnalign="left"><mrow><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>CreateV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>DeleteV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>CreateE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>DeleteE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>Set</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>ClearProps</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>RemProp</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>AddLbl</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mstyle mathvariant="bold"><mrow><mi>RemLbl</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 359 --><p class="indent">   The effect combination introduced above is commutative, so the order in
+which effects are combined is irrelevant, while idempotence means that
+recording the same effect more than once does not change the combined
+effect.
+</p><!-- l. 364 --><p class="indent">   We write <!-- l. 365 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub> <msub><mrow><mo class="MathClass-rel">≤</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub></mrow></math> when
+<!-- l. 366 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub></mrow></math> is a less specific
+abstraction of <!-- l. 367 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub></mrow></math>;
+for example, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 368 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="bold"><mrow><mi>CreateV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-close" stretchy="false">]</mo> <msub><mrow><mo class="MathClass-rel">≤</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><mstyle mathvariant="bold"><mrow><mi>CreateV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow><mrow><mi>Λ</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 373 --><p class="indent">   The join operator is monotone with respect to this order. In particular, for every finite
+family of effects, if <!-- l. 375 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>i</mi></mrow></msub> <msub><mrow><mo class="MathClass-rel">≤</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><msubsup><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>i</mi></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>
+for each <!-- l. 376 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>i</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mn>1</mn><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>,
+then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 377 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<munderover accent="false" accentunder="false"><mrow><mi class="MathClass-op"><munder class="msub"><mrow>⊔
+  </mrow><mrow><mstyle mathvariant="normal">eff</mstyle></mrow></munder></mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow><mrow><mi>i</mi><mo class="MathClass-rel">=</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></munderover><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow>
+<mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>i</mi></mrow></msub> <msub><mrow><mo class="MathClass-rel">≤</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><munderover accent="false" accentunder="false"><mrow><mi class="MathClass-op"> <munder class="msub"><mrow>⊔
+  </mrow><mrow><mstyle mathvariant="normal">eff</mstyle></mrow></munder></mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow><mrow><mi>i</mi><mo class="MathClass-rel">=</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></munderover><msubsup><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow>
+<mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>i</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 382 --><p class="indent">   Thus, replacing any component effect by a less specific abstraction yields
+a correspondingly less specific abstraction of the combined effect.
+</p>
+<!-- l. 385 --><p class="noindent"><span class="paragraphHead"><a id="x28-32600016.3"></a><span class="ec-lmbx-12">Effect of actions (representative).</span></span>
+   The abstraction function <!-- l. 386 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle></mrow></math>
+maps primitive runtime actions to their corresponding primitive static effects:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 388 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>insNode</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-punc">,</mo> <msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>CreateV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>insEdge</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-punc">,</mo> <msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext>_</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>CreateE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>Set</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>setPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>Set</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>clearPropsV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>ClearProps</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>clearPropsE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>ClearProps</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>delPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>RemProp</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>delPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>RemProp</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>addLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>AddLbl</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>delLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>RemLbl</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>V</mi></mstyle><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>addLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>AddLbl</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>delLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>RemLbl</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mi>E</mi></mstyle><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>delEdge</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>DeleteE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mspace class="quad" width="1em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mstyle class="text"><mtext> from </mtext></mstyle><mi>j</mi><mstyle class="text"><mtext>’s binding</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>peff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>delNode</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="bold"><mrow><mi>DeleteV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mspace class="quad" width="1em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>Λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mstyle class="text"><mtext> from </mtext></mstyle><mi>i</mi><mstyle class="text"><mtext>’s binding</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 423 --><p class="noindent"><span class="paragraphHead"><a id="x28-32700016.3"></a><span class="ec-lmbx-12">Template sets.</span></span>
+   Let <!-- l. 424 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+be a finite, textually ordered list of action templates. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 425 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt="                            ⊔
+∀a ∈ U. ;T ⊢ a ok     𝜀eff =   effpe ff(a)
+----------------------------a∈U--------WritePart
+             ;T ⊢ U  : 𝜀eff" loading="lazy" src="assets/test-b233225ef162d08d6ad3bef7b413aba7.svg"/>
+</math></td></tr></table></div>
+<!-- l. 432 --><p class="indent">   Here <!-- l. 432 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi class="MathClass-op">⊔</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+<!-- nolimits --></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mrow></math>
+                                                                          
+
+                                                                          
+is the finite join in the effect algebra defined above.
+</p>
+<!-- l. 435 --><p class="noindent"><span class="paragraphHead"><a id="x28-32800016.3"></a><span class="ec-lmbx-12">Statement typing with effects.</span></span>
+   Let a statement be <!-- l. 436 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi> <mo class="MathClass-rel">≡</mo> <mi>P</mi> <mo class="MathClass-bin">⊳</mo> <mi>U</mi></mrow></math>,
+where <!-- l. 436 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+is the read part, such as a pattern and its filters, and
+<!-- l. 437 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math> is the
+write part. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 438 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt=";T--⊢-P-⇒--T-′--;T-′ ⊢-U-: 𝜀eff
+     ;T  ⊢ (P ⊳ U) : 𝜀eff     Stmt" loading="lazy" src="assets/test-9567bf39e5a1dfba1c29883bc0473212.svg"/>
+</math></td></tr></table></div>
+<!-- l. 445 --><p class="indent">   Hence, query-only statements, which have no write part, satisfy
+<!-- l. 446 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-ord">∅</mo></mrow></math> and
+are write-pure in this limited sense.
+</p>
+<!-- l. 448 --><p class="noindent"><span class="paragraphHead"><a id="x28-32900016.3"></a><span class="ec-lmbx-12">No unbound writers.</span></span>
+   A write part may refer only to variables bound by its preceding read part:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 450 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt="             ′                 ′     ′
+;T-⊢-P--⇒--T---fv(U-) ⊆-dom-(T-)--;T--⊢-U--: 𝜀eff-NoUnbound
+               ;T  ⊢ P ⊳ U : 𝜀eff" loading="lazy" src="assets/test-f6a4a013989f2ec60b02554639ed5f4d.svg"/>
+</math></td></tr></table></div>
+<!-- l. 460 --><p class="noindent"><span class="paragraphHead"><a id="x28-33000016.3"></a><span class="ec-lmbx-12">Meta-level single-writer approximation (informative).</span></span>
+   For optimizer analysis only, call a statement <span class="ec-lmri-12">stat-det </span>with respect to writes if, for each entity
+variable <!-- l. 462 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi></mrow></math> and property
+key <!-- l. 462 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math>, at most one
+<!-- l. 463 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>setProp</mi><mo class="MathClass-bin">∗</mo></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> template remains after
+static simplification of <!-- l. 464 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>.
+This is neither GQL syntax nor a conformance condition; the concrete
+data-modifying statements retain their own static and dynamic rules for repeated
+target properties.
+</p>
+<!-- l. 468 --><p class="noindent"><span class="paragraphHead"><a id="x28-33100016.3"></a><span class="ec-lmbx-12">Static conflict approximation and ordering constraints</span></span>
+   Let <!-- l. 470 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>MayConflict</mi></mrow></mstyle></mrow></math>
+be a symmetric predicate on pairs of effects. It holds for
+<!-- l. 471 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub></mrow></math> and
+<!-- l. 472 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub></mrow></math> if
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 473 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub> <msub><mrow><mo class="MathClass-bin">⊔</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub>
+</math></td></tr></table></div>
+<!-- l. 478 --><p class="indent">   contains, up to <!-- l. 478 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mo class="MathClass-rel">≤</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mrow></math>,
+a potentially conflicting pair of the primitive effect constructors defined
+above, possibly on aliased targets. A conservative alias analysis may mark
+bindings that can denote the same runtime element. The predicate
+<!-- l. 481 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>MayConflict</mi></mrow></mstyle></math> is
+only a meta-level optimizer aid: it may prevent a reordering whose equivalence
+has not otherwise been established, but it introduces no GQL isolation-barrier
+annotation and no additional rejection rule.
+</p>
+<!-- l. 486 --><p class="noindent"><span class="paragraphHead"><a id="x28-33200016.3"></a><span class="ec-lmbx-12">CREATE (schematic).</span></span>
+   In the schematic rules below, <!-- l. 488 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mo class="MathClass-rel" mathvariant="sans-serif">storeAssignableTo</mo></math>
+abbreviates the applicable GQL store- assignment check. Predicates
+<!-- l. 489 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>closed</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> and
+<!-- l. 490 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>open</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+classify the declared graph-element reference type of
+<!-- l. 491 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi></mrow></math>. A closed type supplies
+property signature <!-- l. 491 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ψ</mi></mrow></math>;
+an open type admits any supported property value type. For vertex creation with initializer
+map <!-- l. 493 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 494 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt=";T ⊢ (v : ΛV ) ⇒ T ,v : (ΛV ,)
+
+∀k ∈ dom (P ).;T  ⊢ P (k ) : σk ∧
+  [closed(v) ∧ k ∈ dom () ∧ σk storeAssignableTo (k )
+     ∨  open(v) ∧ σ ∈  𝕋   ]
+-------------------k----prop-----------------------Create   -V
+     ;T ⊢ Create  ⟨v : ΛV ,P ⟩ :
+                              ⊔
+        CreateV  [ΛV ] ⊔e ff        Set (V, k )
+                           k∈deoffm(P)" loading="lazy" src="assets/test-41485740dd2a3c408bf25e23743c4611.svg"/>
+</math></td></tr></table></div>
+<!-- l. 520 --><p class="noindent"><span class="paragraphHead"><a id="x28-33300016.3"></a><span class="ec-lmbx-12">SET/DELETE.</span></span>
+</p>
+<div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 521 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt=" x : (Λ, ) ∈ TX (X ∈ {V, E} )
+ ;T  ⊢ e : σ
+
+ [closed(x ) ∧ k ∈ dom ()
+------∧-σ-storeAssignableTo-(k-)]-∨--[open(x)-∧-σ-∈-𝕋prop]-
+                                                         Set
+                  ;T ⊢ SET  (x.k :=  e) :
+                       Set (X, k)" loading="lazy" src="assets/test-29357e5c017a13946026f3190f5637a1.svg"/>
+</math></td></tr></table></div>
+<div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 541 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><img alt="          e : (ΛE, ) ∈ TE
+----------------------------------Del  -Edge
+;T ⊢ DELETE     (e) : DeleteE [ΛE ]" loading="lazy" src="assets/test-7a37358bde2981c4338ebd8205e58b48.svg"/></mtd>
+</mtr><mtr><mtd columnalign="right"><img alt="----------v :-(ΛV-,) ∈-TV---------
+;T ⊢ DELETE     (v) : DeleteV [ΛV ] Del -Vertex" loading="lazy" src="assets/test-892fcade66480d2df2ffc34772f6a248.svg"/></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 553 --><p class="noindent"><span class="paragraphHead"><a id="x28-33400016.3"></a><span class="ec-lmbx-12">Null assignment and property removal.</span></span>
+   A <span class="ec-lmtt-12">SET </span>property item performs store assignment to the property’s declared
+type. The null value is therefore stored only when that type is nullable; otherwise
+it is not assignable and the prescribed error is raised. Assigning null is never
+lowered to property removal. Property removal is a separate data-modifying
+operation expressed by <span class="ec-lmtt-12">REMOVE</span>.
+</p>
+<!-- l. 560 --><p class="noindent"><span class="paragraphHead"><a id="x28-33500016.3"></a><span class="ec-lmbx-12">Effect soundness (informative)</span></span>
+   Let <!-- l. 562 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>S</mi></mrow></msub></mrow></math> be the
+static effect of <!-- l. 562 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+and let <!-- l. 562 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi></mrow></math> be
+the coalesced sequence of primitive actions produced at runtime. Every primitive action
+in <!-- l. 563 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi></mrow></math> refines
+some <!-- l. 564 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>S</mi></mrow></msub></mrow></math> under
+<!-- l. 564 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mo class="MathClass-rel">≤</mo></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle></mrow></msub></mrow></math>. This
+establishes soundness only for the write-footprint abstraction. A rewrite cannot be
+justified from <!-- l. 566 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>S</mi></mrow></msub></mrow></math>
+alone: it must separately preserve evaluation order, exceptions, result
+bags, context-dependent expression behavior, and all other observable
+behavior.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 570 --><p class="noindent"><span class="paragraphHead"><a id="x28-33600016.3"></a><span class="ec-lmbx-12">Micro-derivation: write-purity of query-only statements (informative)</span></span>
+   If <!-- l. 572 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math> has no write
+part (i.e. <!-- l. 572 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi> <mo class="MathClass-rel">≡</mo> <mi>P</mi></mrow></math> with result
+production only), then <!-- l. 572 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Σ</mi><mo class="MathClass-punc">;</mo> <mi mathvariant="bold-script">T</mi> <mo class="MathClass-rel">⊢</mo> <mi>S</mi> <mo class="MathClass-punc">:</mo> <mo class="MathClass-ord">∅</mo></mrow></math>.
+Therefore <!-- l. 573 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math>
+performs no writes described by this effect algebra. Reordering or
+common-subexpression elimination additionally requires the relevant expressions
+to be independent of the changed evaluation order and context, to preserve
+exception behavior, and to preserve the result bag.
+</p>
+<!-- l. 578 --><p class="noindent"><span class="paragraphHead"><a id="x28-33700016.3"></a><span class="ec-lmbx-12">Constraint-Preserving Execution</span></span>
+   Recall the graph-entry validation set
+<!-- l. 581 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle><mi>⟧</mi></mrow></math> and validation
+predicate <!-- l. 582 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ok</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> from the
+previous section. An execution of a data-modifying statement within a transaction, with pre-state
+<!-- l. 583 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math> and coalesced delta
+<!-- l. 583 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi></mrow></math>, is <span class="ec-lmri-12">constraint-preserving</span>
+if <!-- l. 583 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ok</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> holds, that is,
+if the post-state <!-- l. 583 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi></mrow></math>
+satisfies its constraining graph type and all key/unique constraints defined
+directly on that graph. The operational semantics of DML rejects a structural
+graph-type violation or a violation of any direct graph constraint. Thus
+a primitive data-modifying statement completes successfully only if its post-state
+is constraint-preserving. Catalog-modifying statements are not modeled as
+<!-- l. 588 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi></mrow></math>; each
+uses the checks specified by its own Syntax and General Rules.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title"><a href="#x28-30500016">Chapter 16</a> — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Formalized integrity constraints and their interaction with
+      typing and updates.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:</span>
+      Key and uniqueness constraints over graph elements; enforcement rules
+      and violation outcomes; an effect-based approximation of statement
+      footprints to reason about potential conflicts.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Key constraints (identification) versus uniqueness
+      constraints (non-duplication without identification semantics); static
+      approximations of effects versus data-dependent, dynamic effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Determined when and how violations were detected
+      and what observable outcomes followed; enabled reasoning about write
+      footprints without conflating them with evaluation-order or context
+      dependence;  connected  statement  completion  to  dynamic  constraint
+      validation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Required a precise catalog and session model so that names,
+      schemas, and constraints could be resolved consistently at runtime.</li></ul>
+</aside>
+<!-- l. 298 -->
+<!-- l. 298 --> <a id="tailtestch16.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="15-types-and-schemas.html"><small>← Previous</small>Types and Schemas</a><a rel="next" href="part-08-catalogs-sessions-and-procedures.html"><small>Next →</small>Catalogs, Sessions, and Procedures</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x28-30600016.1">16.1 Keys and Uniqueness</a><a href="#x28-31600016.2">16.2 Constraint Enforcement and Effects</a><a href="#x28-32300016.3">16.3 Effect System and Write-Purity</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

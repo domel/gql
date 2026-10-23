@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="History — GQL Essentials, by Dominik Tomaszuk.">
+<title>History · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part" open><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html" aria-current="page"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> History</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Introduction</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x5-50001"><span class="chapter-number">Chapter 01</span><a></a>History</h1>
+<!-- l. 3 --><p class="noindent">The history of graph databases can be traced back to foundational work in
+network models and the standardization of database languages. A notable early
+system was the Integrated Data Store (IDS), designed by Charles Bachman, which
+laid the groundwork for the network model of databases. This model was further
+formalized by the Conference on Data System Languages (CODASYL) through
+its Data Base Task Group (DBTG). In the late 1960s, CODASYL created DBTG,
+which issued influential reports in 1969 and 1971, proposing a standard
+sublanguage for database applications to be embedded in COBOL (<a id="x5-5001"></a><a href="bibliography.html#cite.0@north1968database">North
+1968</a>).
+</p><!-- l. 5 --><p class="indent">   In a parallel development, IBM introduced the Information Management
+System (IMS) in 1968, employing a hierarchical data model. IMS structured data
+into record types, each comprising a set of named fields with defined data types,
+where a subset of fields served as keys, uniquely identifying each record instance.
+This structure imposed a strict tree hierarchy, requiring each record (except the
+root) to have a single parent. Such a requirement created challenges,
+necessitating data duplication and limited support for certain cases. For instance,
+part information had to be repeated across suppliers, increasing the risk of
+inconsistency, while certain relationships, such as a part without suppliers, were
+not supported. These limitations highlighted the rigid nature of hierarchical
+models, spurring the exploration of more flexible structures (<a id="x5-5002"></a><a href="bibliography.html#cite.0@klein2011">Klein et al.
+2011</a>).
+</p><!-- l. 7 --><p class="indent">   CODASYL, recognizing the limitations of a strictly hierarchical approach,
+introduced a network data model in its 1971 and 1973 reports. This model
+abandoned the tree structure of IMS, allowing each record instance to have
+multiple parent records, thus forming a more interconnected network rather than
+a single-rooted hierarchy. In this model, connections were represented by “sets”,
+which defined 1-to-n relationships between an owner record type and its
+associated child record types. While referred to as sets, these structures were
+closer to directed relationships, where each owner could relate to multiple
+instances of a child record type. This network approach allowed for greater data
+flexibility, enabling a record to have multiple parents and eliminating the
+limitations imposed by hierarchical constraints (<a id="x5-5003"></a><a href="bibliography.html#cite.0@codasyl1971feature">CODASYL. Systems Committee
+1971</a>).
+</p><!-- l. 9 --><p class="indent">   Simultaneously, the American National Standards Institute (ANSI) played
+a pivotal role in creating a standardized framework for database languages. In
+                                                                          
+
+                                                                          
+1978, ANSI formed the committee known as ANSI X3H2, now called
+INCITS DM32, or “H2”. This committee focused on developing a “Network
+Data Language” (NDL) based on the 1971 CODASYL DBTG report,
+aiming to establish a competitive and compatible market for database
+products. The work of ANSI and CODASYL significantly influenced the
+evolution of database technologies, setting the stage for more advanced data
+models that eventually led to the development of graph databases (<a id="x5-5004"></a><a href="bibliography.html#cite.0@gorman1978american">Gorman
+1978</a>).
+</p><!-- l. 11 --><p class="indent">   Amid these advancements, Conceptual Graphs (CGs) emerged as another
+significant innovation in graph-based knowledge representation. Proposed by John
+F. Sowa in the mid-1970s (<a id="x5-5005"></a><a href="bibliography.html#cite.0@sowa1976conceptual">Sowa 1976</a>), CGs were formally introduced in his
+seminal book published in 1984 (<a id="x5-5006"></a><a href="bibliography.html#cite.0@sowa1984conceptual">Sowa 1984</a>). Conceptual Graphs are designed to
+represent knowledge in a way that is intuitively understandable to humans while
+being efficiently processable by computers, acting as a bridge between natural
+language and machine languages. This form of representation plays a crucial role
+in the conceptual modeling of domains and enhances the semantic processing
+capabilities of information systems.
+</p><!-- l. 13 --><p class="indent">   Parallel to the developments in traditional database models, Tim Berners-Lee
+envisioned the Semantic Web in the mid-1990s, shortly after initiating the
+development of the World Wide Web (<a id="x5-5007"></a><a href="bibliography.html#cite.0@berners1998semantic">Berners-Lee 1998</a>). The concept was
+formalized by establishing the World Wide Web Consortium (W3C) and
+gained significant momentum with the publication of a vision in a 2001
+Scientific American article (<a id="x5-5008"></a><a href="bibliography.html#cite.0@hendler2001semantic">Hendler et al. 2001</a>). Despite the ambitious
+visions, the Semantic Web had only been partially realized, with a limited
+portion of the web domains incorporating Semantic Web markup.
+SPARQL<span class="footnote-mark"><a href="footnote-6.html#fn1x1"><sup class="textsuperscript">1</sup></a></span><a id="x5-5009f1"></a> 
+(<a id="x5-5010"></a><a href="bibliography.html#cite.0@seaborne2008sparql">Seaborne and Prud’hommeaux 2008</a>), introduced in 2004 and refreshed in 2008,
+emerged as a dedicated query language that facilitated the retrieval of data stored
+in the Resource Description Framework (RDF) (<a id="x5-5011"></a><a href="bibliography.html#cite.0@carroll2004rdf">Carroll and Klyne 2004</a>), offering
+capabilities such as “property paths”, which resemble features of regular path
+queries in graph databases.
+</p><!-- l. 15 --><p class="indent">   The late 20th century saw significant research into graph query languages,
+with the introduction of regular path queries (RPQs) (<a id="x5-5012"></a><a href="bibliography.html#cite.0@cruz1987graphical">Cruz et al. 1987</a>) in
+1987 and their extension into conjunctive regular path queries (CRPQs)
+(<a id="x5-5013"></a><a href="bibliography.html#cite.0@consens1990graphlog">Consens and Mendelzon 1990</a>) by 1990. These developments underscored the
+                                                                          
+
+                                                                          
+growing interest in efficiently querying complex graph structures beyond the
+limitations of Structured Query Language (SQL) and RDF for graph-related
+problems.
+</p><!-- l. 17 --><p class="indent">   The Neo4j property graph database was launched in 2007 (<a id="x5-5014"></a><a href="bibliography.html#cite.0@angles2012comparison">Angles 2012</a>;
+<a id="x5-5015"></a><a href="bibliography.html#cite.0@hunger2012good">Hunger 2012</a>), and in 2011 its Cypher query language was introduced
+(<a id="x5-5016"></a><a href="bibliography.html#cite.0@francis2018cypher">Francis et al. 2018</a>; <a id="x5-5017"></a><a href="bibliography.html#cite.0@lindaaker2018history">Lindaaker 2018</a>), to allow declarative querying and
+manipulation of graph data. The property graph data model, as distinct from
+RDF, places records of properties (very similar to SQL rows) on both
+nodes and relationships, and is particularly aligned with the needs of
+modern applications such as knowledge graphs for artificial intelligence (AI)
+and data mesh architectures. The evolving standards continued with the
+recent introductions of SQL Property Graph Queries (SQL/PGQ) in 2023
+(<a id="x5-5018"></a><a href="bibliography.html#cite.0@ISO9075-16">International Organization for Standardization 2023</a>) and GQL in 2024
+(<a id="x5-5019"></a><a href="bibliography.html#cite.0@ISO-IEC-39075-2024">ISO/IEC 2024</a>), reflecting a trend toward formal standardization in graph query
+languages.
+</p><!-- l. 19 --><p class="indent">   Standardization has been crucial in the database industry, ensuring
+interoperability and fostering a competitive market environment. As graph
+databases have grown in importance and are driven by AI and big data
+applications, developing standardized query languages such as GQL is essential.
+This facilitates technological innovation and supports scalable, efficient, and less
+complex data architectures, enabling businesses to leverage graph data
+effectively.
+</p><!-- l. 21 --><p class="indent">   From the network models and NDL of CODASYL and ANSI’s early efforts
+to the sophisticated graph query languages like SPARQL and Cypher,
+the journey of graph databases reflects a broader evolution toward more
+structured, interoperable, and efficient data management practices. As these
+technologies continue to develop, they promise to underpin next-generation data
+infrastructures and applications.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 1 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Recounted the main line from early network data models
+      to modern graph databases, clarifying why standardization pressure
+      eventually produced GQL.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>The navigational lineage of graph-like database systems;
+      the rise of declarative database standardization; the later split into
+      RDF-style graphs and property-graph practice.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Navigational access versus declarative querying;
+      RDF-style triple-centric graphs versus property graphs with labeled,
+      attributed edges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:                                                  </span>Motivated
+      interoperability  as  a first-order  requirement  (portable  queries  and
+      predictable  behavior);  justified  why  a formal  semantics  mattered
+      beyond vendor documentation; established the historical context for
+      GQL’s design constraints.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Transitioned  from  history  to  the  concrete  capabilities  and
+      limitations of today’s property graph database systems.</li></ul>
+</aside>
+<!-- l. 33 -->
+<!-- l. 33 --> <a id="tailtestch1.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-01-introduction.html"><small>← Previous</small>Introduction</a><a rel="next" href="02-property-graph-databases.html"><small>Next →</small>Property Graph Databases</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Data Model — GQL Essentials, by Dominik Tomaszuk.">
+<title>Data Model · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part" open><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html" aria-current="page"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Data Model</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Core Model and Patterns</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x12-510006"><span class="chapter-number">Chapter 06</span><a></a>Data Model</h1>
+<!-- l. 3 --><p class="noindent">This chapter fixes the abstract data model that underlies the semantics of GQL
+and serves as the common reference point for later chapters. It introduces the
+basic universes of identifiers, types, and values, defines the property-graph
+structure used for stored graphs, and explains how paths, lists, and records are
+treated as first-class values. The presentation is independent of any particular
+physical representation and is parameterized by the conformance options of the
+GQL standard (for example, with respect to supported property value
+types).
+</p>
+<h2 class="sectionHead" id="x12-520006.1"><span class="titlemark">6.1   </span> <a></a>Universes and Notation</h2>
+<!-- l. 6 --><p class="noindent">Let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 7 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mi>𝔸</mi></mtd><mtd columnalign="left"><mrow><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext> be a universe of identifiers used in GQL, including names of directories,</mtext></mstyle></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>schemas, catalog objects, labels, properties, and columns</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mi>𝕃</mi></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">⊆</mo> <mi>𝔸</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext>be a universe of label names</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mi>𝕂</mi></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">⊆</mo> <mi>𝔸</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext>be a universe of property names</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mi>𝕀</mi></mtd> <mtd columnalign="left"><mrow><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext> be a universe of globally unique identifiers of graph elements</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mi>𝕋</mi></mtd><mtd columnalign="left"><mrow><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext> be a universe of types (static, dynamic, and base types)</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mi>𝕍</mi></mtd><mtd columnalign="left"><mrow><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext> be a universe comprising material values and the distinguished</mtext></mstyle></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>null value </mtext></mstyle><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 19 --><p class="indent">   The abstract three-valued truth carrier used throughout is
+<!-- l. 20 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝔹</mi></mrow><mrow><mn>3</mn></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">⊥</mo><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>;
+its connection to GQL Boolean values is defined in <a href="08-expressions-and-evaluation.html#x15-1190008.3">Section 8.3</a>. Types
+and their characteristics (material/nullable/immaterial) as well as the
+                                                                          
+
+                                                                          
+naming of types and base types are defined by the GQL specification.
+Availability of the null and empty immaterial value types and explicit
+nullability follows the standard’s conformance options; the empty type
+contains no value and therefore contributes no additional element to
+<!-- l. 26 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>𝕍</mi></math>. No
+cardinality assumption is imposed on these ambient universes; by contrast, the
+node and edge carriers of every concrete graph are finite, as is every binding table
+used below.
+</p><!-- l. 31 --><p class="indent"> <span class="ec-lmri-12">Notational convention. </span>We reserve blackboard-bold symbols such as
+<!-- l. 32 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝕍</mi></mrow></math> for
+<span class="ec-lmri-12">universes </span>(e.g., the universe of values), and we use plain symbols such as
+<!-- l. 33 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>V</mi> </mrow></math> only
+for <span class="ec-lmri-12">graph-specific carriers </span>(e.g., the node set of a concrete graph).
+</p><!-- l. 36 --><p class="indent">   A partial function<a id="dx12-52001"></a> is written <!-- l. 36 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>f</mi> <mo class="MathClass-punc">:</mo> <mi>A</mi> <mo class="MathClass-rel">⇀</mo> <mi>B</mi></mrow></math>.
+The powerset<a id="dx12-52002"></a> of <!-- l. 36 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi></mrow></math>
+is <!-- l. 36 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">P</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+Let <!-- l. 37 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℕ</mi></mrow></math>
+denote the set of natural numbers. A multiset (bag) over
+<!-- l. 38 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi></mrow></math> is identified with
+a multiplicity function <!-- l. 39 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi> <mo class="MathClass-punc">:</mo> <mi>X</mi> <mo class="MathClass-rel">→</mo> <mi>ℕ</mi></mrow></math>.
+The set of all such multisets is denoted
+<!-- l. 40 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">M</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, and its finite-support
+subset is denoted <!-- l. 41 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">M</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fin</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+We also write <!-- l. 42 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>B</mi></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <msub><mrow><mi mathvariant="bold-script">M</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fin</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+when a finite bag is used as a meta-level type. Pointwise bag sum is written
+<!-- l. 43 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub> <mo class="MathClass-bin">⊎</mo> <msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>, and
+<!-- l. 44 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi class="MathClass-op">⊎</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+<!-- nolimits --></mrow><mrow><mi>i</mi></mrow></msub><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math> denotes its indexed
+iteration. For bags <!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>B</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class="MathClass-punc">,</mo><mi>B</mi> <mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>X</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+<!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>B</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> is a <span class="ec-lmri-12">submultiset</span>
+of <!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>, written
+<!-- l. 46 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>B</mi></mrow><mrow><mi>′</mi></mrow></msup> <msub><mrow><mo class="MathClass-rel">⊑</mo></mrow><mrow><mstyle mathvariant="sans-serif"><mrow>
+<mi>bag</mi></mrow></mstyle></mrow></msub><mi>B</mi></mrow></math>, iff
+<!-- l. 46 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>B</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≤</mo> <mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for every
+<!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi> <mo class="MathClass-rel">∈</mo> <mi>X</mi></mrow></math>. For
+a bag <!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>,
+<!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>supp</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mi>x</mi><mo class="MathClass-rel">∣</mo><mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">&gt;</mo> <mn>0</mn><mo class="MathClass-close" stretchy="false">}</mo></mrow></math> is its
+support, and <!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mn>1</mn></mstyle><mo class="MathClass-open" stretchy="false">[</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">]</mo></mrow></math>
+is <!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>1</mn></mrow></math> when
+proposition <!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+                                                                          
+
+                                                                          
+holds and <!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>0</mn></mrow></math>
+otherwise.
+</p><!-- l. 51 --><p class="indent">   Finite sequences over <!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi></mrow></math>
+are denoted <!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>X</mi></mrow><mrow><mo class="MathClass-bin">∗</mo></mrow></msup></mrow></math>.
+<span class="ec-lmri-12">Binding-table records use closed (material) record types: </span>a record type is a <span class="ec-lmri-12">total </span>function
+<!-- l. 54 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-punc">:</mo> <mstyle mathvariant="normal"><mrow><mi>fields</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">→</mo> <mi>𝕋</mi></mrow></math>, where
+<!-- l. 55 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>fields</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">⊆</mo> <mi>𝔸</mi></mrow></math> is its declared field set;
+a record over <!-- l. 56 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></math> is a <span class="ec-lmri-12">total</span>
+assignment <!-- l. 57 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi> <mo class="MathClass-punc">:</mo> <mstyle mathvariant="normal"><mrow><mi>fields</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">→</mo> <mi>𝕍</mi></mrow></math> (each
+declared field has a value; <!-- l. 57 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+is a value of an appropriate null-containing type). The set of well-typed records
+inhabiting <!-- l. 59 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></math>
+is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 60 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="normal"><mrow><mi>Rec</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></msub> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mspace class="thinspace" width="0.17em"></mspace><mi>r</mi> <mo class="MathClass-punc">:</mo> <mstyle mathvariant="normal"><mrow><mi>fields</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">→</mo> <mi>𝕍</mi><mo class="MathClass-rel">∣</mo><mi>r</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">)</mo><mstyle class="text"><mtext> has type </mtext></mstyle><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">)</mo><mstyle class="text"><mtext> for every </mtext></mstyle><mi>n</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>fields</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 67 --><p class="indent">   To retain the metadata of the GQL binding-table descriptor, we model
+a binding table as </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 69 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>T</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-punc">,</mo><mstyle mathvariant="italic"><mrow><mi>ord</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="italic"><mrow><mi>pcs</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><mi>B</mi> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="bold-script">M</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fin</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>Rec</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 73 --><p class="indent">   where <!-- l. 73 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>ord</mi></mrow></mstyle></mrow></math>
+is either <!-- l. 73 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>unordered</mi></mrow></mstyle></mrow></math>
+or determines an ordering of the record occurrences of
+<!-- l. 74 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>, and
+<!-- l. 74 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>pcs</mi></mrow></mstyle></mrow></math> is
+either <!-- l. 74 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>notSet</mi></mrow></mstyle></mrow></math>
+or a preferred permutation of the field names of
+<!-- l. 75 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></math>. The effective
+column-name sequence is <!-- l. 76 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>pcs</mi></mrow></mstyle></mrow></math>
+when a preferred sequence is set and, otherwise, is the field names of
+<!-- l. 77 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></math> in ascending
+order. We write <!-- l. 78 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle></mrow></math><a id="dx12-52003"></a> for
+this domain and <!-- l. 79 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>T</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+for the bag projection used by order-insensitive algebra. The
+unit binding table is the unordered table with the unit record
+<!-- l. 81 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>, an
+empty record type, and no preferred column-name sequence.
+</p><!-- l. 84 -->
+
+<h2 class="sectionHead" id="x12-530006.2"><span class="titlemark">6.2   </span> <a></a>Property-Graph Structure</h2>
+<a id="dx12-53001"></a>
+<!-- l. 85 --><p class="noindent">The term property graph<a id="dx12-53002"></a> has been used in the literature for several closely related
+graph models whose formalizations are not identical (<a id="x12-53003"></a><a href="bibliography.html#cite.0@angles2012comparison">Angles 2012</a>; <a id="x12-53004"></a><a href="bibliography.html#cite.0@Angles2018">Angles 2018</a>).
+Depending on the formalization, differences may concern, among other things,
+element identities, the cardinality and applicability of labels and properties, edge
+direction, and the treatment of parallel edges (<a href="bibliography.html#cite.0@Angles2018">Angles 2018</a>; <a id="x12-53005"></a><a href="bibliography.html#cite.0@francis2018cypher">Francis et al. 2018</a>;
+<a id="x12-53006"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>). In this book, the term is used in a deliberately broad sense,
+while the concrete model adopted below is closely aligned with the property-graph
+data structures defined by the GQL standard (<a id="x12-53007"></a><a href="bibliography.html#cite.0@ISO39075">International Organization for
+Standardization 2024</a>). We refer to an instance of this model as a GQL
+graph.
+</p><!-- l. 97 --><p class="indent">   The tuple below models only a graph’s structural contents; its optional
+constraining graph type and graph constraint dictionary are descriptor-level
+information modeled by the graph entry in <a href="15-types-and-schemas.html#x27-29000015.5">Section 15.5</a>. A GQL graph<a id="dx12-53008"></a> is
+modeled as a 9-tuple </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 101 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>G</mi><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mo class="MathClass-open" stretchy="false">⟨</mo><mi>V</mi><mo class="MathClass-punc">,</mo><mi>E</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>dir</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 104 --><p class="indent">   where: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 105 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi>V</mi> <mo class="MathClass-rel">⊆</mo> <mi>𝕀</mi></mrow></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>is a finite set of globally identifiable nodes</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi>E</mi> <mo class="MathClass-rel">⊆</mo> <mi>𝕀</mi></mrow></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>is a finite set of globally identifiable edges</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>(a multigraph is permitted)</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi>V</mi> <mo class="MathClass-bin">∩</mo> <mi>E</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-ord">∅</mo></mrow></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>(node and edge identities are disjoint)</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub> <mo class="MathClass-punc">:</mo> <mi>V</mi> <mo class="MathClass-rel">→</mo><mi mathvariant="bold-script">P</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>𝕃</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>assigns to a node its set of labels</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub> <mo class="MathClass-punc">:</mo> <mi>V</mi> <mo class="MathClass-rel">→</mo> <mo class="MathClass-open" stretchy="false">(</mo><mi>𝕂</mi> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd><mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>is the node property map</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>(names of node labels and node properties are in</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>separate namespaces, so a label and a property may</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>share the same identifier on a node)</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <mi>E</mi> <mo class="MathClass-rel">→</mo><mi mathvariant="bold-script">P</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>𝕃</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>assigns to an edge its set of labels</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <mi>E</mi> <mo class="MathClass-rel">→</mo> <mo class="MathClass-open" stretchy="false">(</mo><mi>𝕂</mi> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd><mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>is the edge property map</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>(names of edge labels and edge properties are in</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>separate namespaces, so a label and a property may</mtext></mstyle></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>share the same identifier on an edge)</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle> <mo class="MathClass-punc">:</mo> <mi>E</mi> <mo class="MathClass-rel">→</mo> <mi>V</mi> </mrow></mtd> <mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext>yield the endpoints of an edge</mtext></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle mathvariant="normal"><mrow><mi>dir</mi></mrow></mstyle> <mo class="MathClass-punc">:</mo> <mi>E</mi> <mo class="MathClass-rel">→</mo><mo class="MathClass-open" stretchy="false">{</mo><mo class="MathClass-rel">→</mo><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-rel">↔</mo><mo class="MathClass-close" stretchy="false">}</mo></mrow></mtd><mtd columnalign="right"></mtd><mtd columnalign="left"><mstyle class="text"><mtext>encodes directedness (directed/undirected).</mtext></mstyle></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 125 --><p class="indent">   When <!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>dir</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><mo class="MathClass-rel">↔</mo></mrow></math>,
+<!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> and
+<!-- l. 126 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> are
+only a representational ordering of the two endpoints; they do not assign source
+and destination semantics to an undirected edge. Loops are allowed (edges
+<!-- l. 128 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math> with
+<!-- l. 128 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>), as
+are mixed graphs and multigraphs; each property name is unique within its carrier
+(node/edge), and property values belong to the supported value types. This
+abstract structure is instantiated by the library schema and graph instance
+introduced in <a href="04-gql-by-example.html#x9-160004.1">Section 4.1</a>.
+</p><!-- l. 130 --><p class="indent">   For example, in that instance <!-- l. 131 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>V</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mi>r</mi><mo class="MathClass-punc">,</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>c</mi><mo class="MathClass-punc">,</mo><mi>l</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>
+and <!-- l. 131 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>
+contains the six displayed edges. For the <span class="ec-lmtt-12">OWNS </span>edge
+<!-- l. 132 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>owns</mi></mrow></mstyle></mrow></msub></mrow></math>,
+<!-- l. 133 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">Reader</mtext></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>,
+<!-- l. 134 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">firstname</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">’Alice’</mtext></mstyle></mrow></math>,
+<!-- l. 135 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>owns</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">OWNS</mtext></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>,
+<!-- l. 136 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>owns</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>r</mi></mrow></math>,
+<!-- l. 137 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>owns</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>a</mi></mrow></math>, and
+<!-- l. 138 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>dir</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>owns</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><mo class="MathClass-rel">→</mo></mrow></math>; the edge-property
+map is illustrated by <!-- l. 139 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mn>0</mn><mo class="MathClass-punc">.</mo><mn>0</mn></mrow></math>
+for the first <span class="ec-lmtt-12">INCLUDES </span>edge.
+</p><!-- l. 142 --><p class="indent">   Because property maps are partial, let
+<!-- l. 143 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>absent</mi></mrow></mstyle><mo class="MathClass-rel">∉</mo><mi>𝕍</mi></mrow></math>
+denote absence of a property, rather than a GQL value, and use the totalized
+lookup notation </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 145 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mover accent="false"><mrow><mrow><mi>ρ</mi></mrow><mo accent="true">^</mo></mrow></mover></mrow><mrow><mi>X</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>X</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-open" stretchy="false">(</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mi>k</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>X</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>absent</mi></mrow></mstyle><mo class="MathClass-punc">,</mo> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mi>k</mi><mo class="MathClass-rel">∉</mo><mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>X</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo> </mrow></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow></mrow><mspace class="qquad" width="2em"></mspace><mi>X</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>V</mi><mo class="MathClass-punc">,</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 153 --><p class="indent">   Evaluation of a property reference is a separate operation: in particular, when
+its declared type is nullable, a reference to an absent property evaluates to
+<!-- l. 155 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>, as
+specified by GQL.
+</p>
+<aside class="tcolorbox note-box"><div class="tcolorbox-title">Note</div>GQL’s syntactic restrictions guarantee a finite graph-pattern result: every
+unbounded quantifier is guarded by a restrictive path mode, a selective
+path-search prefix, or the <span class="ec-lmtt-12">DIFFERENT EDGES </span>match mode. In particular, using
+<span class="ec-lmtt-12">TRAIL</span>, <span class="ec-lmtt-12">ACYCLIC</span>, or <span class="ec-lmtt-12">SIMPLE </span>for all unbounded quantifiers guarantees finiteness (see
+<a href="07-patterns-and-matching.html#x13-750007.2">Section 7.2</a>). </aside>
+<!-- l. 165 --><p class="noindent"><span class="paragraphHead"><a id="x12-540006.2"></a><span class="ec-lmbx-12">Remark on “openness/closedness”.</span></span>
+   If a graph has an associated <span class="ec-lmri-12">graph type</span>, it is <span class="ec-lmri-12">closed </span>(it permits only elements
+conforming to that type); otherwise it is <span class="ec-lmri-12">open</span>.
+</p>
+<!-- l. 169 --><p class="noindent"><span class="paragraphHead"><a id="x12-550006.2"></a><span class="ec-lmbx-12">Modeling choices.</span></span>
+   Although the tuple definition already fixes the types of
+<!-- l. 170 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub></mrow></math> and
+<!-- l. 170 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub></mrow></math>, we
+make two conventional but important choices explicit: <span class="ec-lmri-12">(i) Labels as sets. </span>By typing
+<!-- l. 173 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub> <mo class="MathClass-punc">:</mo> <mi>V</mi> <mo class="MathClass-rel">→</mo><mi mathvariant="bold-script">P</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>𝕃</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> and
+<!-- l. 173 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <mi>E</mi> <mo class="MathClass-rel">→</mo><mi mathvariant="bold-script">P</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>𝕃</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> we treat labels
+as <span class="ec-lmri-12">sets </span>(unordered, without duplicates). Thus, label membership is the primitive notion
+(e.g., <!-- l. 175 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>), and
+adding/removing a label is idempotent at the semantic level. <span class="ec-lmri-12">(ii) Properties as partial maps.</span>
+By typing <!-- l. 177 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub> <mo class="MathClass-punc">:</mo> <mi>V</mi> <mo class="MathClass-rel">→</mo> <mo class="MathClass-open" stretchy="false">(</mo><mi>𝕂</mi> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+and <!-- l. 177 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <mi>E</mi> <mo class="MathClass-rel">→</mo> <mo class="MathClass-open" stretchy="false">(</mo><mi>𝕂</mi> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+                                                                          
+
+                                                                          
+we model properties as <span class="ec-lmri-12">partial functions </span>from keys to values. For a particular
+node or edge, a property key may be absent from its property map, that is, it
+may lie outside the domain of the corresponding partial function. This is
+semantically distinct from the property being present with value <span class="ec-lmtt-12">null</span>, when <span class="ec-lmtt-12">null</span>
+is supported.
+</p>
+<aside class="tcolorbox note-box"><div class="tcolorbox-title">Note</div>These choices deliberately yield a permissive baseline model. Set-valued
+labels support multi-label classification and align with label tests and index-based
+access patterns. Partial property maps capture sparse, heterogeneous
+attribution: different elements may carry different key sets. When tighter
+control is required, a closed graph’s constraining graph type requires
+every element to have exactly the label and property-type sets of one
+of its declared element types and to satisfy its key/unique constraints. </aside>
+<!-- l. 183 -->
+
+<h2 class="sectionHead" id="x12-560006.3"><span class="titlemark">6.3   </span> <a></a>Values and Types</h2>
+<!-- l. 184 --><p class="noindent"><span class="paragraphHead"><a id="x12-570006.3"></a><span class="ec-lmbx-12">Base universes</span><a id="dx12-57001"></a><span class="ec-lmbx-12">.</span></span>
+   We use the single universes <!-- l. 185 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝔸</mi><mo class="MathClass-punc">,</mo> <mi>𝕃</mi><mo class="MathClass-punc">,</mo> <mi>𝕂</mi><mo class="MathClass-punc">,</mo> <mi>𝕋</mi></mrow></math>,
+and <!-- l. 186 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝕍</mi></mrow></math>
+fixed in <a href="#x12-520006.1">Section 6.1</a>; no second value or type universe is introduced here. Let
+<!-- l. 188 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⊑</mo><mo class="MathClass-rel">⊆</mo> <mi>𝕋</mi> <mo class="MathClass-bin">×</mo> <mi>𝕋</mi></mrow></math>
+be a reflexive, transitive subtyping relation, where
+<!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mn>1</mn></mrow></msub> <mo class="MathClass-rel">⊑</mo> <msub><mrow><mi>τ</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math> is read as
+“<!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></math> is a subtype of
+<!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>”, meaning that every value
+of type <!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></math> is also admissible
+as a value of type <!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>.
+</p>
+<!-- l. 193 --><p class="noindent"><span class="paragraphHead"><a id="x12-580006.3"></a><span class="ec-lmbx-12">Type constructors</span><a id="dx12-58001"></a><span class="ec-lmbx-12">.</span></span>
+</p>
+<div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 194 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mrow><mtext class="textbf" mathvariant="bold">Scalars</mtext><mtext class="label" id="dx12-58002"></mtext><mtext class="endlabel">: </mtext></mrow></mstyle><mstyle mathvariant="sans-serif"><mrow><mi>Bool</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>Int</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>Real</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>String</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>DateTime</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> <mo class="MathClass-rel">∈</mo> <mi>𝕋</mi><mo class="MathClass-punc">.</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mrow><mtext class="textbf" mathvariant="bold">Composite</mtext><mtext class="label" id="dx12-58003"></mtext><mtext class="endlabel">: </mtext></mrow></mstyle><mstyle mathvariant="sans-serif"><mrow><mi>LIST</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>RECORD</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-punc">:</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>PATH</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo> <mi>𝕋</mi><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>We write </mtext></mstyle><mstyle mathvariant="sans-serif"><mrow><mi>Opt</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>τ</mi><mo class="MathClass-close" stretchy="false">)</mo><mstyle class="text"><mtext> only as meta-level shorthand for a value type</mtext></mstyle></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>that contains the null value; it is not a GQL type constructor.</mtext></mstyle></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mstyle class="text"><mtext class="textbf" mathvariant="bold">Graph element references: </mtext></mstyle><mstyle mathvariant="sans-serif"><mrow><mi>NodeRef</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>EdgeRef</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo> <mi>𝕋</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext>(reference value types</mtext></mstyle></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>whose referents are nodes and edges, respectively).</mtext></mstyle></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+   Conceptually, nullability is represented via the option notation:
+a site (that is, a typed read/write location such as a property slot or
+a variable binding; see <p><a href="17-catalog-names-and-session-state.html#x30-33900017">Chapter 17</a></p> for a precise definition) of type
+<!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Opt</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>τ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> admits the
+null value <!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+<!-- l. 210 --><p class="noindent"><span class="paragraphHead"><a id="x12-590006.3"></a><span class="ec-lmbx-12">Typing contexts</span><a id="dx12-59001"></a><span class="ec-lmbx-12">.</span></span>
+   A <span class="ec-lmri-12">type environment </span><!-- l. 211 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ξ</mi></mrow></math>
+is a finite map from names to types (for properties, parameters,
+and binding variables). We write the standard judgment
+<!-- l. 213 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ξ</mi> <mo class="MathClass-rel">⊢</mo> <mi>e</mi> <mo class="MathClass-punc">:</mo> <mi>τ</mi></mrow></math> for expressions.
+Subsumption: if <!-- l. 213 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ξ</mi> <mo class="MathClass-rel">⊢</mo> <mi>e</mi> <mo class="MathClass-punc">:</mo> <mi>τ</mi></mrow></math>
+and <!-- l. 213 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi> <mo class="MathClass-rel">⊑</mo> <msup><mrow><mi>τ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>,
+then <!-- l. 214 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ξ</mi> <mo class="MathClass-rel">⊢</mo> <mi>e</mi> <mo class="MathClass-punc">:</mo> <msup><mrow><mi>τ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>.
+</p>
+<!-- l. 216 --><p class="noindent"><span class="paragraphHead"><a id="x12-600006.3"></a><span class="ec-lmbx-12">Expression-evaluation interface.</span></span>
+                                                                          
+
+                                                                          
+   Let <!-- l. 217 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Err</mi></mrow></mstyle></mrow></math>
+be an abstract carrier of error or exception-condition tokens. For an expression
+<!-- l. 218 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math> and
+a record <!-- l. 218 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>,
+we reserve <!-- l. 219 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦E⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi> <mo class="MathClass-bin">∪</mo><mstyle mathvariant="sans-serif"><mrow><mi>Err</mi></mrow></mstyle></mrow></math>
+for evaluation in the row environment induced by
+<!-- l. 220 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>, with the
+store and global environment fixed by the surrounding execution context. For a Boolean
+expression <!-- l. 222 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi></mrow></math>,
+<!-- l. 222 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦φ</mi><msup><mrow><mi>⟧</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msup><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> analogously denotes
+a member of <!-- l. 223 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝔹</mi></mrow><mrow><mn>3</mn></mrow></msub></mrow></math>
+or an error. The complete evaluation judgment is given in <a href="08-expressions-and-evaluation.html#x15-1130008">Chapter 8</a>.
+</p><!-- l. 226 -->
+
+<h2 class="sectionHead" id="x12-610006.4"><span class="titlemark">6.4   </span> <a></a>Basics of Paths as Data</h2>
+<!-- l. 227 --><p class="noindent">A <span class="ec-lmri-12">path in a graph</span><a id="dx12-61001"></a> <!-- l. 227 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>
+is a finite sequence of graph elements of odd length that starts and ends at a node, i.e.,
+a node–edge–<!-- l. 228 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="thinspace" width="0.17em"></mspace></mrow></math>–edge–node
+sequence <!-- l. 229 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+of length <!-- l. 229 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>2</mn><mi>n</mi> <mo class="MathClass-bin">+</mo> <mn>1</mn></mrow></math>;
+the orientation of each edge in the path is determined relative to the order of nodes in the
+sequence (<!-- l. 231 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">→</mo></mrow></math>
+to the left/right, or undirected). We distinguish the following classes:
+<span class="ec-lmri-12">trail </span>(no repeated edges), <span class="ec-lmri-12">simple </span>(no repeated nodes, except possibly first
+<!-- l. 233 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">=</mo></mrow></math>
+last), and <span class="ec-lmri-12">acyclic </span>(no repeated nodes). <span class="ec-lmri-12">Formally,</span>
+<!-- l. 234 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>w</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math> is simple
+iff <!-- l. 234 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>v</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-rel">≠</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math> for all
+<!-- l. 235 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>0</mn> <mo class="MathClass-rel">≤</mo> <mi>i</mi> <mo class="MathClass-rel">&lt;</mo> <mi>j</mi> <mo class="MathClass-rel">≤</mo> <mi>n</mi></mrow></math> <span class="ec-lmri-12">except possibly</span>
+the pair <!-- l. 235 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>j</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">(</mo><mn>0</mn><mo class="MathClass-punc">,</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, allowing
+<!-- l. 236 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>v</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></math>. We write
+<!-- l. 237 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Path</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for the set of all
+such paths in <!-- l. 237 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>.
+The full treatment of path values, concatenation, path modes, and result
+projection is given in <a href="10-path-semantics.html#x19-16400010">Chapter 10</a>.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 241 --><p class="noindent"><span class="paragraphHead"><a id="x12-620006.4"></a><span class="ec-lmbx-12">Material path values and length.</span></span>
+   We write <!-- l. 242 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PathVal</mi></mrow></mstyle></mrow></math>
+for the carrier of material path values. In accordance with the GQL value model,
+a path value encapsulates a path element list of graph-element reference values;
+whenever none of those references is invalidated, their referents identify a path,
+independently of the current working graph. Concretely, a material path value is
+written as </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 247 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>p</mi> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="normal"><mrow><mi>PATH</mi></mrow></mstyle><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> [</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> ]</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 250 --><p class="indent">   where <!-- l. 250 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi> <mo class="MathClass-rel">≥</mo> <mn>0</mn></mrow></math>, each
+<!-- l. 250 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math> is a node reference
+value, each <!-- l. 250 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+is an edge reference value, and the list alternates starting
+and ending with a node reference (hence has odd length
+<!-- l. 251 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>2</mn><mi>k</mi> <mo class="MathClass-bin">+</mo> <mn>1</mn></mrow></math>). The
+<span class="ec-lmri-12">path length </span>is the number of edge references: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 253 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>PATH</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LENGTH</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>p</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>k</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 256 --><p class="indent">   In particular, the length-zero path
+<!-- l. 257 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>PATH</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-close" stretchy="false">]</mo></mrow></math> is
+well-formed and satisfies </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 258 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>PATH</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LENGTH</mi></mrow></mstyle><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mstyle mathvariant="normal"><mrow><mi>PATH</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">[</mo><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-close" stretchy="false">]</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow> <mo class="MathClass-rel">=</mo> <mn>0</mn><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 262 --><p class="noindent"><span class="paragraphHead"><a id="x12-630006.4"></a><span class="ec-lmbx-12">Null-propagation.</span></span>
+   If <!-- l. 263 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+(i.e., <!-- l. 263 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi></mrow></math>
+is the null value admitted by a nullable path value type), then
+<!-- l. 264 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>PATH</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LENGTH</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>p</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+Malformed representations (that do not alternate or do not start/end in
+a node reference) are outside this well-formed path domain; the standard
+path-value constructions do not produce them. A full formalization of path
+values, path modes, finiteness and selection, and path accessors is given in
+<a href="10-path-semantics.html#x19-16400010">Chapter 10</a>.
+</p><!-- l. 269 -->
+
+<h2 class="sectionHead" id="x12-640006.5"><span class="titlemark">6.5   </span> <a></a>Lists and Structural Access</h2>
+<!-- l. 270 --><p class="noindent">List, record, and path types are constructed value types. They provide the
+abstract carriers for nested and structured values that occur as property values, as
+components of binding tables, and as results of expressions (including
+path-returning queries). By fixing their behavior here, we obtain a uniform basis
+for the typing and evaluation rules for structural accessors and functions in later
+chapters.
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmri-12">Lists</span><a id="dx12-64001"></a><span class="ec-lmri-12">. </span>A list value is a finite sequence <!-- l. 278 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo></mrow></math>.
+      Conceptually we describe indexing in ordinal (1-based) terms: <!-- l. 280 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">[</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-open" stretchy="false">[</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">]</mo> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+      if <!-- l. 280 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>1</mn> <mo class="MathClass-rel">≤</mo> <mi>i</mi> <mo class="MathClass-rel">≤</mo> <mi>n</mi></mrow></math>;
+      the precise mapping from index expressions to positions (ordinal vs.
+      offset indexing, from-end handling, and out-of-range behavior) follows
+      the session’s list-behavior policy. The declared type of list concatenation
+      is determined by GQL’s general combination of value types; evaluation
+      then follows the standard null and maximum-cardinality rules.
+      </li>
+<li class="itemize"><span class="ec-lmri-12">Records</span><a id="dx12-64002"></a><span class="ec-lmri-12">. </span>A record value is a finite mapping from field names to values,
+      written <!-- l. 288 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi><mo class="MathClass-punc">.</mo><mi>n</mi></mrow></math>
+      for the value in field <!-- l. 288 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi></mrow></math>.
+      For records with a closed record type <!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub></mrow></math>,
+      a record value <!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>
+      supports field access <!-- l. 290 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi><mo class="MathClass-punc">.</mo><mi>n</mi></mrow></math>
+      whenever <!-- l. 290 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+      If the source record has no field named <!-- l. 291 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>,
+      the reference returns <!-- l. 292 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></math>
+      when its declared type is nullable; otherwise it raises data exception
+      <span class="ec-lmcsc-10x-x-120">22G03</span>. Records model structured values such as rows of binding tables
+      or compound results of expressions (e.g., a <span class="ec-lmtt-12">RETURN </span>item with multiple
+      named components), so that field access in the language can be defined
+      once in terms of this generic record notion.
+      </li>
+<li class="itemize"><span class="ec-lmri-12">Paths</span><a id="dx12-64003"></a><span class="ec-lmri-12">. </span>For the path values defined above, we use <span class="ec-lmtt-12">nodes</span>(p), <span class="ec-lmtt-12">edges</span>(p),
+      and  <span class="ec-lmtt-12">length</span>(p)  as  meta-level  shorthands  derived  from  the  standard
+      accessors <!-- l. 302 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ELEMENTS</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>p</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+      and <!-- l. 302 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PATH</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LENGTH</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>p</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>;
+      both standard accessors return null when their path input is null. By
+      treating paths as first-class values with these primitive operations, we
+      can later give uniform typing and evaluation rules for path-returning
+      patterns and path functions, independently of how paths are physically
+      represented in an implementation.</li></ul>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title"><a href="#x12-510006">Chapter 6</a> — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Established the abstract property-graph data model that all
+      later semantics referenced.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:  </span>A precise  notion  of  a graph  state  (nodes,  edges,
+      endpoints, labels, and properties); universes for identifiers, labels, keys,
+      and values; a value/type discipline including composite values; paths
+      as first-class values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key       distinctions:       </span>Identity       (nodes/edges)       versus
+      annotation (labels/properties); absent or unknown information versus
+      ordinary values (as later used by expression semantics).
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Enabled  later  chapters  to  define  semantics  over
+      a fixed carrier with no implicit assumptions; allowed path querying
+      to return structured path values rather than only endpoints; provided
+      hooks needed for typing, constraints, and update effects.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge:  </span>Established  the  foundation  required  to  formalize  graph
+      patterns and matching.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch6.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="05-a-conceptual-glossary-of-gql.html"><small>← Previous</small>A Conceptual Glossary of GQL</a><a rel="next" href="07-patterns-and-matching.html"><small>Next →</small>Patterns and Matching</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x12-520006.1">6.1 Universes and Notation</a><a href="#x12-530006.2">6.2 Property-Graph Structure</a><a href="#x12-560006.3">6.3 Values and Types</a><a href="#x12-610006.4">6.4 Basics of Paths as Data</a><a href="#x12-640006.5">6.5 Lists and Structural Access</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

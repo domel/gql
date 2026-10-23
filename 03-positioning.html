@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Positioning — GQL Essentials, by Dominik Tomaszuk.">
+<title>Positioning · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part" open><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html" aria-current="page"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Positioning</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Introduction</p><article class="book-content">
+<!-- l. 76 -->
+<h1 class="chapterHead" id="x8-90003"><span class="chapter-number">Chapter 03</span><a></a>Positioning</h1>
+<!-- l. 78 --><p class="noindent">This chapter positions GQL within the broader evolution of database models
+and query languages. We trace the main conceptual lineages that shaped
+contemporary graph querying, ranging from logic- and graph-oriented formalisms
+to relational, Semantic Web, and semi-structured paradigms. The aim is to clarify
+which ideas GQL inherits, which it adapts to property graphs, and where it
+deliberately departs from established traditions.
+</p><!-- l. 80 --><p class="indent">   The running library example makes these contrasts concrete: following the
+chain <span class="ec-lmtt-12">Reader</span>–<span class="ec-lmtt-12">LibraryAccount</span>–<span class="ec-lmtt-12">Loan</span>–<span class="ec-lmtt-12">Book </span>requires a sequence of joins over
+foreign keys in a relational representation. A document representation can make
+one access path local through nesting, but shared entities then introduce
+duplication or references that require cross-document joins, whereas a graph
+retains the relationships as directly traversable edges (<a id="x8-9001"></a><a href="bibliography.html#cite.0@SadalageFowler2012">Sadalage and Fowler
+2012</a>).
+</p>
+<h2 class="sectionHead" id="x8-100003.1"><span class="titlemark">3.1   </span> <a></a>Scholarly Analysis</h2>
+<!-- l. 84 --><p class="noindent">The evolution of database models, particularly through the lens of query
+languages, illustrates a profound shift toward more expressive and flexible
+methods for data retrieval and manipulation. This evolution is evident in the
+significant scholarly contributions that have broadened the capabilities of
+database systems to accommodate complex, non-traditional data structures,
+especially those represented in graph-based models.
+</p><!-- l. 86 --><p class="indent">   Kuper and Vardi pioneered the integration of formal logic into database
+systems, significantly enhancing the expressiveness of query languages (<a id="x8-10001"></a><a href="bibliography.html#cite.0@kuper1984new">Kuper and
+Vardi 1984</a>). By establishing a logical foundation, their approach facilitated
+complex queries that were previously infeasible with earlier database models,
+marking a significant advancement in the theory and application of database
+logic.
+</p><!-- l. 88 --><p class="indent">   Continuing this trend, Gyssens, Paredaens, and Van Gucht introduced
+a graph-oriented object model that fundamentally altered how queries could
+interact with databases (<a id="x8-10002"></a><a href="bibliography.html#cite.0@gyssens1990graph">Gyssens et al. 1990</a>). Their model enabled end-users to
+intuitively query databases through a visual representation of data and schema as
+graphs, thereby simplifying complex query constructions and making database
+systems more accessible and easier to manipulate.
+                                                                          
+
+                                                                          
+</p><!-- l. 90 --><p class="indent">   The hypernode model developed by Levene and Poulovassilis further expanded
+the querying capabilities of graph databases by introducing a nested graph
+structure (<a id="x8-10003"></a><a href="bibliography.html#cite.0@levene1990hypernode">Levene and Poulovassilis 1990</a>). This structure enabled the
+development of a powerful associated query language that could efficiently
+handle queries over hierarchical and recursive data structures, which are
+common in applications such as semantic web data and complex networked
+systems.
+</p><!-- l. 92 --><p class="indent">   Güting introduced GraphDB, providing a specialized framework for modeling
+and querying graphs within databases, tailored specifically to applications such as
+geographical information systems and network analysis (<a id="x8-10004"></a><a href="bibliography.html#cite.0@guting1994graphdb">Güting 1994</a>). The query
+language designed for GraphDB was adept at handling connected data and
+complex relational queries, thus facilitating more sophisticated analyses and
+optimizations.
+</p><!-- l. 94 --><p class="indent">   The G-Log query language, introduced by Paredaens et al., was another
+significant advancement, offering a declarative, graph-based language that allowed
+for the flexible querying of complex objects with identity (<a id="x8-10005"></a><a href="bibliography.html#cite.0@paredaens1995g">Paredaens et al. 1995</a>).
+G-Log’s ability to express changes in the database schema and instance as graph
+transformations opened new avenues for dynamic query processing and was
+particularly impactful in areas requiring advanced pattern matching and traversal
+capabilities.
+</p><!-- l. 96 --><p class="indent">   Sheng and the Ozsoyoglu team further developed graph query processing
+techniques, which were crucial for efficiently executing complex queries in
+large-scale databases (<a id="x8-10006"></a><a href="bibliography.html#cite.0@sheng1999graph">Sheng et al. 1999</a>). Their graph query language addressed
+the challenges associated with large and interconnected datasets, optimizing query
+execution to improve both performance and scalability.
+</p><!-- l. 98 --><p class="indent">   Lastly, the nested-graph model by Poulovassilis and Levene provided a robust
+framework for representing and manipulating complex objects, which was
+complemented by a highly capable query language (<a id="x8-10007"></a><a href="bibliography.html#cite.0@poulovassilis1994nested">Poulovassilis and Levene
+1994</a>). This language facilitated the manipulation of nested structures and
+complex object relationships, which are essential in fields such as computational
+biology and document databases.
+</p><!-- l. 100 --><p class="indent">   Earlier work on semistructured data also treated data as labeled graphs and
+made path navigation central. The Object Exchange Model<a id="dx8-10008"></a> (OEM) underpinned
+the Lore<a id="dx8-10009"></a> repository, whose Lorel<a id="dx8-10010"></a> language extended the Object Query Language<a id="dx8-10011"></a>
+(OQL<a id="dx8-10012"></a>) with flexible path expressions, while UnQL<a id="dx8-10013"></a> supplied a language and
+algebra for rooted edge-labeled graphs based on structural recursion (<a id="x8-10014"></a><a href="bibliography.html#cite.0@Abiteboul1997Lorel">Abiteboul
+et al. 1997</a>; <a id="x8-10015"></a><a href="bibliography.html#cite.0@Buneman2000UnQL">Buneman et al. 2000</a>).
+</p><!-- l. 102 --><p class="indent">   An earlier formal treatment of GQL covered a restricted read-only
+                                                                          
+
+                                                                          
+fragment—basic <span class="ec-lmtt-12">FROM</span>–<span class="ec-lmtt-12">MATCH</span>–<span class="ec-lmtt-12">RETURN</span>–<span class="ec-lmtt-12">WHERE </span>queries with fixed-length rigid
+patterns—based on the ISO working draft dated 2 February 2020 (<a id="x8-10016"></a><a href="bibliography.html#cite.0@Morra2021">Morra 2021</a>). It
+therefore provides historical context rather than a normative account of the
+standard used in this book.
+</p><!-- l. 104 -->
+
+<h2 class="sectionHead" id="x8-110003.2"><span class="titlemark">3.2   </span> <a></a>Relational Databases and SQL</h2>
+<!-- l. 106 --><p class="noindent">The SQL<a id="dx8-11001"></a> standard has established itself as the central technology for relational
+database management, with decades of evolution reflected in successive ISO/IEC
+standardization efforts (<a id="x8-11002"></a><a href="bibliography.html#cite.0@ISO-IEC-9075-2-2023">ISO/IEC 2023b</a>). Its longevity is due not only to its
+ubiquity in commercial and open-source systems, but also to a carefully designed
+combination of data model, typing discipline, transaction model, and
+declarative query language. As such, SQL constitutes the primary point
+of comparison for GQL: many of the design decisions in GQL can be
+read as adaptations of long-established relational ideas to the setting
+of property graphs, while others deliberately depart from the relational
+tradition.
+</p><!-- l. 108 --><p class="indent">   At the core of SQL lies a tabular, record-oriented data model. Relations
+(tables) can be understood as collections of records with a common column
+structure, and can be naturally viewed as files of records, spreadsheets, or tabular
+reports. In practice, tables are treated as multisets rather than sets: SQL admits
+duplicate rows, a feature that proves convenient for representing transactional
+and event data as they are generated by applications in finance, logistics, or web
+analytics. Conceptually, such tables can be mapped to text files with
+a header row and delimited fields, or to logical tables within reporting tools
+and business intelligence systems. GQL inherits this record orientation:
+collections of nodes or edges whose property records share the same type
+are logically equivalent to SQL tables. Each such typed collection can
+be seen as a possibly overlapping typed subpopulation of the node set
+<!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>V</mi> </mrow></math> or of the
+edge set <!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>,
+and these subpopulations are natural sources of binding-table rows in query
+evaluation. In contrast to SQL, however, GQL’s binding tables disallow multiple
+columns with the same name, reflecting the importance of unambiguous variable
+bindings in pattern-based semantics.
+                                                                          
+
+                                                                          
+</p><!-- l. 110 --><p class="indent">   An important aspect of SQL’s pragmatic success is its treatment of
+incomplete information via null values. The language allows individual
+fields within a row to be marked as having no known value, resulting
+in three-valued logic in query conditions and a rich, albeit sometimes
+controversial, semantics for comparison and aggregation in the presence of
+missing data. This design acknowledges that real-world datasets are often
+partially known, subject to delayed acquisition, or constrained by privacy and
+access-control considerations. Although property graphs usually handle the
+absence of information via missing properties rather than explicit null
+values, the underlying concern is similar: query languages must remain
+usable and robust when confronted with incomplete or heterogeneous
+data.
+</p><!-- l. 112 --><p class="indent">   SQL’s query sublanguage is fundamentally compositional. Queries
+take one or more input tables and produce an output table, and this
+closure property underlies both subqueries and views. Nested queries enable
+the decomposition of complex retrieval tasks into smaller subproblems,
+while the view mechanism treats fixed queries as virtual tables. Views,
+whether virtual or materialized, provide multiple perspectives over the same
+underlying data, support modular query design, and encapsulate physical
+design decisions such as indexing or partitioning. Compositional closure of
+the language under its own result type is one of SQL’s most powerful
+and enduring features. By contrast, present-day GQL is not yet a fully
+compositional language in this sense, as it lacks a general mechanism for
+graph-returning subqueries and views that define new persistent graphs. The
+inability to define graph projections or named graph views within the
+language constitutes a significant gap relative to SQL, and we return
+to this issue in our later discussion of possible future enhancements to
+GQL.
+</p><!-- l. 114 --><p class="indent">   Another pillar of SQL’s design is its schema-governed, closed-world nature.
+Data must conform to a declared schema that specifies tables, columns, types,
+and constraints. This strong typing and constraint infrastructure supports data
+quality, integrity, and consistency: primary keys, foreign keys, uniqueness
+constraints, and check predicates can all be enforced within the database itself.
+The metadata describing a schema can be communicated compactly,
+which in turn supports a regular translation from conceptual data models,
+such as entity-relationship diagrams (<a id="x8-11003"></a><a href="bibliography.html#cite.0@Chen1976">Chen 1976</a>; <a id="x8-11004"></a><a href="bibliography.html#cite.0@Elmasri_fundamentals_2015">Elmasri and Navathe
+2015</a>; <a id="x8-11005"></a><a href="bibliography.html#cite.0@Thalheim_extended_2018">Thalheim 2018</a>) or UML class models (<a id="x8-11006"></a><a href="bibliography.html#cite.0@Fowler2003">Fowler 2003</a>), to physical
+database designs. A well-defined type system for field values provides
+                                                                          
+
+                                                                          
+a foundation for portable applications and interoperable tools. At the same time,
+schema information underpins query planning and optimization: cardinality
+estimates and other statistics are attached to schema objects, enabling
+cost-based optimizers to select efficient execution strategies. GQL shares the
+ambition of being schema-aware, via graph, node, and edge types and
+associated key and unique constraints, but its current constraint repertoire is
+considerably weaker than that of mature SQL implementations, especially in
+areas such as referential integrity, cardinality constraints, and rich domain
+constraints.
+</p><!-- l. 116 --><p class="indent">   Transactional updates form another domain in which SQL has set
+long-standing expectations. The language is paired with a transaction model that
+supports atomic, consistent, isolated, and durable (ACID) execution,
+typically realized via serializability or well-understood relaxations thereof.
+Updates operate over schema-defined structures, and the semantics of
+<span class="ec-lmtt-12">INSERT</span>, <span class="ec-lmtt-12">UPDATE</span>, and <span class="ec-lmtt-12">DELETE </span>statements are defined at the logical level
+of sets or multisets of rows, even though physical implementations may
+employ complex logging and indexing schemes. Crucially, transaction
+boundaries localize the effects of constraint failures. GQL adopts a similar
+high-level view of transactions over property graphs: its data-modifying
+operations dynamically validate the applicable graph constraints and
+graph-type conformance before completing successfully, while broader constraint
+forms and implementation-defined isolation extensions remain areas for
+evolution.
+</p><!-- l. 118 --><p class="indent">   The declarative nature of SQL’s data query language is central to its influence.
+Queries are written as concise statements of interest, multiset comprehensions
+over tables, rather than as procedural programs with explicit loops and
+navigational updates. This separation between logical intent and physical
+access path enables the database system to utilize query optimization
+techniques that consider storage layout, access methods, and buffering
+strategies, all of which are transparent to the application. Joins, selections,
+projections, and aggregations are composed algebraically, and the optimizer is
+free to reorder and transform these operations as long as the multiset
+semantics are preserved. Within this declarative framework, relationships
+between entities are computed through joins based on the equality of
+attribute values, typically guided by foreign key constraints. This “computed
+relationship” model is flexible and powerful, but it treats connections
+between entities as emergent from value equality, rather than as first-class
+structures.
+                                                                          
+
+                                                                          
+</p><!-- l. 120 --><p class="indent">   GQL both inherits and departs from this relational tradition. On the one
+hand, the property graph data model is firmly record-oriented: nodes and edges
+carry property records whose types can be aligned with tabular structures.
+Collections of nodes or edges of the same type can be viewed as tables,
+supporting familiar ETL pipelines and easing data integration from files,
+spreadsheets, and relational sources. This record orientation underlies,
+for example, the tabular graph features in SQL/PGQ (<a id="x8-11007"></a><a href="bibliography.html#cite.0@ISO-IEC-9075-16-2023">ISO/IEC 2023a</a>),
+where graph views are projected over existing tabular data. The ease
+with which property graphs can be layered over existing relational and
+file-based infrastructures is arguably one of the reasons for their commercial
+success.
+</p><!-- l. 122 --><p class="indent">   On the other hand, GQL grants relationships a direct representation as edges
+in a graph, with their own identity and properties. Foreign keys in SQL
+can be understood as an indirect representation of such relationships via
+shared values, often requiring additional link tables to represent attributes
+associated with relationships. In GQL, these attributes can be attached
+directly to edges, resulting in more transparent and often more concise data
+models. This direct representation of relationships can be leveraged by
+systems optimized for edge and path exploration, enabling the efficient
+discovery of neighborhoods, reachability regions, and complex network
+patterns.
+</p><!-- l. 124 --><p class="indent">   Finally, the graph-pattern matching sublanguage of GQL, a declarative,
+graph-oriented pattern language often referred to as GPML (<a id="x8-11008"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>),
+offers expressive capabilities that are difficult to emulate elegantly in SQL. While
+SQL supports recursive queries, typically via recursive common table
+expressions, representing multi-hop path patterns, variable-length traversals,
+or complex topological constraints over large graphs quickly becomes
+verbose and opaque. In GQL, path patterns and graph patterns enable such
+traversals to be specified “topologically”, that is, in terms of the shape of
+the desired paths and neighborhoods, rather than as low-level fixpoint
+computations over joins. This gives GQL a decisive advantage for tasks
+centered on graph connectivity, even as SQL remains the more mature and
+compositional language in the broader landscape of general-purpose database
+querying.
+</p><!-- l. 126 -->
+
+<h2 class="sectionHead" id="x8-120003.3"><span class="titlemark">3.3   </span> <a></a>RDF and SPARQL</h2>
+<!-- l. 127 --><p class="noindent">In the domain of the Semantic Web, the development of query languages has been
+profoundly influenced by established database languages such as SQL and OQL.
+Standardized as part of the Object Data Management Group (ODMG) object
+data standard, OQL is a declarative language over an object model with object
+identity, relationships, collections, and path navigation (<a id="x8-12001"></a><a href="bibliography.html#cite.0@Cattell2000ODMG">Cattell et al. 2000</a>).
+A notable early effort in this area was RQL (<a id="x8-12002"></a><a href="bibliography.html#cite.0@karvounarakis2002rql">Karvounarakis et al. 2002</a>), which
+introduced a robust framework combining elementary queries and iterators akin
+to those found in object query languages (<a id="x8-12003"></a><a href="bibliography.html#cite.0@blakeley1991strawman">Blakeley et al. 1991</a>). RQL was designed
+to facilitate data and schema access, allowing queries to target specific
+types or navigate the RDF<a id="dx8-12004"></a> graph structure. Despite its comprehensive
+functionality, RQL’s broad feature set and syntactic complexity led to the
+development of SeRQL (<a id="x8-12005"></a><a href="bibliography.html#cite.0@broekstra2003serql">Broekstra and Kampman 2003</a>), which streamlined query
+execution by introducing shortcuts like object-property and object lists.
+Additionally, eRQL (<a id="x8-12006"></a><a href="bibliography.html#cite.0@tolle2006semantisches">Tolle 2006</a>) emerged as a simplified adaptation of
+RQL, focusing on a keyword-based query interface that enhanced user
+accessibility.
+</p><!-- l. 129 --><p class="indent">   Parallel developments included SquishQL and RDQL (<a id="x8-12007"></a><a href="bibliography.html#cite.0@miller2002three">Miller et al. 2002</a>),
+which introduced subgraph matching filters that drew parallels to SQL’s
+capabilities, and TriQL (<a id="x8-12008"></a><a href="bibliography.html#cite.0@bizer2005triql">Bizer et al. 2005</a>), which extended these ideas by allowing
+queries over named graphs, thereby enabling evaluations across multiple sets
+of triples rather than just a single set. Despite their innovations, these
+languages commonly faced limitations in areas like store management and the
+definition of protocols for store access, which restricted their practical
+implementation.
+</p><!-- l. 131 --><p class="indent">   Among these various RDF query languages, SPARQL<a id="dx8-12009"></a> (<a id="x8-12010"></a><a href="bibliography.html#cite.0@harris2013sparql">Harris and Seaborne
+2013</a>; <a id="x8-12011"></a><a href="bibliography.html#cite.0@passant2013supdate">Passant et al. 2013</a>) has ascended as the preeminent standard, recognized for
+its comprehensive suite of features enabling detailed querying and manipulation of
+RDF data. SPARQL’s design facilitates complex querying mechanisms that
+allow users to extract, query, and manipulate data across diverse and
+heterogeneous data sources. These sources may natively store data in
+RDF format or present non-RDF data as RDF via middleware solutions,
+thus extending SPARQL’s utility across different data ecosystems. The
+influence of SPARQL on GQL is evident in its graph pattern-matching
+capabilities and the ability to handle complex queries across heterogeneous data
+sources.
+</p><!-- l. 133 --><p class="indent">   The <span class="ec-lmtt-12">SELECT </span>query in SPARQL is foundational, enabling the retrieval of raw
+                                                                          
+
+                                                                          
+data values from endpoints and presenting results in a structured tabular format.
+This function is central to most data retrieval operations, allowing for the precise
+selection and return of specific data elements. The <span class="ec-lmtt-12">CONSTRUCT </span>query builds upon
+this capability by fetching data and reorganizing it into valid RDF structures,
+thereby facilitating the creation of new RDF graphs from existing data. This
+feature is particularly beneficial for tasks involving data transformation and
+integration. Lastly, the <span class="ec-lmtt-12">ASK </span>query provides a unique function by returning
+a Boolean result (True or False), which is crucial for performing existence checks
+or for incorporating conditional logic within applications driven by complex data
+needs.
+</p><!-- l. 135 -->
+
+<h2 class="sectionHead" id="x8-130003.4"><span class="titlemark">3.4   </span> <a></a>Tree-based Languages</h2>
+<!-- l. 136 --><p class="noindent">Tree-based data models like JSON and XML have significantly influenced the
+development of database technologies by providing flexible, hierarchical structures
+ideal for many modern web and data interchange applications. These
+formats are inherently non-relational and support nested arrays and objects,
+which contrasts sharply with the flat, tabular structures typical of SQL
+databases.
+</p><!-- l. 138 --><p class="indent">   XPath<a id="dx8-13001"></a> (<a id="x8-13002"></a><a href="bibliography.html#cite.0@robie2017xpl">Robie et al. 2017</a>) and XQuery<a id="dx8-13003"></a> (<a id="x8-13004"></a><a href="bibliography.html#cite.0@dyck2917xax">Dyck et al. 2017</a>) are two of the most
+prominent query languages designed for XML data. XPath is used to navigate
+through elements and attributes in an XML document. It provides powerful
+syntax to pinpoint parts of an XML document, supporting complex querying
+capabilities such as Boolean operations, numerical operations, and node testing.
+XQuery, an extension of XPath, was designed to query and transform collections
+of XML data. It acts like a database query language but is tailored specifically for
+XML’s hierarchical structure. Both XPath and XQuery leverage the tree-like
+nature of XML to perform sophisticated document manipulations and retrievals.
+GQL draws inspiration from these languages in its approach to handling nested
+and hierarchical data within graphs, enhancing its capability to model complex
+relationships.
+</p><!-- l. 140 --><p class="indent">   In JSON, a similar trend is observed with languages such as JSONPath<a id="dx8-13005"></a>
+(<a id="x8-13006"></a><a href="bibliography.html#cite.0@gossner2024jp">Gössner et al. 2024</a>), which provides capabilities analogous to XPath but is
+adapted for JSON’s structure. JSONPath allows for the traversal of JSON objects
+using a path expression, making extracting and manipulating data from complex
+                                                                          
+
+                                                                          
+JSON structures straightforward. JMESPath<a id="dx8-13007"></a> (<a id="x8-13008"></a><a href="bibliography.html#cite.0@saryerwinnie2015jmesp">Saryerwinnie 2015</a>) is another
+JSON query language that extends JSONPath’s capabilities with additional
+operators and functions for more sophisticated querying and transformation
+tasks.
+</p><!-- l. 142 --><p class="indent">   SQL<a id="dx8-13009"></a>:2016 (<a id="x8-13010"></a><a href="bibliography.html#cite.0@ISO-IEC-9075-2-2016">ISO/IEC 2016</a>) has integrated robust support for JSON.
+This includes native JSON data types and functions like <span class="ec-lmtt-12">JSON_VALUE</span>,
+<span class="ec-lmtt-12">JSON_QUERY</span>, and <span class="ec-lmtt-12">JSON_EXISTS</span>, allowing for efficient extraction and manipulation
+of JSON data within SQL queries. The standard also defines a JSON
+path language, similar to JSONPath, for navigating and querying JSON
+documents. Functions such as <span class="ec-lmtt-12">JSON_OBJECT </span>and <span class="ec-lmtt-12">JSON_ARRAY </span>facilitate the
+construction of JSON data from SQL query results, while predicates like <span class="ec-lmtt-12">IS
+</span><span class="ec-lmtt-12">JSON </span>enable validation of JSON data. This integration allows seamless
+querying and manipulation of JSON data within a relational database
+context, combining the strengths of relational and non-relational data
+models.
+</p><!-- l. 144 --><p class="indent">   LINQ<a id="dx8-13011"></a> (Language Integrated Query) (<a id="x8-13012"></a><a href="bibliography.html#cite.0@albahari2008linq">Albahari and Albahari 2008</a>) is another
+influential technology that bridges the gap between programming languages and
+data queries. It provides a consistent model for managing data across different
+data sources, including XML<a id="dx8-13013"></a> and JSON<a id="dx8-13014"></a>. LINQ enables developers to use familiar
+list comprehension syntax from languages like C# to query various data
+structures, treating them as collections in the language itself. This integration
+enhances the accessibility and power of data manipulation directly within the
+programming environment.
+</p><!-- l. 146 --><p class="indent">   These tree-based query languages have dramatically shaped the landscape of
+data querying and manipulation, making it easier for developers to interact with
+hierarchical data formats directly. Their influence extends to the design of modern
+database systems and querying interfaces, which increasingly cater to
+complex, nested data structures prevalent in contemporary applications.
+GQL’s ability to handle such structures is a testament to these influences,
+providing a versatile and robust framework for modern data management
+needs.
+</p><!-- l. 148 -->
+
+<h2 class="sectionHead" id="x8-140003.5"><span class="titlemark">3.5   </span> <a></a>Key-value and Document Databases</h2>
+<!-- l. 149 --><p class="noindent">Key-value and document databases have also influenced the development of
+                                                                          
+
+                                                                          
+modern query languages by providing models that emphasize flexibility and
+simplicity, catering to various use cases where traditional relational databases may
+fall short.
+</p><!-- l. 151 --><p class="indent">   Key-value databases<a id="dx8-14001"></a>, such as Amazon DynamoDB (<a id="x8-14002"></a><a href="bibliography.html#cite.0@sivasubramanian2012amazon">Sivasubramanian 2012</a>)
+and Redis (<a id="x8-14003"></a><a href="bibliography.html#cite.0@da2015redis">Da Silva and Tavares 2015</a>), store data as a collection of key-value
+pairs. This simple data model allows for rapid read and write operations, making
+key-value databases suitable for high-performance applications and caching
+mechanisms. The query capabilities in key-value stores are often basic, focusing on
+efficiently retrieving values based on their keys. However, the key-value concept
+aligns closely with the property model in property graphs, where each
+node or edge can have associated key-value pairs representing various
+properties.
+</p><!-- l. 153 --><p class="indent">   Document databases<a id="dx8-14004"></a>, such as MongoDB (<a id="x8-14005"></a><a href="bibliography.html#cite.0@banker2016mongodb">Banker et al. 2016</a>) and Couchbase
+(<a id="x8-14006"></a><a href="bibliography.html#cite.0@brown2012getting">Brown 2012</a>), extend the key-value model by storing structured data (documents)
+in formats like JSON<a id="dx8-14007"></a>. Each document contains key-value pairs but can embed
+complex data structures, such as nested arrays and objects. Document databases
+represent an expanded concept of key-value databases, allowing for a more
+nuanced and detailed representation of data. GQL benefits from these
+concepts by enabling the representation of complex data structures within
+graph nodes and edges, thus facilitating more detailed and expressive data
+models.
+</p><!-- l. 155 --><p class="indent">   MongoDB’s query language (<a id="x8-14008"></a><a href="bibliography.html#cite.0@botoeva2018expressivity">Botoeva et al. 2018</a>) offers extensive support for
+filtering, projecting, and aggregating data, enabling users to perform sophisticated
+data manipulations and analytics directly within the database. Couchbase
+supports advanced indexing and querying capabilities by using views and design
+documents, which allow users to define custom queries, transformations,
+and aggregations. Other document query languages include ArangoDB’s
+AQL (<a id="x8-14009"></a><a href="bibliography.html#cite.0@arangodb2024aql">ArangoDB 2024</a>), which supports complex querying across JSON
+documents.
+</p><!-- l. 157 --><p class="indent">   N1QL<a id="dx8-14010"></a> (<a href="bibliography.html#cite.0@brown2012getting">Brown 2012</a>) is Couchbase’s query language designed to combine the
+power and familiarity of SQL with the flexibility of JSON. N1QL allows users to
+query, manipulate, and transform JSON data using a declarative syntax similar
+to SQL. Yet another query language is SQL++ (<a id="x8-14011"></a><a href="bibliography.html#cite.0@ong2014sqlpp">Ong et al. 2014</a>), an extension of
+SQL designed for semi-structured data models. It builds on the foundation
+of SQL and expands it to handle nested, schema-less, and flexible data
+structures commonly found in JSON documents. SQL++ aims to provide
+a unified query language that bridges the gap between relational and NoSQL
+databases, allowing seamless integration and querying of heterogeneous data
+                                                                          
+
+                                                                          
+sources.
+</p><!-- l. 159 --><p class="indent">   The influence of these databases on GQL is seen in how GQL handles
+semi-structured data. GQL’s ability to represent properties on nodes and edges
+and to manage dynamic and evolving schemas draws inspiration from
+the document-oriented approach of these databases. Additionally, the
+efficient query execution and indexing strategies developed for key-value
+and document databases have informed the design of GQL’s querying
+mechanisms, ensuring they can handle large, complex graph datasets with high
+performance.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 3 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Positioned GQL within the ecosystem of database models
+      and query languages by tracing conceptual lineages and contrasts.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:    </span>A comparative    map    across    relational    SQL,
+      RDF/SPARQL, and property-graph traditions; the idea of grounding
+      graph querying in compositional, algebraic foundations.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key
+      </span><span class="ec-lmbx-12">distinctions:  </span>Closed-world,  constraint-oriented  database  reasoning
+      versus open-world, entailment-oriented RDF reasoning; graph-native
+      pattern/path querying versus tree/document navigation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Clarified which semantics GQL inherited and which
+      it  deliberately  did  not;  justified  later  choices  such  as  bag-based
+      intermediate results and explicit scoping rules; set expectations for how
+      querying, updating, and catalogs fit into one semantic framework.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Led  into  a concrete  running  example  that  anchored  later
+      formal definitions.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch3.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="02-property-graph-databases.html"><small>← Previous</small>Property Graph Databases</a><a rel="next" href="04-gql-by-example.html"><small>Next →</small>GQL by Example</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x8-100003.1">3.1 Scholarly Analysis</a><a href="#x8-110003.2">3.2 Relational Databases and SQL</a><a href="#x8-120003.3">3.3 RDF and SPARQL</a><a href="#x8-130003.4">3.4 Tree-based Languages</a><a href="#x8-140003.5">3.5 Key-value and Document Databases</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="GQL by Example — GQL Essentials, by Dominik Tomaszuk.">
+<title>GQL by Example · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part" open><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html" aria-current="page"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> GQL by Example</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Introduction</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x9-150004"><span class="chapter-number">Chapter 04</span><a></a>GQL by Example</h1>
+<!-- l. 3 --><p class="noindent">This chapter introduces GQL through a concrete, self-contained library domain
+that we use as a running example throughout the book. Starting from an informal
+picture of the schema and a small instance, we show how to express the same
+structure using GQL’s data definition and manipulation features. We then
+formulate a series of queries over this graph, illustrating the core ideas of pattern
+matching, paths, and aggregation in the language.
+</p>
+<h2 class="sectionHead" id="x9-160004.1"><span class="titlemark">4.1   </span> <a></a>Visual Representation</h2>
+<!-- l. 6 --><a id="likesection.1"></a><a id="x9-16001x1"></a>
+
+<!-- l. 6 --><p class="noindent"><span class="paragraphHead"><a id="x9-170001"></a><span class="ec-lmbx-12">Schema illustration.</span></span>
+</p>
+<figure class="figure">
+<a id="x9-170011"></a>
+<!-- l. 9 --><p class="noindent"> <a aria-label="Open full-size schema illustration" class="figure-zoom" href="assets/example_schema.svg"><img alt="Schema illustration" loading="lazy" src="assets/example_schema.svg"/></a>
+</p>
+<figcaption class="caption"><span class="id">Figure 4.1: </span><span class="content">Schema illustration</span></figcaption><!-- tex4ht:label?: x9-170011  -->
+</figure>
+<!-- l. 14 --><p class="indent"> <a href="#x9-170011">Figure 4.1</a> presents the schema as a type-level property graph, abstracting
+away from individual borrowers and concrete books to reveal the structural
+backbone of the library domain. Each rectangular box denotes a node type,
+specifying which attributes are available for entities of that kind. The <span class="ec-lmtt-12">Loan </span>type,
+for example, states that every loan node must carry at least one identifying
+property, <span class="ec-lmtt-12">loanid: String</span>, which uniquely characterizes a loan within the
+system. The <span class="ec-lmtt-12">LibraryAccount </span>type introduces an analogous identifier
+<span class="ec-lmtt-12">num: String</span>, representing the account code under which borrowings are
+recorded. The <span class="ec-lmtt-12">Reader </span>type is richer: it combines a numeric identifier <span class="ec-lmtt-12">id: Int</span>
+with textual attributes <span class="ec-lmtt-12">firstname: String </span>and <span class="ec-lmtt-12">lastname: String</span>, together
+with a <span class="ec-lmtt-12">birthdate: Date </span>that captures the temporal dimension of the patron’s
+identity. A separate <span class="ec-lmtt-12">LibraryCard </span>type models the physical card used at the
+circulation desk and self-service terminals; it has a single property <span class="ec-lmtt-12">num: String</span>
+describing the card number printed on the plastic. Finally, the <span class="ec-lmtt-12">Book </span>type
+specifies three bibliographic properties, <span class="ec-lmtt-12">isbn: String</span>, <span class="ec-lmtt-12">title: String</span>, and
+<span class="ec-lmtt-12">author: String</span>, which together determine how book entities are represented in
+the graph.
+</p><!-- l. 22 --><p class="indent">   The schema also defines its edge types and their property type sets. Edge type
+specifications carrying the labels <span class="ec-lmtt-12">owns</span>, <span class="ec-lmtt-12">uses</span>, <span class="ec-lmtt-12">check_out</span>, and <span class="ec-lmtt-12">returns_to </span>define
+typed connections between the corresponding node types: a <span class="ec-lmtt-12">Reader </span>may own
+a <span class="ec-lmtt-12">LibraryAccount</span>; the same <span class="ec-lmtt-12">Reader </span>may use a <span class="ec-lmtt-12">LibraryCard</span>; and a <span class="ec-lmtt-12">Loan </span>is
+associated with a <span class="ec-lmtt-12">LibraryAccount</span> via operations that record checking items out
+and returning them. Particularly noteworthy is the directed edge type from <span class="ec-lmtt-12">Loan</span>
+to <span class="ec-lmtt-12">Book </span>whose edge type label set is <span class="ec-lmtt-12">:INCLUDES</span>. Unlike the other edge types, it
+declares the property types <span class="ec-lmtt-12">due_date: Date </span>and <span class="ec-lmtt-12">late_fee: Float</span>. This makes
+explicit that due dates and late fees are not inherent attributes of loans or
+books in isolation, but of the specific association between a given loan and
+a particular book instance. Taken together, the schema figure can be
+read as a compact contract for all valid library graphs in this model:
+it prescribes the node types that may exist, the edge types that may
+connect them, and the types of values that may decorate both nodes and
+relationships. The underlying property-graph structure and the formal
+definitions of node, edge, and graph types are given in <a href="06-data-model.html#x12-530006.2">Sections 6.2</a><a href="15-types-and-schemas.html#x27-28100015.3">, 15.3</a><a href="15-types-and-schemas.html#x27-28600015.4">
+and 15.4</a>.
+</p><!-- l. 29 --> <a id="likesection.2"></a><a id="x9-17002x2"></a>
+
+<!-- l. 29 --><p class="noindent"><span class="paragraphHead"><a id="x9-180002"></a><span class="ec-lmbx-12">Instance illustration.</span></span>
+</p>
+<figure class="figure">
+<a id="x9-180012"></a>
+<!-- l. 33 --><p class="noindent"> <a aria-label="Open full-size instance illustration" class="figure-zoom" href="assets/example_instance_long.svg"><img alt="Instance illustration" loading="lazy" src="assets/example_instance_long.svg"/></a>
+</p>
+<figcaption class="caption"><span class="id">Figure 4.2: </span><span class="content">Instance illustration</span></figcaption><!-- tex4ht:label?: x9-180012  -->
+</figure>
+<!-- l. 38 --><p class="indent"> <a href="#x9-180012">Figure 4.2</a> instantiates this schema with a small, concrete example of
+a library situation. At its center stands a single loan node, identified by the
+property <span class="ec-lmtt-12">loanid: “L-2025-0001”</span>. This loan is tied to one library account node
+whose <span class="ec-lmtt-12">num: “ACC-1001” </span>indicates the account under which the borrowing is
+registered. The account belongs to a specific reader, represented by a <span class="ec-lmtt-12">Reader</span>
+node that carries basic personal data: an internal numeric identifier (<span class="ec-lmtt-12">id: 1</span>),
+the first name <span class="ec-lmtt-12">“Alice”</span>, the last name <span class="ec-lmtt-12">“Brown”</span>, and the date of birth
+<span class="ec-lmtt-12">1990-05-12</span>. A separate <span class="ec-lmtt-12">LibraryCard </span>node, with <span class="ec-lmtt-12">num: “CARD-0001”</span>,
+captures the physical card that Alice uses to interact with the library
+system.
+</p><!-- l. 44 --><p class="indent">   Two distinct <span class="ec-lmtt-12">Book </span>nodes complete the picture. Each represents a different
+catalog item, described by an ISBN, a title, and an author. One book has <span class="ec-lmtt-12">isbn:
+</span><span class="ec-lmtt-12">“978-83-123...”</span>, <span class="ec-lmtt-12">title: “Graph DB 101”</span>, and <span class="ec-lmtt-12">author: “J. Smith”</span>. The
+other is recorded as <span class="ec-lmtt-12">isbn: “978-83-987...”</span>, <span class="ec-lmtt-12">title: “Graph Theory”</span>, and
+<span class="ec-lmtt-12">author: “M. Johnson”</span>. The edges stitching these nodes together mirror the
+schema’s relationship types. An edge labeled <span class="ec-lmtt-12">owns </span>connects the reader to the
+library account, expressing that this account is Alice Brown’s. A second edge
+labeled <span class="ec-lmtt-12">uses </span>links the reader to the library card, indicating that this card is the
+one she presents at the library.
+</p><!-- l. 52 --><p class="indent">   The lifecycle of the borrowing process is then captured via edges from the loan
+node to the account node, with labels such as <span class="ec-lmtt-12">check_out </span>and <span class="ec-lmtt-12">returns_to</span>
+distinguishing the act of borrowing from the act of returning. The association
+between the loan and the individual books is modeled by <span class="ec-lmtt-12">includes </span>edges
+from the loan node to each of the two book nodes. In the example, these
+relationship instances carry their own properties: one <span class="ec-lmtt-12">includes </span>edge has
+<span class="ec-lmtt-12">due_date: 2025-12-01 </span>and <span class="ec-lmtt-12">late_fee: 0.0</span>, indicating that no late fee is
+recorded for that item, while the other has <span class="ec-lmtt-12">due_date: 2025-12-10 </span>and
+<span class="ec-lmtt-12">late_fee: 2.5</span>, showing that a fee has accrued for that particular item.
+In this way, the instance diagram can be read as a concrete graph that
+conforms to the structural constraints of the schema: every node and
+edge has exactly the label sets and property sets prescribed in the first
+illustration, turning the abstract specification into a tangible example of
+a library encoded as a property graph. The formal representation of this
+instance as sets of nodes, edges, labels, properties, and endpoints is given in
+<a href="06-data-model.html#x12-530006.2">Section 6.2</a>.
+                                                                          
+
+                                                                          
+</p>
+<h2 class="sectionHead" id="x9-190004.2"><span class="titlemark">4.2   </span> <a></a>Data Definition Language</h2>
+<!-- l. 59 --><p class="noindent">The Data Definition Language (DDL<a id="dx9-19001"></a>) of GQL allows us to turn the informal schema
+of <a href="#x9-170011">Figure 4.1</a> into an explicit graph type that constrains all admissible library
+graphs. In this example, we introduce a single graph type <span class="ec-lmtt-12">libraryGraphType</span>. Its
+body specifies the node types (with their labels and property types), the edge
+types (with their labels, direction, and any edge properties), and a set of key
+constraints that capture the intended identifiers for loans, accounts, readers,
+cards, and books.
+</p>
+<!-- l. 68 --><div class="code-wrap"><span id="x9-19036r35"></span><span id="x9-19035r34"></span><span id="x9-19034r33"></span><span id="x9-19033r32"></span><span id="x9-19032r31"></span><span id="x9-19031r30"></span><span id="x9-19030r29"></span><span id="x9-19029r28"></span><span id="x9-19028r27"></span><span id="x9-19027r26"></span><span id="x9-19026r25"></span><span id="x9-19025r24"></span><span id="x9-19024r23"></span><span id="x9-19023r22"></span><span id="x9-19022r21"></span><span id="x9-19021r20"></span><span id="x9-19020r19"></span><span id="x9-19019r18"></span><span id="x9-19018r17"></span><span id="x9-19017r16"></span><span id="x9-19016r15"></span><span id="x9-19015r14"></span><span id="x9-19014r13"></span><span id="x9-19013r12"></span><span id="x9-19012r11"></span><span id="x9-19011r10"></span><span id="x9-19010r9"></span><span id="x9-19009r8"></span><span id="x9-19008r7"></span><span id="x9-19007r6"></span><span id="x9-19006r5"></span><span id="x9-19005r4"></span><span id="x9-19004r3"></span><span id="x9-19003r2"></span><span id="x9-19002r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>CREATE GRAPH TYPE libraryGraphType
+AS {
+  /* Node types */
+  (Loan :Loan { loanid STRING NOT NULL }),
+  (LibraryAccount :LibraryAccount { num STRING NOT NULL }),
+  (Reader :Reader { id INT NOT NULL, firstname STRING,
+                    lastname STRING, birthdate DATE }),
+  (LibraryCard :LibraryCard { num STRING NOT NULL }),
+  (Book :Book { isbn STRING NOT NULL, title STRING, author STRING }),
+
+  /* Edge types */
+  (Reader)-[:OWNS]-&gt;(LibraryAccount),
+  (Reader)-[:USES]-&gt;(LibraryCard),
+  (Loan)-[:CHECK_OUT]-&gt;(LibraryAccount),
+  (Loan)-[:RETURNS_TO]-&gt;(LibraryAccount),
+  (Loan)-[:INCLUDES { due_date DATE, late_fee FLOAT }]-&gt;(Book),
+
+  /* Key constraints */
+  CONSTRAINT LoanHasKey
+    FOR (l:Loan)
+    REQUIRE (l.loanid) IS KEY,
+  CONSTRAINT LibraryAccountHasKey
+    FOR (a:LibraryAccount)
+    REQUIRE (a.num) IS KEY,
+  CONSTRAINT ReaderHasKey
+    FOR (r:Reader)
+    REQUIRE (r.id) IS KEY,
+  CONSTRAINT LibraryCardHasKey
+    FOR (c:LibraryCard)
+    REQUIRE (c.num) IS KEY,
+  CONSTRAINT BookHasKey
+    FOR (b:Book)
+    REQUIRE (b.isbn) IS KEY
+}
+</code></pre></div>
+<!-- l. 105 --><p class="indent">   The body of the <span class="ec-lmtt-12">CREATE GRAPH TYPE</span><a id="dx9-19037"></a> statement declares the node types,
+edge types, and constraints that constitute <span class="ec-lmtt-12">libraryGraphType</span>. Each
+parenthesized declaration, such as <span class="ec-lmtt-12">(Reader :Reader { id INT NOT NULL,
+</span><span class="ec-lmtt-12">firstname STRING, ... })</span>, defines a node type. The identifier <span class="ec-lmtt-12">Reader </span>is
+a local node type alias, <span class="ec-lmtt-12">:Reader </span>specifies its label set, and the declarations
+inside braces specify the available properties together with their value
+types.
+</p><!-- l. 115 --><p class="indent">   Similarly, the declaration </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 116 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">(Loan)-[:INCLUDES { due_date DATE, late_fee FLOAT }]-&gt;(Book)</mtext></mstyle><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 119 --><p class="indent">   defines a directed edge type from <span class="ec-lmtt-12">Loan </span>nodes to <span class="ec-lmtt-12">Book </span>nodes. The edge has the
+label <span class="ec-lmtt-12">INCLUDES </span>and may carry the properties <span class="ec-lmtt-12">due_date </span>and <span class="ec-lmtt-12">late_fee</span>, whose
+values must have the types <span class="ec-lmtt-12">DATE </span>and <span class="ec-lmtt-12">FLOAT</span>, respectively.
+</p><!-- l. 124 --><p class="indent">   The <span class="ec-lmtt-12">CONSTRAINT </span>clauses declare key constraints for selected node types. In
+each constraint, the <span class="ec-lmtt-12">FOR </span>clause identifies the node type to which the constraint
+applies and binds a variable to matching nodes. For example, <span class="ec-lmtt-12">FOR (l:Loan)</span>
+applies the constraint to <span class="ec-lmtt-12">Loan </span>nodes and binds them to the variable <span class="ec-lmtt-12">l</span>. The
+corresponding <span class="ec-lmtt-12">REQUIRE (l.loanid) IS KEY </span>clause declares the <span class="ec-lmtt-12">loanid </span>property
+as the key of that node type.
+                                                                          
+
+                                                                          
+</p><!-- l. 133 --><p class="indent">   Consequently, <span class="ec-lmtt-12">loanid </span>is the key of <span class="ec-lmtt-12">Loan </span>nodes, <span class="ec-lmtt-12">num </span>is the key of <span class="ec-lmtt-12">LibraryAccount</span>
+nodes, <span class="ec-lmtt-12">id </span>is the key of <span class="ec-lmtt-12">Reader </span>nodes, <span class="ec-lmtt-12">num </span>is the key of <span class="ec-lmtt-12">LibraryCard </span>nodes, and
+<span class="ec-lmtt-12">isbn </span>is the key of <span class="ec-lmtt-12">Book </span>nodes. Graphs constrained by <span class="ec-lmtt-12">libraryGraphType </span>must
+satisfy these key constraints in addition to the declared node and edge type
+requirements. If a modification would violate an applicable constraint or
+the constraining graph type, the offending operation does not complete
+successfully. The formal treatment of graph types, graph-type creation, key
+constraints, and their enforcement is given in <a href="15-types-and-schemas.html#x27-28600015.4">Sections 15.4</a><a href="15-types-and-schemas.html#x27-29600015.6">, 15.6</a><a href="16-constraints.html#x28-30600016.1">, 16.1</a><a href="16-constraints.html#x28-31600016.2">
+and 16.2</a>.
+</p><!-- l. 146 --><p class="indent">   The following statement creates an empty graph constrained by this graph
+type:
+</p>
+<!-- l. 148 --><div class="code-wrap"><span id="x9-19039r2"></span><span id="x9-19038r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>CREATE GRAPH libraryGraph TYPED libraryGraphType
+</code></pre></div>
+<!-- l. 152 -->
+
+<h2 class="sectionHead" id="x9-200004.3"><span class="titlemark">4.3   </span> <a></a>Data Manipulation Language</h2>
+<!-- l. 154 --><p class="noindent">The Data Manipulation Language (DML<a id="dx9-20001"></a>) of GQL comprises the data-modifying
+statements <span class="ec-lmtt-12">INSERT</span>, <span class="ec-lmtt-12">SET</span>, <span class="ec-lmtt-12">REMOVE</span>, and <span class="ec-lmtt-12">DELETE</span>, together with procedure calls that
+execute data-modifying procedures. Where the Data Definition Language fixes the
+shape of admissible graphs via graph types and constraints, the DML
+operates on a particular graph instance. The graph named <span class="ec-lmtt-12">libraryGraph</span>
+created above has <span class="ec-lmtt-12">libraryGraphType </span>as its constraining graph type.
+All data-modifying statements act on the current working graph, which
+is selected by a <span class="ec-lmtt-12">USE </span>clause at the beginning of a <span class="ec-lmri-12">linear data-modifying
+</span><span class="ec-lmri-12">statement</span>. The selection of the current working graph by <span class="ec-lmtt-12">USE </span>is formalized in
+<a href="17-catalog-names-and-session-state.html#x30-34900017.2">Section 17.2</a>.
+</p><!-- l. 165 --> <a id="likesection.3"></a><a id="x9-20002x3"></a>
+
+<!-- l. 165 --><p class="noindent"><span class="paragraphHead"><a id="x9-210003"></a><span class="ec-lmbx-12">Populating the graph.</span></span>
+   The following focused linear data-modifying statement inserts exactly the
+                                                                          
+
+                                                                          
+nodes and edges shown in <a href="#x9-180012">Figure 4.2</a> into <span class="ec-lmtt-12">libraryGraph</span>. The <span class="ec-lmtt-12">INSERT</span><a id="dx9-21001"></a> statement
+contains a single <span class="ec-lmri-12">insert graph pattern</span>, written as a collection of insert
+path patterns that share element variables such as <span class="ec-lmtt-12">l</span>, <span class="ec-lmtt-12">a</span>, <span class="ec-lmtt-12">r</span>, <span class="ec-lmtt-12">c</span>, <span class="ec-lmtt-12">b1</span>, and <span class="ec-lmtt-12">b2</span>.
+Each element pattern specifies labels and an initial property set using
+a <span class="ec-lmtt-12">{ property key : value } </span>notation.
+</p>
+<!-- l. 174 --><div class="code-wrap"><span id="x9-21030r29"></span><span id="x9-21029r28"></span><span id="x9-21028r27"></span><span id="x9-21027r26"></span><span id="x9-21026r25"></span><span id="x9-21025r24"></span><span id="x9-21024r23"></span><span id="x9-21023r22"></span><span id="x9-21022r21"></span><span id="x9-21021r20"></span><span id="x9-21020r19"></span><span id="x9-21019r18"></span><span id="x9-21018r17"></span><span id="x9-21017r16"></span><span id="x9-21016r15"></span><span id="x9-21015r14"></span><span id="x9-21014r13"></span><span id="x9-21013r12"></span><span id="x9-21012r11"></span><span id="x9-21011r10"></span><span id="x9-21010r9"></span><span id="x9-21009r8"></span><span id="x9-21008r7"></span><span id="x9-21007r6"></span><span id="x9-21006r5"></span><span id="x9-21005r4"></span><span id="x9-21004r3"></span><span id="x9-21003r2"></span><span id="x9-21002r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+INSERT
+  (l:Loan { loanid: 'L-2025-0001' })-
+  [:CHECK_OUT]-&gt;(a:LibraryAccount {
+    num: 'ACC-1001'
+  }),
+  (l)-[:RETURNS_TO]-&gt;(a),
+  (r:Reader {
+    id: 1,
+    firstname: 'Alice',
+    lastname: 'Brown',
+    birthdate: DATE '1990-05-12'
+  })-[:OWNS]-&gt;(a),
+  (r)-[:USES]-&gt;(c:LibraryCard {
+    num: 'CARD-0001'
+  }),
+  (l)-[:INCLUDES { due_date: DATE '2025-12-01', 
+                   late_fee: 0.0 }]-&gt;(b1:Book {
+    isbn:  '978-83-123...',
+    title: 'Graph DB 101',
+    author: 'J. Smith'
+  }),
+  (l)-[:INCLUDES { due_date: DATE '2025-12-10', 
+                  late_fee: 2.5 }]-&gt;(b2:Book {
+    isbn:  '978-83-987...',
+    title: 'Graph Theory',
+    author: 'M. Johnson'
+  })
+</code></pre></div>
+<!-- l. 205 --><p class="indent">   The first pattern creates a loan node <span class="ec-lmtt-12">l </span>with property <span class="ec-lmtt-12">loanid </span>and connects it,
+via a <span class="ec-lmtt-12">CHECK_OUT </span>edge, to a library account node <span class="ec-lmtt-12">a </span>whose identifier is the account
+                                                                          
+
+                                                                          
+number <span class="ec-lmtt-12">’ACC-1001’</span>. The next two patterns introduce the reader node
+<span class="ec-lmtt-12">r </span>and the library card <span class="ec-lmtt-12">c</span>: <span class="ec-lmtt-12">r </span>is labeled <span class="ec-lmtt-12">:Reader </span>and initialized with the
+personal attributes from the instance figure, and is connected to <span class="ec-lmtt-12">a </span>and <span class="ec-lmtt-12">c</span>
+by <span class="ec-lmtt-12">OWNS </span>and <span class="ec-lmtt-12">USES </span>edges, respectively. The final two patterns create two
+distinct book nodes, <span class="ec-lmtt-12">b1 </span>and <span class="ec-lmtt-12">b2</span>, each labeled <span class="ec-lmtt-12">:Book </span>and equipped with
+its bibliographic properties, and attach them to the loan via <span class="ec-lmtt-12">INCLUDES</span>
+edges. The edge property maps inside the braces specify the due date and
+late fee for each item. Because the schema in <a href="#x9-170011">Figure 4.1</a> is declared as
+a constraining graph type, the evaluation of this statement is required to
+produce a graph that still conforms to <span class="ec-lmtt-12">libraryGraphType</span>: all inserted
+elements must respect the declared element types, labels, and property types.
+The applicable constraints are validated before the statement completes
+successfully. The typing and operational semantics of this insertion are given in
+<a href="14-data-modification.html#x25-23600014.1">Section 14.1</a>.
+</p><!-- l. 224 --> <a id="likesection.4"></a><a id="x9-21031x4"></a>
+
+<!-- l. 224 --><p class="noindent"><span class="paragraphHead"><a id="x9-220004"></a><span class="ec-lmbx-12">Updating properties with </span><span class="ec-lmtk-10x-x-120">SET</span><span class="ec-lmbx-12">.</span></span>
+   Once the graph contains data, the <span class="ec-lmtt-12">SET</span><a id="dx9-22001"></a> statement can be used to change
+properties or labels of existing nodes and edges. In a typical pattern, a <span class="ec-lmtt-12">MATCH</span><a id="dx9-22002"></a>
+statement first binds element variables to the graph elements of interest, and
+a following <span class="ec-lmtt-12">SET </span>statement updates their properties. The two statements together
+form a single linear data-modifying statement over the same working
+graph.
+</p>
+<!-- l. 233 --><div class="code-wrap"><span id="x9-22007r5"></span><span id="x9-22006r4"></span><span id="x9-22005r3"></span><span id="x9-22004r2"></span><span id="x9-22003r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (l:Loan { loanid: 'L-2025-0001' })-[i:INCLUDES]-&gt;(b:Book)
+WHERE b.isbn = '978-83-987...'
+SET   i.late_fee = 0.0
+</code></pre></div>
+<!-- l. 240 --><p class="indent">   Here <span class="ec-lmtt-12">MATCH </span>selects the <span class="ec-lmtt-12">INCLUDES </span>edge <span class="ec-lmtt-12">i </span>connecting loan <span class="ec-lmtt-12">L-2025-0001 </span>to the
+book with the second ISBN. The <span class="ec-lmtt-12">SET </span>statement then assigns a new value to
+<span class="ec-lmtt-12">i.late_fee</span>, clearing the fee for this particular item. Because <span class="ec-lmtt-12">late_fee </span>is
+declared as a <span class="ec-lmtt-12">FLOAT </span>property type of the edge type whose label set is <span class="ec-lmtt-12">:INCLUDES</span>,
+the value <span class="ec-lmtt-12">0.0 </span>is type-correct, and the update is required to preserve graph-type
+                                                                          
+
+                                                                          
+conformance. The read-then-update behavior and write-set semantics of this
+operation are given in <a href="14-data-modification.html#x25-25000014.4">Section 14.4</a>.
+</p><!-- l. 248 --> <a id="likesection.5"></a><a id="x9-22008x5"></a>
+
+<!-- l. 248 --><p class="noindent"><span class="paragraphHead"><a id="x9-230005"></a><span class="ec-lmbx-12">Deleting graph elements.</span></span>
+   Finally, the <span class="ec-lmtt-12">DELETE</span><a id="dx9-23001"></a> statement removes nodes and edges from the working
+graph. When used with the <span class="ec-lmtt-12">DETACH </span>keyword it also removes all edges incident to
+a deleted node. The following example deletes the loan node <span class="ec-lmtt-12">L-2025-0001 </span>and all
+of its incident edges, while leaving the reader, account, card, and book nodes
+intact:
+</p>
+<!-- l. 256 --><div class="code-wrap"><span id="x9-23005r4"></span><span id="x9-23004r3"></span><span id="x9-23003r2"></span><span id="x9-23002r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (l:Loan { loanid: 'L-2025-0001' })
+DETACH DELETE l
+</code></pre></div>
+<!-- l. 262 --><p class="indent">   The <span class="ec-lmtt-12">MATCH</span><a id="dx9-23006"></a> clause binds the variable <span class="ec-lmtt-12">l </span>to the unique loan node with the given
+identifier. The subsequent <span class="ec-lmtt-12">DETACH DELETE</span><a id="dx9-23007"></a> removes that node together with
+every edge attached to it, including the <span class="ec-lmtt-12">CHECK_OUT</span>, <span class="ec-lmtt-12">RETURNS_TO</span>, and
+<span class="ec-lmtt-12">INCLUDES </span>edges shown in <a href="#x9-180012">Figure 4.2</a>. As with insertion and updates,
+the semantics of <span class="ec-lmtt-12">DELETE </span>require that the resulting graph conforms to its
+constraining graph type and that its applicable constraints are satisfied
+before the statement completes successfully. In this example, deleting
+<span class="ec-lmtt-12">l </span>and its incident edges preserves the declared property types and key
+constraints. The formal distinction between plain deletion and <span class="ec-lmtt-12">DETACH
+</span><span class="ec-lmtt-12">DELETE</span>, including the treatment of incident edges, is given in <a href="14-data-modification.html#x25-24200014.2">Sections 14.2</a><a href="16-constraints.html#x28-31600016.2">
+and 16.2</a>.
+</p><!-- l. 273 --><p class="indent">   Taken together, these examples show how GQL’s DML can construct, evolve,
+and clean up concrete library graphs, while the graph type <span class="ec-lmtt-12">libraryGraphType</span>
+and its constraints continue to govern the shape and well-formedness of every
+admissible state.
+</p><!-- l. 278 -->
+
+<h2 class="sectionHead" id="x9-240004.4"><span class="titlemark">4.4   </span> <a></a>Data Query Language</h2>
+<!-- l. 280 --><p class="noindent">The Data Query Language (DQL<a id="dx9-24001"></a>) of GQL provides read-only statements for
+navigating, filtering, and aggregating the data stored in a working graph.
+Syntactically, the examples in this section are instances of <span class="ec-lmri-12">linear query statements</span>
+in the sense of ISO 39075: they start with an optional <span class="ec-lmtt-12">USE </span>clause and then
+apply a sequence of query statements such as <span class="ec-lmtt-12">MATCH</span>, <span class="ec-lmtt-12">LET</span>, and <span class="ec-lmtt-12">FILTER</span>,
+followed by a primitive result statement of the form <span class="ec-lmtt-12">RETURN </span>… optionally
+combined with an <span class="ec-lmtt-12">ORDER BY </span>and <span class="ec-lmtt-12">LIMIT </span>clause. All queries below assume
+that the working graph is the graph <span class="ec-lmtt-12">libraryGraph </span>constrained by the
+graph type <span class="ec-lmtt-12">libraryGraphType </span>introduced earlier. Each query is evaluated
+independently on the initial instance in <a href="#x9-180012">Figure 4.2</a>; the illustrative <span class="ec-lmtt-12">SET </span>and
+<span class="ec-lmtt-12">DELETE </span>statements above are not applied to that instance. Unless an <span class="ec-lmtt-12">ORDER
+</span><span class="ec-lmtt-12">BY </span>clause is present, the displayed row order in the result tables is not
+significant.
+</p><!-- l. 296 --> <a id="likesection.6"></a><a id="x9-24002x6"></a>
+
+<!-- l. 296 --><p class="noindent"><span class="paragraphHead"><a id="x9-250006"></a><span class="ec-lmbx-12">Simple Rigid Pattern.</span></span>
+   A simple rigid pattern is a fixed arrangement of node and edge patterns
+without any path quantifiers or alternation. Such a pattern describes
+a specific configuration—a small neighborhood—that queries attempt
+to match exactly. In the library example, we might want to retrieve all
+items whose due date precedes a chosen reference date, together with the
+reader who borrowed them and the account through which the loan was
+recorded:
+</p>
+<!-- l. 307 --><div class="code-wrap"><span id="x9-25012r12"></span><span id="x9-25011r11"></span><span id="x9-25010r10"></span><span id="x9-25009r9"></span><span id="x9-25008r8"></span><span id="x9-25007r7"></span><span id="x9-25006r6"></span><span id="x9-25005r5"></span><span id="x9-25004r4"></span><span id="x9-25003r3"></span><span id="x9-25002r2"></span><span id="x9-25001r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (r:Reader)-[:OWNS]-&gt;(a:LibraryAccount),
+      (r)-[:USES]-&gt;(c:LibraryCard),
+      (l:Loan)-[i:INCLUDES]-&gt;(b:Book),
+      (l)-[:CHECK_OUT]-&gt;(a)
+WHERE i.due_date &lt; DATE '2025-12-31'
+RETURN r.firstname AS firstname,
+       r.lastname  AS lastname,
+       b.title     AS title,
+       i.due_date  AS due_date,
+       i.late_fee  AS late_fee
+</code></pre></div>
+<div class="example-result"><p class="caption">Expected result for the instance in <a href="#x9-180012">Figure 4.2</a>:</p>
+<!-- tex4ht:inline --><div class="tabular">
+<div class="table-scroll"><table class="tabular" id="TBL-1"><colgroup id="TBL-1-1g"><col id="TBL-1-1"/><col id="TBL-1-2"/><col id="TBL-1-3"/><col id="TBL-1-4"/><col id="TBL-1-5"/></colgroup><tr id="TBL-1-1-" style="vertical-align:baseline;"><td class="td01" id="TBL-1-1-1" style="text-align:left; white-space:nowrap;"><span class="ec-lmtt-12">firstname </span></td><td class="td11" id="TBL-1-1-2" style="text-align:left; white-space:nowrap;"> <span class="ec-lmtt-12">lastname </span></td><td class="td11" id="TBL-1-1-3" style="text-align:left; white-space:nowrap;"> <span class="ec-lmtt-12">title        </span></td><td class="td11" id="TBL-1-1-4" style="text-align:left; white-space:nowrap;"> <span class="ec-lmtt-12">due_date  </span></td><td class="td10" id="TBL-1-1-5" style="text-align:right; white-space:nowrap;"> <span class="ec-lmtt-12">late_fee</span></td>
+</tr><tr id="TBL-1-2-" style="vertical-align:baseline;"><td class="td01" id="TBL-1-2-1" style="text-align:left; white-space:nowrap;">Alice          </td><td class="td11" id="TBL-1-2-2" style="text-align:left; white-space:nowrap;"> Brown      </td><td class="td11" id="TBL-1-2-3" style="text-align:left; white-space:nowrap;"> Graph DB 101  </td><td class="td11" id="TBL-1-2-4" style="text-align:left; white-space:nowrap;"> 2025-12-01  </td><td class="td10" id="TBL-1-2-5" style="text-align:right; white-space:nowrap;">       0.0</td>
+</tr><tr id="TBL-1-3-" style="vertical-align:baseline;"><td class="td01" id="TBL-1-3-1" style="text-align:left; white-space:nowrap;">Alice          </td><td class="td11" id="TBL-1-3-2" style="text-align:left; white-space:nowrap;"> Brown      </td><td class="td11" id="TBL-1-3-3" style="text-align:left; white-space:nowrap;"> Graph Theory  </td><td class="td11" id="TBL-1-3-4" style="text-align:left; white-space:nowrap;"> 2025-12-10  </td><td class="td10" id="TBL-1-3-5" style="text-align:right; white-space:nowrap;">       2.5</td>
+</tr></table></div></div></div>
+<!-- l. 331 --><p class="indent">   The <span class="ec-lmtt-12">MATCH</span><a id="dx9-25013"></a> statement here consists of a graph pattern with four path
+patterns, separated by commas, that all share variables. The reader <span class="ec-lmtt-12">r </span>is
+connected to a library account <span class="ec-lmtt-12">a </span>via an <span class="ec-lmtt-12">OWNS </span>edge and to a library card
+<span class="ec-lmtt-12">c </span>via a <span class="ec-lmtt-12">USES </span>edge. A loan <span class="ec-lmtt-12">l </span>is connected by <span class="ec-lmtt-12">CHECK_OUT </span>to the same
+account <span class="ec-lmtt-12">a </span>and <span class="ec-lmtt-12">INCLUDES </span>a book <span class="ec-lmtt-12">b </span>via an edge <span class="ec-lmtt-12">i</span>. The <span class="ec-lmtt-12">WHERE</span><a id="dx9-25014"></a> clause of the
+graph pattern restricts attention to those <span class="ec-lmtt-12">INCLUDES </span>edges whose <span class="ec-lmtt-12">due_date</span>
+precedes the given calendar date. The <span class="ec-lmtt-12">RETURN</span><a id="dx9-25015"></a> clause then projects a binding
+table whose columns correspond to the reader’s name, the title of the
+borrowed book, and the due date and late fee carried as edge properties
+on <span class="ec-lmtt-12">i</span>. Because the pattern does not contain any path quantifiers, each
+solution row corresponds exactly to one concrete instance of this rigid
+configuration in the graph. The formal definitions of graph patterns, matching,
+binding-table formation, and result projection are given in <a href="07-patterns-and-matching.html#x13-660007.1">Sections 7.1</a>, 7.4 to 7.6<a href="12-grouping-and-aggregation.html#x22-20900012.3">
+and 12.3</a>.
+</p><!-- l. 347 --><p class="indent">   Simple rigid patterns can be enriched with intermediate derived values using
+<span class="ec-lmtt-12">LET</span><a id="dx9-25016"></a> and subsequently filtered with <span class="ec-lmtt-12">FILTER</span><a id="dx9-25017"></a>. The next query looks for loans that
+contain both of the two example books and computes the total late fee incurred
+across those two items:
+</p>
+<!-- l. 352 --><div class="code-wrap"><span id="x9-25027r10"></span><span id="x9-25026r9"></span><span id="x9-25025r8"></span><span id="x9-25024r7"></span><span id="x9-25023r6"></span><span id="x9-25022r5"></span><span id="x9-25021r4"></span><span id="x9-25020r3"></span><span id="x9-25019r2"></span><span id="x9-25018r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (l:Loan)-[i1:INCLUDES]-&gt;(b1:Book),
+      (l)-[i2:INCLUDES]-&gt;(b2:Book)
+WHERE b1.isbn = '978-83-123...'
+  AND b2.isbn = '978-83-987...'
+LET  total_late_fee = i1.late_fee + i2.late_fee
+FILTER WHERE total_late_fee &gt; 0.0
+RETURN l.loanid       AS loanid,
+       total_late_fee AS totalLateFee
+</code></pre></div>
+<div class="example-result"><p class="caption">Expected result for the instance in <a href="#x9-180012">Figure 4.2</a>:</p>
+<!-- tex4ht:inline --><div class="tabular">
+<div class="table-scroll"><table class="tabular" id="TBL-2"><colgroup id="TBL-2-1g"><col id="TBL-2-1"/><col id="TBL-2-2"/></colgroup><tr id="TBL-2-1-" style="vertical-align:baseline;"><td class="td01" id="TBL-2-1-1" style="text-align:left; white-space:nowrap;"><span class="ec-lmtt-12">loanid    </span></td><td class="td10" id="TBL-2-1-2" style="text-align:right; white-space:nowrap;"> <span class="ec-lmtt-12">totalLateFee</span></td>
+</tr><tr id="TBL-2-2-" style="vertical-align:baseline;"><td class="td01" id="TBL-2-2-1" style="text-align:left; white-space:nowrap;">L-2025-0001  </td><td class="td10" id="TBL-2-2-2" style="text-align:right; white-space:nowrap;">           2.5</td>
+</tr></table></div></div></div>
+<!-- l. 373 --><p class="indent">   The graph pattern selects pairs of <span class="ec-lmtt-12">INCLUDES </span>edges <span class="ec-lmtt-12">i1 </span>and <span class="ec-lmtt-12">i2 </span>that originate
+from the same loan <span class="ec-lmtt-12">l </span>but point to different books <span class="ec-lmtt-12">b1 </span>and <span class="ec-lmtt-12">b2 </span>with the specified
+ISBN values. The <span class="ec-lmtt-12">LET </span>statement introduces a value variable <span class="ec-lmtt-12">total_late_fee</span>
+computed by adding the two edge-local late fee amounts. The <span class="ec-lmtt-12">FILTER </span>statement
+then retains only those bindings for which the derived total is strictly positive.
+Here, the <span class="ec-lmtt-12">WHERE </span>clause is part of the graph pattern and restricts that pattern’s
+matches. By contrast, <span class="ec-lmtt-12">FILTER [WHERE] </span>is a separate simple query statement
+that filters the current working table and can use bindings introduced by
+preceding statements, such as <span class="ec-lmtt-12">LET</span>. The final <span class="ec-lmtt-12">RETURN </span>projects the loan
+identifier and the computed <span class="ec-lmtt-12">totalLateFee</span>, illustrating how rigid patterns,
+local arithmetic, and binding-table filters combine within a single linear
+query. The corresponding selection and projection operations, including the
+three-valued interpretation of filtering predicates, are formalized in <a href="08-expressions-and-evaluation.html#x15-1190008.3">Sections 8.3</a><a href="09-algebra-of-binding-tables.html#x16-1310009.1">
+and 9.1</a>.
+</p><!-- l. 388 --> <a id="likesection.7"></a><a id="x9-25028x7"></a>
+
+<!-- l. 388 --><p class="noindent"><span class="paragraphHead"><a id="x9-260007"></a><span class="ec-lmbx-12">Conjunctive Regular Path Queries.</span></span>
+   Conjunctive Regular Path Queries (CRPQs<a id="dx9-26001"></a>) extend simple patterns by
+allowing conjunctions of multiple path patterns that share variables. In logical
+terms, a CRPQ describes several paths through the graph that must be
+simultaneously present and must meet joint constraints on shared endpoints or
+intermediate nodes. Even without explicit path quantifiers, the library domain
+already exhibits meaningful CRPQs.
+</p><!-- l. 398 --><p class="indent">   Consider the task of finding pairs of readers who have, possibly at different
+times, borrowed the very same book. We are interested in such co-borrowers of
+the same book instance, but we want to list each unordered pair only
+once:
+</p>
+<!-- l. 403 --><div class="code-wrap"><span id="x9-26015r14"></span><span id="x9-26014r13"></span><span id="x9-26013r12"></span><span id="x9-26012r11"></span><span id="x9-26011r10"></span><span id="x9-26010r9"></span><span id="x9-26009r8"></span><span id="x9-26008r7"></span><span id="x9-26007r6"></span><span id="x9-26006r5"></span><span id="x9-26005r4"></span><span id="x9-26004r3"></span><span id="x9-26003r2"></span><span id="x9-26002r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (r1:Reader)-[:OWNS]-&gt;(a1:LibraryAccount),
+      (r2:Reader)-[:OWNS]-&gt;(a2:LibraryAccount),
+      (l1:Loan)-[:CHECK_OUT]-&gt;(a1),
+      (l2:Loan)-[:CHECK_OUT]-&gt;(a2),
+      (l1)-[:INCLUDES]-&gt;(b:Book),
+      (l2)-[:INCLUDES]-&gt;(b)
+WHERE r1.id &lt; r2.id
+RETURN DISTINCT r1.firstname AS reader1_firstname,
+       r1.lastname  AS reader1_lastname,
+       r2.firstname AS reader2_firstname,
+       r2.lastname  AS reader2_lastname,
+       b.title      AS common_title
+</code></pre></div>
+<div class="example-result"><p class="caption">Expected result for the instance in <a href="#x9-180012">Figure 4.2</a>:</p>
+<!-- tex4ht:inline --><div class="tabular">
+<div class="table-scroll"><table class="tabular" id="TBL-3"><colgroup id="TBL-3-1g"><col id="TBL-3-1"/><col id="TBL-3-2"/></colgroup><tr id="TBL-3-1-" style="vertical-align:baseline;"><td class="td01" id="TBL-3-1-1" style="text-align:left; white-space:nowrap;">Result                   </td><td class="td10" id="TBL-3-1-2" style="text-align:right; white-space:nowrap;"> Rows</td>
+</tr><tr id="TBL-3-2-" style="vertical-align:baseline;"><td class="td01" id="TBL-3-2-1" style="text-align:left; white-space:nowrap;">Empty binding table  </td><td class="td10" id="TBL-3-2-2" style="text-align:right; white-space:nowrap;">    0</td>
+</tr></table></div></div></div>
+<!-- l. 428 --><p class="indent">   This query consists of several path patterns that are conjoined by commas into
+a single graph pattern. Two readers <span class="ec-lmtt-12">r1 </span>and <span class="ec-lmtt-12">r2 </span>own accounts <span class="ec-lmtt-12">a1 </span>and <span class="ec-lmtt-12">a2</span>,
+respectively. Each account has at least one loan (<span class="ec-lmtt-12">l1 </span>or <span class="ec-lmtt-12">l2</span>) that checks out that
+account, and each of those loans includes the same book node <span class="ec-lmtt-12">b</span>. The
+shared variable <span class="ec-lmtt-12">b </span>enforces that the two paths meet at a common book,
+which is exactly the kind of join between paths that CRPQs support. The
+inequality predicate <span class="ec-lmtt-12">r1.id &lt; r2.id </span>in the <span class="ec-lmtt-12">WHERE </span>clause removes the second
+ordering of each reader pair. <span class="ec-lmtt-12">RETURN DISTINCT </span>also coalesces duplicate
+projected rows that can arise from multiple matching loans or parallel
+matches, so each projected reader-pair and title combination is reported once.
+The <span class="ec-lmtt-12">RETURN </span>clause surfaces both readers’ names and the shared book
+title.
+</p><!-- l. 443 --><p class="indent">   In full generality, regular path patterns in GQL can also use path quantifiers
+and alternation to describe arbitrarily long routes through the graph.
+The present example already illustrates the key idea of CRPQs: multiple
+path patterns, possibly of different lengths, are matched jointly, with
+constraints expressed over the shared nodes and edges. The joint matching of
+path-pattern components through shared variables is formalized in <a href="07-patterns-and-matching.html#x13-660007.1">Sections 7.1</a><a href="07-patterns-and-matching.html#x13-870007.4">
+                                                                          
+
+                                                                          
+and 7.4</a>.
+</p><!-- l. 449 --> <a id="likesection.8"></a><a id="x9-26016x8"></a>
+
+<!-- l. 449 --><p class="noindent"><span class="paragraphHead"><a id="x9-270008"></a><span class="ec-lmbx-12">Linear Composition.</span></span>
+   Linear composition refers to the way in which a GQL query can be built as
+a sequence of simple query statements that gradually transform the current
+working table. Each step—a <span class="ec-lmtt-12">MATCH</span>, <span class="ec-lmtt-12">LET</span>, or <span class="ec-lmtt-12">FILTER </span>statement—takes the
+bindings produced so far, extends them with new variables, or discards those that
+fail a predicate. The final step is a primitive result statement that projects and
+optionally orders or pages the result.
+</p><!-- l. 460 --><p class="indent">   The following query finds all books borrowed by a reader with the last name
+<span class="ec-lmtt-12">’Brown’</span>, restricts attention to items whose due date precedes a reference date,
+and orders the result by due date:
+</p>
+<!-- l. 464 --><div class="code-wrap"><span id="x9-27011r11"></span><span id="x9-27010r10"></span><span id="x9-27009r9"></span><span id="x9-27008r8"></span><span id="x9-27007r7"></span><span id="x9-27006r6"></span><span id="x9-27005r5"></span><span id="x9-27004r4"></span><span id="x9-27003r3"></span><span id="x9-27002r2"></span><span id="x9-27001r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (r:Reader)-[:OWNS]-&gt;(a:LibraryAccount)
+WHERE r.lastname = 'Brown'
+MATCH (a)&lt;-[:CHECK_OUT]-(l:Loan)-[i:INCLUDES]-&gt;(b:Book)
+FILTER WHERE i.due_date &lt; DATE '2025-12-31'
+RETURN l.loanid   AS loanid,
+       b.title    AS title,
+       i.due_date AS due_date,
+       i.late_fee AS late_fee
+ORDER BY due_date
+</code></pre></div>
+<div class="example-result"><p class="caption">Expected result for the instance in <a href="#x9-180012">Figure 4.2</a>:</p>
+<!-- tex4ht:inline --><div class="tabular">
+<div class="table-scroll"><table class="tabular" id="TBL-4"><colgroup id="TBL-4-1g"><col id="TBL-4-1"/><col id="TBL-4-2"/><col id="TBL-4-3"/><col id="TBL-4-4"/></colgroup><tr id="TBL-4-1-" style="vertical-align:baseline;"><td class="td01" id="TBL-4-1-1" style="text-align:left; white-space:nowrap;"><span class="ec-lmtt-12">loanid    </span></td><td class="td11" id="TBL-4-1-2" style="text-align:left; white-space:nowrap;"> <span class="ec-lmtt-12">title        </span></td><td class="td11" id="TBL-4-1-3" style="text-align:left; white-space:nowrap;"> <span class="ec-lmtt-12">due_date  </span></td><td class="td10" id="TBL-4-1-4" style="text-align:right; white-space:nowrap;"> <span class="ec-lmtt-12">late_fee</span></td>
+</tr><tr id="TBL-4-2-" style="vertical-align:baseline;"><td class="td01" id="TBL-4-2-1" style="text-align:left; white-space:nowrap;">L-2025-0001  </td><td class="td11" id="TBL-4-2-2" style="text-align:left; white-space:nowrap;"> Graph DB 101  </td><td class="td11" id="TBL-4-2-3" style="text-align:left; white-space:nowrap;"> 2025-12-01  </td><td class="td10" id="TBL-4-2-4" style="text-align:right; white-space:nowrap;">       0.0</td>
+</tr><tr id="TBL-4-3-" style="vertical-align:baseline;"><td class="td01" id="TBL-4-3-1" style="text-align:left; white-space:nowrap;">L-2025-0001  </td><td class="td11" id="TBL-4-3-2" style="text-align:left; white-space:nowrap;"> Graph Theory  </td><td class="td11" id="TBL-4-3-3" style="text-align:left; white-space:nowrap;"> 2025-12-10  </td><td class="td10" id="TBL-4-3-4" style="text-align:right; white-space:nowrap;">       2.5</td>
+</tr></table></div></div></div>
+<!-- l. 487 --><p class="indent">   The first <span class="ec-lmtt-12">MATCH </span>and its <span class="ec-lmtt-12">WHERE </span>clause define the initial binding table: each row
+binds <span class="ec-lmtt-12">r </span>and <span class="ec-lmtt-12">a </span>to a reader with last name <span class="ec-lmtt-12">’Brown’ </span>and one of their accounts. The
+second <span class="ec-lmtt-12">MATCH </span>uses these bindings as input and extends each row with a loan <span class="ec-lmtt-12">l</span>,
+an <span class="ec-lmtt-12">INCLUDES </span>edge <span class="ec-lmtt-12">i</span>, and a book <span class="ec-lmtt-12">b </span>that form the following fixed path:
+                                                                          
+
+                                                                          
+</p>
+<div class="center">
+<!-- l. 493 -->
+<!-- l. 494 --><p class="noindent"><span class="ec-lmtt-12">(a)&lt;-[:CHECK_OUT]-(l)-[:INCLUDES]-&gt;(b)</span></p></div>
+<!-- l. 496 --><p class="noindent">The <span class="ec-lmtt-12">FILTER </span>statement then prunes those rows where <span class="ec-lmtt-12">i.due_date </span>is not before the
+given reference date. Finally, the <span class="ec-lmtt-12">RETURN </span>projects a smaller record—loan
+identifier, book title, due date, and late fee—and the trailing <span class="ec-lmtt-12">ORDER BY </span>clause
+orders the resulting binding table by the due date column. This example shows
+how successive <span class="ec-lmtt-12">MATCH </span>and <span class="ec-lmtt-12">FILTER </span>statements can replace the kind of
+pipeline-oriented <span class="ec-lmtt-12">WITH </span>clause found in other graph query languages, while
+remaining within the linear composition framework defined by the standard. The
+formal treatment of successive <span class="ec-lmtt-12">MATCH </span>operations and whole-query pipeline
+composition is given in <a href="07-patterns-and-matching.html#x13-940007.6">Sections 7.6</a><a href="09-algebra-of-binding-tables.html#x16-1540009.5">, 9.5</a><a href="12-grouping-and-aggregation.html#x22-20900012.3"> and 12.3</a>.
+</p><!-- l. 506 --> <a id="likesection.9"></a><a id="x9-27012x9"></a>
+
+<!-- l. 506 --><p class="noindent"><span class="paragraphHead"><a id="x9-280009"></a><span class="ec-lmbx-12">Order, Limit, and Aggregation.</span></span>
+   Aggregation, ordering, and pagination complete the picture by allowing queries
+to summarize larger result sets and to return just the most relevant rows. In GQL,
+aggregation is expressed via aggregate functions such as <span class="ec-lmtt-12">SUM </span>and <span class="ec-lmtt-12">COUNT</span>, and is
+combined with a <span class="ec-lmtt-12">GROUP BY</span><a id="dx9-28001"></a> clause inside the <span class="ec-lmtt-12">RETURN </span>statement body. Ordering
+and limiting are provided by an <span class="ec-lmtt-12">ORDER BY</span><a id="dx9-28002"></a> and <span class="ec-lmtt-12">LIMIT</span><a id="dx9-28003"></a> clause, which together form
+the <!-- l. 514 --><span class="inline-math-scroll"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="textit" mathvariant="italic">order by and page statement</mtext></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math></span>
+attached to the <span class="ec-lmtt-12">RETURN</span>.
+</p><!-- l. 517 --><p class="indent">   The next query computes, for each author, the total late fees incurred on loans
+of their books, and then returns the ten authors with the highest total late
+fee:
+</p>
+<!-- l. 521 --><div class="code-wrap"><span id="x9-28012r9"></span><span id="x9-28011r8"></span><span id="x9-28010r7"></span><span id="x9-28009r6"></span><span id="x9-28008r5"></span><span id="x9-28007r4"></span><span id="x9-28006r3"></span><span id="x9-28005r2"></span><span id="x9-28004r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (l:Loan)-[i:INCLUDES]-&gt;(b:Book)
+LET   authorName = b.author
+RETURN authorName           AS author,
+       SUM(i.late_fee)      AS total_late_fee
+GROUP BY author
+ORDER BY total_late_fee DESC
+LIMIT 10
+</code></pre></div>
+<div class="example-result"><p class="caption">Expected result for the instance in <a href="#x9-180012">Figure 4.2</a>:</p>
+<!-- tex4ht:inline --><div class="tabular">
+<div class="table-scroll"><table class="tabular" id="TBL-5"><colgroup id="TBL-5-1g"><col id="TBL-5-1"/><col id="TBL-5-2"/></colgroup><tr id="TBL-5-1-" style="vertical-align:baseline;"><td class="td01" id="TBL-5-1-1" style="text-align:left; white-space:nowrap;"><span class="ec-lmtt-12">author    </span></td><td class="td10" id="TBL-5-1-2" style="text-align:right; white-space:nowrap;"> <span class="ec-lmtt-12">total_late_fee</span></td>
+</tr><tr id="TBL-5-2-" style="vertical-align:baseline;"><td class="td01" id="TBL-5-2-1" style="text-align:left; white-space:nowrap;">M. Johnson  </td><td class="td10" id="TBL-5-2-2" style="text-align:right; white-space:nowrap;">             2.5</td>
+</tr><tr id="TBL-5-3-" style="vertical-align:baseline;"><td class="td01" id="TBL-5-3-1" style="text-align:left; white-space:nowrap;">J. Smith      </td><td class="td10" id="TBL-5-3-2" style="text-align:right; white-space:nowrap;">             0.0</td>
+</tr></table></div></div></div>
+<!-- l. 542 --><p class="indent">   The <span class="ec-lmtt-12">MATCH </span>statement produces bindings of loans, <span class="ec-lmtt-12">INCLUDES </span>edges, and books.
+The <span class="ec-lmtt-12">LET </span>statement then introduces a value variable <span class="ec-lmtt-12">authorName </span>that extracts the
+<span class="ec-lmtt-12">author </span>property of each matched book. Inside the <span class="ec-lmtt-12">RETURN </span>statement, the <span class="ec-lmtt-12">GROUP
+</span><span class="ec-lmtt-12">BY </span>clause groups the current working table by the return-item alias <span class="ec-lmtt-12">author</span>, and
+the aggregate function <span class="ec-lmtt-12">SUM(i.late_fee) </span>computes, for each such group, the total
+amount of late fees associated with that author’s books. The two return items are
+projected under the aliases <span class="ec-lmtt-12">author </span>and <span class="ec-lmtt-12">total_late_fee</span>; these aliases become
+columns of the outgoing binding table. The trailing <span class="ec-lmtt-12">ORDER BY</span>–<span class="ec-lmtt-12">LIMIT</span>
+combination forms an order-by-and-page statement: it sorts the grouped rows in
+descending order of <span class="ec-lmtt-12">total_late_fee </span>and retains only the first ten records. The
+overall linear query statement thus exemplifies how grouping, ordering, and
+pagination interact in a way that is faithful to the formal semantics of
+<span class="ec-lmtt-12">RETURN</span>, <span class="ec-lmtt-12">GROUP BY</span>, and the order-by-and-page statement in the GQL
+standard. The formal semantics of grouping, aggregate evaluation, result
+formation, ordering, and limiting is given in <a href="12-grouping-and-aggregation.html#x22-20000012.1">Sections 12.1</a><a href="12-grouping-and-aggregation.html#x22-20900012.3">, 12.3</a><a href="13-ordering-and-pagination.html#x23-21500013.1">, 13.1</a><a href="13-ordering-and-pagination.html#x23-22100013.3">
+and 13.3</a>.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 4 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Demonstrated GQL end-to-end on a self-contained running
+      example to ground later formalization.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:      </span>A library-domain       example       schema       and
+      dataset; representative DDL, DML, and query idioms used throughout
+                                                                          
+
+                                                                          
+      the book; a consistent narrative for graph creation, population, and
+      querying.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key   distinctions:  </span>Schema   specification   versus   instance   data;
+      schema-level edge types versus the labels and properties of individual
+      edge instances.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Made  concrete  what  the  later  semantics  had  to
+      explain (bindings, nulls, multiplicities, paths, updates); fixed a shared
+      vocabulary of constructs; established realistic expectations about how
+      users compose graph workloads.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Motivated the need to freeze an abstract data model as the
+      reference point for all subsequent semantics.</li></ul>
+</aside>
+<!-- l. 267 -->
+<!-- l. 267 --> <a id="tailtestch4.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="03-positioning.html"><small>← Previous</small>Positioning</a><a rel="next" href="part-02-core-model-and-patterns.html"><small>Next →</small>Core Model and Patterns</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x9-160004.1">4.1 Visual Representation</a><a href="#x9-190004.2">4.2 Data Definition Language</a><a href="#x9-200004.3">4.3 Data Manipulation Language</a><a href="#x9-240004.4">4.4 Data Query Language</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

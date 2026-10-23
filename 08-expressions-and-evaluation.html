@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Expressions and Evaluation — GQL Essentials, by Dominik Tomaszuk.">
+<title>Expressions and Evaluation · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part" open><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html" aria-current="page"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Expressions and Evaluation</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Expressions and Algebra</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x15-1130008"><span class="chapter-number">Chapter 08</span><a></a>Expressions and Evaluation</h1>
+<!-- l. 3 --><p class="noindent">This chapter specifies how GQL expressions are typed and evaluated with respect
+to the current database state (store state) and the relevant environments. It
+makes explicit the interaction between value domains, implicit casts, errors, and
+three-valued logic, and clarifies how nulls affect the outcome of expression
+evaluation.
+</p>
+<h2 class="sectionHead" id="x15-1140008.1"><span class="titlemark">8.1   </span> <a></a>Expression Domains</h2>
+<!-- l. 7 --><p class="noindent">Let <!-- l. 7 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>
+denote the <span class="ec-lmri-12">store state</span><a id="dx15-114001"></a>. A <span class="ec-lmri-12">row environment </span>for evaluating expressions in the context of
+a record <!-- l. 8 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>
+is a partial mapping </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 9 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <mi>𝔸</mi> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>with</mtext></mstyle><mspace class="quad" width="1em"></mspace><msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>r</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext>for all</mtext></mstyle><mspace class="nbsp" width="0.33em"></mspace><mi>n</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 14 --><p class="indent">   and undefined for <!-- l. 14 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo class="MathClass-rel">∉</mo><mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+A <span class="ec-lmri-12">global environment </span><!-- l. 15 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>η</mi></mrow><mrow><mi>g</mi></mrow></msub></mrow></math>
+binds constants (catalog objects, procedures, named
+graphs, types, etc.). An <span class="ec-lmri-12">evaluation environment </span>is the pair
+<!-- l. 17 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>.
+</p><!-- l. 19 -->
+
+<h2 class="sectionHead" id="x15-1150008.2"><span class="titlemark">8.2   </span> <a></a>Typing and Evaluation</h2>
+<!-- l. 20 --><p class="noindent"><span class="paragraphHead"><a id="x15-1160008.2"></a><span class="ec-lmbx-12">Typing</span><a id="dx15-116001"></a> <span class="ec-lmbx-12">and casting</span><a id="dx15-116002"></a><span class="ec-lmbx-12">.</span></span>
+   Let <!-- l. 21 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⊢</mo> <mi>E</mi> <mo class="MathClass-punc">:</mo> <mi>τ</mi></mrow></math>
+denote the statically derived typing judgment that expression
+<!-- l. 21 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math> has type
+<!-- l. 21 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕋</mi></mrow></math>. A (partial) implicit
+cast relation <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⇝</mo><mo class="MathClass-rel">⊆</mo> <mi>𝕋</mi> <mo class="MathClass-bin">×</mo> <mi>𝕋</mi></mrow></math> determines
+where a value of type <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>
+may be coerced to <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>τ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> at
+use sites (e.g., integer <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⇝</mo></mrow></math>
+decimal). We write <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-punc">:</mo> <mi>τ</mi> <mo class="MathClass-rel">⇝</mo> <msup><mrow><mi>τ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+when the coerced value exists.
+</p>
+<!-- l. 24 --><p class="noindent"><span class="paragraphHead"><a id="x15-1170008.2"></a><span class="ec-lmbx-12">Evaluation judgment.</span></span>
+<a id="dx15-117001"></a>
+   Using the abstract error carrier <!-- l. 25 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Err</mi></mrow></mstyle></mrow></math>
+declared in <a href="06-data-model.html#x12-510006">Chapter 6</a>, whose tokens include, for example, division-by-zero,
+type-mismatch, and overflow, we write </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 28 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mspace class="thickpace" width="0.28em"></mspace><mo class="MathClass-rel">⊢</mo><mspace class="thickpace" width="0.28em"></mspace><mi>E</mi><mspace class="thickpace" width="0.28em"></mspace> <mi>⇓</mi><mspace class="thickpace" width="0.28em"></mspace><mi>u</mi>
+</mrow></math></td></tr></table></div>
+<!-- l. 31 --><p class="indent">   where <!-- l. 31 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi> <mo class="MathClass-bin">∪</mo><mstyle mathvariant="sans-serif"><mrow><mi>Err</mi></mrow></mstyle></mrow></math>. Evaluation
+is total into <!-- l. 31 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math> but may
+yield errors (note that <!-- l. 31 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi></mrow></math>).
+When <!-- l. 32 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math> is a record,
+<!-- l. 32 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub></mrow></math> is the row environment
+                                                                          
+
+                                                                          
+induced by <!-- l. 32 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>,
+and <!-- l. 33 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>g</mi></mrow></msub></mrow></math>
+are fixed by the surrounding context, we use the abbreviation </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 35 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦E⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>u</mi><mspace class="quad" width="1em"></mspace><mo class="MathClass-rel">⇔</mo><mspace class="quad" width="1em"></mspace><mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-rel">⊢</mo> <mi>E</mi> <mi>⇓</mi> <mi>u</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 40 --><p class="indent">   For a Boolean expression <!-- l. 40 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi></mrow></math>,
+<!-- l. 41 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦φ</mi><msup><mrow><mi>⟧</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msup><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> denotes the
+corresponding member of <!-- l. 42 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝔹</mi></mrow><mrow><mn>3</mn></mrow></msub></mrow></math>,
+or an element of <!-- l. 42 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Err</mi></mrow></mstyle></mrow></math>,
+under the same convention.
+</p>
+<!-- l. 45 --><p class="noindent"><span class="paragraphHead"><a id="x15-1180008.2"></a><span class="ec-lmbx-12">Evaluation order.</span></span>
+<a id="dx15-118001"></a>
+   ISO/IEC 39075 specifies expression results through the
+General Rules but does not classify built-in functions as
+<!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>pure</mi></mrow></mstyle></mrow></math>,
+<!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>stable</mi></mrow></mstyle></mrow></math>, or
+<!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>volatile</mi></mrow></mstyle></mrow></math>.
+Unless precedence, parentheses, or a specific General Rule determines otherwise,
+effective evaluation is generally from left to right; whether expressions are actually
+evaluated in that order is implementation-dependent, particularly when an
+operand can raise a condition or when the result can be obtained without
+evaluating every part. Consequently, no stronger repeatability or evaluation-order
+guarantee is assumed here than the guarantee stated for the particular expression
+in the standard.
+                                                                          
+
+                                                                          
+</p><!-- l. 56 -->
+
+<h2 class="sectionHead" id="x15-1190008.3"><span class="titlemark">8.3   </span> <a></a>Truth Values and <span class="ec-lmtt-12">NULL</span></h2>
+<a id="dx15-119001"></a>
+<a id="dx15-119002"></a>
+<!-- l. 58 --><p class="noindent"><span class="paragraphHead"><a id="x15-1200008.3"></a><span class="ec-lmbx-12">Three-valued logic</span><a id="dx15-120001"></a><span class="ec-lmbx-12">.</span></span>
+   Boolean contexts range over the three-valued domain fixed in <a href="06-data-model.html#x12-520006.1">Section 6.1</a>,
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 61 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>𝔹</mi></mrow><mrow><mn>3</mn></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">⊥</mo><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 64 --><p class="indent">   read as <span class="ec-lmri-12">true</span>, <span class="ec-lmri-12">false</span>, and <span class="ec-lmri-12">unknown</span>, respectively. The connective tables follow
+Kleene’s strong three-valued logic; for example: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 66 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mi class="MathClass-op">¬</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-bin">∧</mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mo class="MathClass-rel">⊥</mo><mo class="MathClass-bin">∧</mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-rel">⊥</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mstyle class="text"><mtext>etc.</mtext></mstyle></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 74 --><p class="indent">   In concrete GQL, the abstract truth values
+<!-- l. 74 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math> and
+<!-- l. 74 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mo class="MathClass-rel">⊥</mo></math>
+correspond to the Boolean constants <span class="ec-lmtt-12">TRUE </span>and <span class="ec-lmtt-12">FALSE</span>, and
+<!-- l. 76 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></math> is
+represented by the Boolean <span class="ec-lmri-12">null </span>value, as specified in the standard; here,
+<!-- l. 77 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>𝔹</mi></mrow><mrow><mn>3</mn></mrow></msub></math> is
+used as an abstract carrier for the three-valued semantics. A comparison
+<!-- l. 79 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mspace class="nbsp" width="0.33em"></mspace><mi>𝜃</mi><mspace class="nbsp" width="0.33em"></mspace><mi>y</mi></mrow></math>
+(<!-- l. 79 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mo class="MathClass-rel">=</mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">≠</mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">&lt;</mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">≤</mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">&gt;</mo><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">≥</mo><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>) evaluates
+to <!-- l. 80 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math> if either
+operand is <!-- l. 80 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+Predicates such as <span class="ec-lmtt-12">IS NULL </span>and <span class="ec-lmtt-12">IS NOT NULL </span>are two-valued (they never yield
+<!-- l. 82 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></math>).
+</p>
+<!-- l. 84 --><p class="noindent"><span class="paragraphHead"><a id="x15-1210008.3"></a><span class="ec-lmbx-12">Example (a library evaluation judgment).</span></span>
+   Let <!-- l. 86 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="italic"><mrow><mi>er</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi></mrow></math>
+denote an edge reference value whose referent is the second <span class="ec-lmtt-12">INCLUDES </span>edge
+<!-- l. 88 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub></mrow></math>. Let
+the current row bind that reference: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 89 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="italic"><mrow><mi>er</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>e</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mn>2</mn><mo class="MathClass-punc">.</mo><mn>5</mn><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 93 --><p class="indent">   For the library store state <!-- l. 93 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mrow></math>,
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 94 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-rel">⊢</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.late_fee &gt; 0.0</mtext></mstyle> <mi>⇓</mi><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 99 --><p class="noindent"><span class="paragraphHead"><a id="x15-1220008.3"></a><span class="ec-lmbx-12">Ordering and sorting.</span></span>
+   For each base type whose values admit ordering, let
+<!-- l. 100 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">≼</mo></mrow></math>
+denote the corresponding weak order. Values of different types are compared only
+when their types are comparable, possibly after applying permitted implicit casts
+to a common comparable type. If universal comparison is supported, values that
+are not otherwise comparable may instead be ordered according to an
+implementation-defined total order that remains stable throughout the execution
+of a GQL request.
+</p><!-- l. 108 --><p class="indent">   The ordering used by <span class="ec-lmtt-12">ORDER BY </span>additionally determines the placement of
+<!-- l. 109 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> through either
+<span class="ec-lmtt-12">NULLS FIRST </span>or <span class="ec-lmtt-12">NULLS LAST</span>. This placement rule is specific to sorting: comparisons of
+<!-- l. 111 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> with a material
+value using <!-- l. 111 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">&lt;</mo></mrow></math>
+or <!-- l. 112 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">&gt;</mo></mrow></math> yield
+<!-- l. 112 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>, rather than
+treating <!-- l. 113 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+as smaller or greater than that value.
+</p>
+<!-- l. 115 --><p class="noindent"><span class="paragraphHead"><a id="x15-1230008.3"></a><span class="ec-lmbx-12">Domains.</span></span>
+<a id="dx15-123001"></a>
+   Let <!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>Var</mi></mrow></mstyle></math>
+denote the (countable) universe of graph-pattern and scalar variables.
+A (variable) <span class="ec-lmri-12">mapping </span>is a partial function </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 118 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>μ</mi> <mo class="MathClass-punc">:</mo> <mstyle mathvariant="sans-serif"><mrow><mi>Var</mi></mrow></mstyle> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 121 --><p class="indent">   We thus distinguish two forms of absence: (i) <span class="ec-lmri-12">unbound </span>variables, i.e., those
+<!-- l. 122 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="sans-serif"><mrow><mi>Var</mi></mrow></mstyle> <mo class="MathClass-bin">∖</mo><mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for
+which <!-- l. 123 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+is undefined, and (ii) the distinguished constant
+<!-- l. 124 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi></mrow></math>
+among scalar values. Expressions may evaluate to a value
+<!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi></mrow></math> (including
+<!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></math>), or they may raise
+a runtime <span class="ec-lmri-12">error</span> <!-- l. 126 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>err</mi></mrow></mstyle></math>.
+</p>
+<!-- l. 128 --><p class="noindent"><span class="paragraphHead"><a id="x15-1240008.3"></a><span class="ec-lmbx-12">Truth values and evaluation.</span></span>
+   A predicate  (Boolean)  expression
+<!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϕ</mi></mrow></math> is evaluated
+under a mapping <!-- l. 130 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>
+and graph <!-- l. 130 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>
+as </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 131 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦ϕ</mi><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>𝔹</mi></mrow><mrow>
+<mn>3</mn></mrow></msub> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="sans-serif"><mrow><mi>err</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 134 --><p class="indent">   Atomic comparisons use SQL-style three-valued logic: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 135 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mi>⟦</mi><msub><mrow><mi>e</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-rel">=</mo><msub><mrow><mi>e</mi></mrow><mrow><mn>2</mn></mrow></msub><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msubsup></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if the equality rules establish that the values are equal</mtext></mstyle><mo class="MathClass-punc">,</mo> </mrow></mtd></mtr> <mtr><mtd class="array" columnalign="left"><mrow><mo class="MathClass-rel">⊥</mo><mspace class="quad" width="1em"></mspace></mrow></mtd> <mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if the equality rules establish that the values are unequal</mtext></mstyle> <mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise, because a required comparison is unknown</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>(for essentially comparable operands).</mtext></mstyle></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 147 --><p class="indent">   In particular, the result is <!-- l. 147 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>
+if either operand is <!-- l. 148 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+Equality of lists and records is determined recursively, so
+a material list or record containing a null value can also produce
+<!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>: an unequal component
+decides <!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⊥</mo></mrow></math>, all components
+equal decide <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>,
+and an otherwise undecided component comparison gives
+<!-- l. 152 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>.
+The other comparison operators follow their standard transformations
+and ordering rules; non-comparable operands raise the specified
+data exception. If evaluation of a required sub-expression raises
+<!-- l. 155 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>err</mi></mrow></mstyle></mrow></math>,
+evaluation of the comparison raises the corresponding dynamic exception. The
+treatment of an error in an inessential part of a containing expression follows the
+implementation-dependent rule described below.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 160 --><p class="noindent"><span class="paragraphHead"><a id="x15-1250008.3"></a><span class="ec-lmbx-12">Connectives</span><a id="dx15-125001"></a><span class="ec-lmbx-12">.</span></span>
+   We use Kleene’s strong truth tables: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 162 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mtable align="axis" class="array" columnlines="solid none none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-bin">∧</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">⊥</mo> </mrow></mtd></mtr><mtr class="hline"><mtd><mo> ̲ </mo></mtd> <mtd><mo> ̲ </mo></mtd> <mtd><mo> ̲ </mo></mtd> <mtd><mo> ̲ </mo></mtd> </mtr><mtr><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mtd><mtd class="array" columnalign="center"><mo class="MathClass-rel">⊥</mo></mtd>
+</mtr> <mtr><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">⊥</mo> </mrow></mtd></mtr><mtr><mtd class="array" columnalign="center"><mrow><mo class="MathClass-rel">⊥</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mo class="MathClass-rel">⊥</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mo class="MathClass-rel">⊥</mo> </mrow></mtd><mtd class="array" columnalign="center"><mo class="MathClass-rel">⊥</mo></mtd></mtr><!-- c|ccc --></mtable> <mspace class="qquad" width="2em"></mspace> <mtable align="axis" class="array" columnlines="solid none none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-bin">∨</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">⊥</mo> </mrow></mtd></mtr><mtr class="hline"><mtd><mo> ̲ </mo></mtd> <mtd><mo> ̲ </mo></mtd> <mtd><mo> ̲ </mo></mtd> <mtd><mo> ̲ </mo></mtd> </mtr><mtr><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"><mrow> <mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd><mtd class="array" columnalign="center"> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> </mtd></mtr><mtr><mtd class="array" columnalign="center"><mrow><mo class="MathClass-rel">⊥</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> </mrow></mtd><mtd class="array" columnalign="center"><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mtd><mtd class="array" columnalign="center"><mo class="MathClass-rel">⊥</mo></mtd></mtr><!-- c|ccc --></mtable> <mspace class="qquad" width="2em"></mspace><mi class="MathClass-op">¬</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-rel">⊥</mo><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">¬</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-rel">⊥</mo> <mo class="MathClass-rel">=</mo> <mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">¬</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 179 --><p class="indent">   These tables determine the result but do not impose operational short-circuiting. For
+example, after <!-- l. 180 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⊥</mo></mrow></math> in
+a conjunction or <!-- l. 180 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>
+in a disjunction, the other operand is inessential to the truth value. If evaluating
+such an inessential part would raise an exception, ISO/IEC 39075 leaves it
+implementation-dependent whether that exception is raised.
+</p>
+<!-- l. 185 --><p class="noindent"><span class="paragraphHead"><a id="x15-1260008.3"></a><span class="ec-lmbx-12">Null-intolerant and null-tolerant predicates.</span></span>
+<a id="dx15-126001"></a>
+<a id="dx15-126002"></a>
+   The null behavior of each built-in is determined by its rules in the
+standard. As derived terminology in this formalization, a function
+<!-- l. 187 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>f</mi></mrow></math> is <span class="ec-lmri-12">strict </span>if any
+<!-- l. 188 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> argument yields
+<!-- l. 188 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>. A predicate
+<!-- l. 189 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi></mrow></math> is <span class="ec-lmri-12">null-intolerant </span>if
+any <!-- l. 189 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> argument yields
+<!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>. Non-strict/total
+built-ins may map <!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> to
+a concrete value (e.g., <!-- l. 192 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>coalesce</mi></mrow></mstyle></mrow></math>).
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 194 --><p class="noindent"><span class="paragraphHead"><a id="x15-1270008.3"></a><span class="ec-lmbx-12">Null predicates for composites (conformance).</span></span>
+   For list and record values the null check also includes <span class="ec-lmtt-12">IS [NOT]
+</span><span class="ec-lmtt-12">CONTAINING NULL</span>, which inspects elements/fields for the presence of
+<!-- l. 197 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>;
+availability of this predicate follows the corresponding conformance feature in the
+GQL standard.
+</p>
+<!-- l. 200 --><p class="noindent"><span class="paragraphHead"><a id="x15-1280008.3"></a><span class="ec-lmtk-10x-x-120">SAME </span><span class="ec-lmbx-12">predicate.</span></span>
+<a id="dx15-128001"></a>
+   The optional <span class="ec-lmtt-12">SAME </span>predicate (Feature G114) takes at least two permitted
+arguments; generalized arguments require Feature G117. If an argument is null, it
+raises <span class="ec-lmcsc-10x-x-120">22004</span>, and if two arguments are not comparable, it raises <span class="ec-lmcsc-10x-x-120">22G04</span>. Otherwise, its
+result is <!-- l. 204 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>
+exactly when every pair of arguments compares equal, and
+<!-- l. 205 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⊥</mo></mrow></math>
+otherwise.
+</p>
+<!-- l. 207 --><p class="noindent"><span class="paragraphHead"><a id="x15-1290008.3"></a><span class="ec-lmbx-12">Filtering.</span></span>
+   For a bag <!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">B</mi></mrow></math> of
+mappings, the <span class="ec-lmtt-12">WHERE </span>filter <!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϕ</mi></mrow></math>
+is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 209 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="normal"><mrow><mi>filter</mi></mrow></mstyle></mrow><mrow><mi>ϕ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="bold-script">B</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><munder class="msub"><mrow><mo> ⊎</mo>
+</mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">B</mi></mrow></munder> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow> <mi>μ</mi> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle class="text"><mtext>if </mtext></mstyle><mi mathvariant="italic">⟦ϕ</mi><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-rel">=</mo> <mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>(omit)</mtext></mstyle> </mtd><mtd class="array" columnalign="left"><mrow> <mstyle class="text"><mtext>if </mtext></mstyle><mi mathvariant="italic">⟦ϕ</mi><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mo class="MathClass-rel">⊥</mo><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle><mo class="MathClass-close" stretchy="false">}</mo> </mrow></mtd></mtr> <!-- ll --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 216 --><p class="indent">   and is <span class="ec-lmri-12">undefined </span>(signals a dynamic exception) if
+<!-- l. 217 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦ϕ</mi><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>tv</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>err</mi></mrow></mstyle></mrow></math> for
+any <!-- l. 218 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 8 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Specified how expressions were typed and evaluated relative
+      to a graph store state and variable environments.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:  </span>A static  typing  discipline  for  expressions;  evaluation
+      rules for arithmetic, comparisons, and predicates; a three-valued truth
+      model driven by unknown values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Static typing versus dynamic evaluation; ordinary
+      Boolean  reasoning  versus  three-valued  reasoning  in  the  presence  of
+      unknowns.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Made  filtering  semantics  precise  under  unknowns
+      and   errors;   identified   the   specified   implementation-defined   and
+      implementation-dependent   evaluation   choices;   provided   reusable
+      evaluation machinery for grouping, ordering, and updates.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Enabled the algebraic layer to treat queries as compositions
+      of operators over binding tables.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch8.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-03-expressions-and-algebra.html"><small>← Previous</small>Expressions and Algebra</a><a rel="next" href="09-algebra-of-binding-tables.html"><small>Next →</small>Algebra of Binding Tables</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x15-1140008.1">8.1 Expression Domains</a><a href="#x15-1150008.2">8.2 Typing and Evaluation</a><a href="#x15-1190008.3">8.3 Truth Values and NULL</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

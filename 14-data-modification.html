@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Data Modification — GQL Essentials, by Dominik Tomaszuk.">
+<title>Data Modification · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part" open><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html" aria-current="page"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Data Modification</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Data Modification</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x25-23200014"><span class="chapter-number">Chapter 14</span><a></a>Data Modification</h1>
+<!-- l. 3 --><p class="noindent">This chapter formalizes how GQL data-modification statements transform the
+underlying property-graph store, treating updates as structured deltas that map
+one graph state to another. We give a declarative description of the insertion and
+deletion of graph elements and the in-place modification of labels and properties,
+and explain how these operations compose with pattern-based reads, identifier
+allocation, and constraint checking. The model makes implementation-defined
+details such as reference value types explicit, but is otherwise independent of any
+particular execution strategy.
+</p>
+<!-- l. 5 --><p class="noindent"><span class="paragraphHead"><a id="x25-23300014"></a><span class="ec-lmbx-12">Semantic interfaces used in this chapter.</span></span>
+   Let <!-- l. 6 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>GTypeDesc</mi></mrow></mstyle></mrow></math>
+denote the domain of graph-type descriptors. A graph entry has the abstract form
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 8 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="bold"><mrow><mi>GraphEntry</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>G</mi><mo class="MathClass-punc">,</mo><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow>
+<mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 11 --><p class="indent">   where <!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math> is its graph,
+<!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup></mrow></math> is either a reference
+to a descriptor in <!-- l. 12 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>GTypeDesc</mi></mrow></mstyle></mrow></math>
+or <!-- l. 12 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>none</mi></mrow></mstyle></mrow></math>,
+and <!-- l. 13 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math>
+is the dictionary of constraints defined directly on the graph. The current
+working graph site has a declared graph-reference type and is occupied by
+a graph reference value. That reference identifies the graph denoted here by
+<!-- l. 16 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math>;
+its corresponding graph entry or graph descriptor supplies the optional
+                                                                          
+
+                                                                          
+constraining graph-type reference and constraint dictionary. Write
+<!-- l. 18 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></msub></mrow></math>
+for that entry or descriptor. When the graph is written
+<!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>,
+<!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></math>
+denotes the corresponding active entry or descriptor. Let
+<!-- l. 21 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">𝔸𝕀𝔻</mi></mrow></math>
+denote the domain of session authorization identifiers and let
+<!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝔸𝕀𝔻</mi></mrow></math>
+denote the identifier under which a statement is executed. Finally, let
+<!-- l. 23 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">𝕊𝕋𝔸𝕋𝕌𝕊</mi></mrow></math>
+denote the domain of five-character GQLSTATUS codes. To raise a code
+<!-- l. 25 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>κ</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝕊𝕋𝔸𝕋𝕌𝕊</mi></mrow></math>
+is to produce a failed outcome, which has no statement result. Let
+<!-- l. 26 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>omitted</mi></mrow></mstyle></mrow></math>
+denote an omitted statement result, and write
+<!-- l. 27 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>success</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>R</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for a successful
+outcome whose result is <!-- l. 28 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math>,
+abstracting over its status objects; this is the projection of the
+<!-- l. 29 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Ok</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>R</mi><mo class="MathClass-punc">,</mo><mi>ζ</mi><mo class="MathClass-punc">,</mo><mover accent="false" class="mml-overline"><mrow><mrow><mi>ζ</mi></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+outcome defined in <a href="21-diagnostics.html#x36-40300021">Chapter 21</a>. The later chapters on types, constraints, catalogs,
+authorization, and diagnostics refine these interfaces.
+</p>
+<!-- l. 33 --><p class="noindent"><span class="paragraphHead"><a id="x25-23400014"></a><span class="ec-lmbx-12">Implementation configuration.</span></span>
+   We make the implementation-defined choices used below explicit by an <span class="ec-lmri-12">implementation
+</span><span class="ec-lmri-12">configuration </span><!-- l. 35 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">K</mi></mrow></math>.
+Formally, let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 36 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="bold-script">K</mi><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mtable class="aligned"><mtr><mtd columnalign="right"><mo class="MathClass-open" stretchy="false">⟨</mo></mtd><mtd columnalign="left"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RefTy</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RefTy</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMin</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMax</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMin</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMax</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PropMax</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PropMax</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></mtd>
+</mtr> </mtable>
+</mrow></math></td></tr></table></div>
+<!-- l. 47 --><p class="indent">   where: </p>
+<ul class="itemize1">
+<li class="itemize"><!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RefTy</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RefTy</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub></mrow></math>
+      are implementation-defined reference value types for nodes and edges;
+      </li>
+<li class="itemize"><!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMin</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMax</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub> <mo class="MathClass-rel">∈</mo> <mi>ℕ</mi> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>∞</mi><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>
+      and <!-- l. 52 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMin</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>LabMax</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-rel">∈</mo> <mi>ℕ</mi> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>∞</mi><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>
+      are the supported minimum and maximum cardinalities of node and
+      edge label sets, respectively;
+      </li>
+<li class="itemize"><!-- l. 55 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PropMax</mi></mrow></mstyle></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PropMax</mi></mrow></mstyle></mrow><mrow><mi>E</mi></mrow></msub> <mo class="MathClass-rel">∈</mo> <mi>ℕ</mi> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>∞</mi><mo class="MathClass-close" stretchy="false">}</mo></mrow></math>
+      are the supported maximum numbers of node and edge properties.</li></ul>
+<!-- l. 60 --><p class="indent">   For the current working graph <!-- l. 60 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math>,
+the constraint dictionary <!-- l. 61 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math>
+in <!-- l. 61 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></msub></mrow></math>
+contains the constraints defined directly for that graph. After a data-modifying
+operation, those constraints are dynamically validated against the modified
+graph. The subsequent graph-type conformance check, when a constraining
+graph type is present, also accounts for the constraints of that graph type.
+Constraints registered for unrelated graph or graph-type subjects are not
+consulted.
+</p><!-- l. 68 --><p class="indent">   Whenever we write “implementation-defined” in this chapter,
+the corresponding choice is assumed to be represented in
+<!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">K</mi></mrow></math>.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 71 --><p class="noindent"><span class="paragraphHead"><a id="x25-23500014"></a><span class="ec-lmbx-12">Syntactic frame for data modification.</span></span>
+   At the concrete-syntax level, a <span class="ec-lmri-12">linear data-modification statement </span>is a pipeline
+consisting of an optional graph-selection header followed by simple data-accessing
+steps, at least one of which is data-modifying, and an optional primitive result
+statement at the end. The following highly simplified BNF captures this spine;
+detailed productions for each kind of query and DML primitive are given in later
+sections.
+</p>
+<!-- l. 73 --><div class="code-wrap"><span id="x25-235014r14"></span><span id="x25-235013r13"></span><span id="x25-235012r12"></span><span id="x25-235011r11"></span><span id="x25-235010r10"></span><span id="x25-235009r9"></span><span id="x25-235008r8"></span><span id="x25-235007r7"></span><span id="x25-235006r6"></span><span id="x25-235005r5"></span><span id="x25-235004r4"></span><span id="x25-235003r3"></span><span id="x25-235002r2"></span><span id="x25-235001r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>linear-dm-stmt ::= [ "USE" graph-expr ] dm-body [ result-step ]
+dm-body       ::= { data-access-step } dm-primitive
+                  { data-access-step }
+data-access-step ::= query-step | dm-primitive
+dm-primitive  ::= insert-stmt
+            | set-stmt
+            | remove-stmt
+            | delete-stmt
+            | "CALL" dm-procedure  /* data-modifying procedure */
+query-step    ::= ... /* simple query statement */
+result-step   ::= ... /* FINISH, RETURN, or SELECT; final only */
+graph-expr    ::= ... /* graph reference / expression */
+dm-procedure  ::= ... /* procedure name + arguments */
+</code></pre></div>
+<!-- l. 88 --><p class="noindent">Semantically, the query steps determine a working table of bindings, while
+the data-modification primitives contribute a staged write-set (delta)
+relative to a chosen graph. The remainder of this chapter explains how the
+primitives in <span class="ec-lmtt-12">dm-primitive </span>contribute node/edge insertion, deletion,
+and property/label updates, and how the resulting delta is validated and
+applied.
+</p><!-- l. 90 --><p class="indent">   The simple data-modification statements require optional feature <span class="ec-lmtt-12">GD01</span>; label
+additions and removals require <span class="ec-lmtt-12">GD02</span>. A delete item containing a procedure
+body requires <span class="ec-lmtt-12">GD03</span>; one simply containing a value expression other than
+a binding-variable reference requires <span class="ec-lmtt-12">GD04</span>. Insertion of an undirected edge
+requires <span class="ec-lmtt-12">GH02</span>.
+                                                                          
+
+                                                                          
+</p><!-- l. 96 -->
+
+<h2 class="sectionHead" id="x25-23600014.1"><span class="titlemark">14.1   </span> <a></a><span class="ec-lmtt-12">INSERT </span>and <span class="ec-lmtt-12">CREATE</span></h2>
+<a id="dx25-236001"></a>
+<!-- l. 97 --><p class="noindent">An <span class="ec-lmtt-12">INSERT</span><a id="dx25-236002"></a> statement inserts new nodes and edges into the current working graph.
+Its body is an <span class="ec-lmri-12">insert graph pattern </span>composed of insert path patterns that (i) may
+declare element variables for newly created nodes/edges and (ii) may
+specify label and property sets for those elements. The statement has
+an empty declared type and returns an omitted result; it may, however,
+augment the working table with columns for declared element variables (see
+below).
+</p>
+<!-- l. 99 --><p class="noindent"><span class="paragraphHead"><a id="x25-23700014.1"></a><span class="ec-lmbx-12">Concrete syntax for </span><span class="ec-lmtk-10x-x-120">INSERT</span><span class="ec-lmbx-12">.</span></span>
+   At the level of concrete syntax, <span class="ec-lmtt-12">INSERT </span>uses a compact, path-shaped
+notation that mirrors the pattern language of <span class="ec-lmtt-12">MATCH</span>. New nodes and
+edges are described by node and edge patterns, which may optionally
+introduce element variables, label lists, and property maps. The following
+simplified BNF sketch outlines the core structure of the <span class="ec-lmtt-12">INSERT </span>pattern
+language.
+</p>
+<!-- l. 101 --><div class="code-wrap"><span id="x25-237017r17"></span><span id="x25-237016r16"></span><span id="x25-237015r15"></span><span id="x25-237014r14"></span><span id="x25-237013r13"></span><span id="x25-237012r12"></span><span id="x25-237011r11"></span><span id="x25-237010r10"></span><span id="x25-237009r9"></span><span id="x25-237008r8"></span><span id="x25-237007r7"></span><span id="x25-237006r6"></span><span id="x25-237005r5"></span><span id="x25-237004r4"></span><span id="x25-237003r3"></span><span id="x25-237002r2"></span><span id="x25-237001r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>insert-stmt   ::= "INSERT" insert-pattern
+insert-pattern ::= insert-path { "," insert-path }
+insert-path    ::= node-pattern { edge-pattern node-pattern }
+node-pattern  ::= "(" [ var ] [ ( ":" | "IS" ) label-set ] 
+                                      [ property-map ] ")"
+edge-pattern  ::= "-["  [ var ] [ ( ":" | "IS" ) label-set ] 
+                                      [ property-map ] "]-&gt;"
+                | "&lt;-[" [ var ] [ ( ":" | "IS" ) label-set ] 
+                                      [ property-map ] "]-"
+                | "~["  [ var ] [ ( ":" | "IS" ) label-set ]
+                                      [ property-map ] "]~"
+label-set     ::= label { "&amp;" label }
+property-map  ::= "{" ... "}"  /* key: value pairs, 
+                                as in expressions */
+var           ::= identifier
+label         ::= identifier
+</code></pre></div>
+<!-- l. 119 --><p class="noindent">Intuitively, each <span class="ec-lmtt-12">insert-path </span>contributes one or more insert
+node/edge patterns to the abstract insert graph pattern
+<!-- l. 119 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math>: an
+isolated <span class="ec-lmtt-12">node-pattern </span>describes a node insertion, while each adjacent
+<span class="ec-lmtt-12">edge-pattern node-pattern </span>extends the path with an edge and node. The
+semantic clauses below reinterpret these syntactic patterns as scheduled insertions
+of nodes and edges, equipped with label and property sets derived from the
+specified label lists and property maps. The undirected form requires optional
+feature <span class="ec-lmtt-12">GH02</span>.
+</p>
+<!-- l. 121 --><p class="noindent"><span class="paragraphHead"><a id="x25-23800014.1"></a><span class="ec-lmbx-12">Typing and new columns.</span></span>
+   An insert element pattern is <span class="ec-lmri-12">bound </span>if the name of its declared element variable
+already occurs as a column of the incoming working table type or as a field of the
+incoming working record type. Its declared type is inherited from that column or
+field. Such a pattern reuses the corresponding incoming node reference and does
+not introduce a new column.
+</p><!-- l. 128 --><p class="indent">   For every other insert element pattern in
+<!-- l. 128 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math> that declares an element
+variable <!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>EV</mi></mrow></mstyle></mrow></math> by name
+<!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>EVN</mi></mrow></mstyle></mrow></math>, <span class="ec-lmtt-12">INSERT </span>contributes
+a column named <!-- l. 130 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>EVN</mi></mrow></mstyle></mrow></math>
+whose type is an implementation-defined reference value type
+covering all nodes (resp. edges) that <span class="ec-lmtt-12">INSERT </span>can bind to
+<!-- l. 132 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>EV</mi></mrow></mstyle></mrow></math>.
+If that type is <span class="ec-lmri-12">closed</span>, then each property key/value in the pattern
+is store-assigned as if to a transient site of the corresponding
+property type. Columns whose names are <span class="ec-lmri-12">system-generated </span>in
+<!-- l. 135 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math>
+(introduced when an element variable name is omitted) are removed from
+the outgoing working table. The incoming record type is preserved; the
+outgoing table type equals the union of the incoming columns and the new
+<!-- l. 138 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>EVN</mi></mrow></mstyle></mrow></math>
+                                                                          
+
+                                                                          
+columns, minus the system-generated ones. The current working graph site must
+be defined.
+</p>
+<!-- l. 141 --><p class="noindent"><span class="paragraphHead"><a id="x25-23900014.1"></a><span class="ec-lmbx-12">Operational semantics.</span></span>
+   Let <!-- l. 142 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow></math> be the current
+working table, let <!-- l. 142 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math>
+be the graph referenced by the current working graph site, and let
+<!-- l. 143 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IDNSET</mi></mrow></mstyle></mrow></math>
+be the set of system-generated variable names introduced by
+<!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math>. Execution
+of <!-- l. 146 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">INSERT</mtext></mstyle><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math>
+transforms these objects according to </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 147 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mspace class="thickpace" width="0.28em"></mspace><mo class="MathClass-rel"><mrow><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">INSERT</mtext></mstyle><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal">IGP</mstyle><mspace class="thickpace" width="0.28em"></mspace><mspace class="nbsp" width="0.33em"></mspace>
+== = = = = = = ⇒ <mspace class="nbsp" width="0.33em"></mspace></mrow></mo><mspace class="thickpace" width="0.28em"></mspace><mo class="MathClass-open" stretchy="false">⟨</mo><msubsup><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup><mo class="MathClass-punc">,</mo><msup><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msup><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>success</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>omitted</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 152 --><p class="indent">   provided that no exception is raised. Here
+<!-- l. 152 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math> is obtained
+from <!-- l. 152 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math>
+by performing all node and edge insertions scheduled by the procedure below, and
+<!-- l. 154 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> is
+obtained by extending each input record with reference values for the newly
+inserted graph elements declared by non-bound insert element patterns, and then
+removing the columns whose names are system-generated.
+</p><!-- l. 159 --><p class="indent">   Initially, let <!-- l. 159 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NEW</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>TABLE</mi></mrow></mstyle></mrow></math>
+be an empty binding table whose columns are the union of the columns of
+<!-- l. 160 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow></math> and the
+columns contributed by the element variables declared by non-bound insert element patterns
+                                                                          
+
+                                                                          
+in <!-- l. 161 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math>. For each
+record <!-- l. 162 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow></math>,
+process <!-- l. 162 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math>
+in a fresh child execution context amended with
+<!-- l. 163 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math>. Construct
+a record <!-- l. 163 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">CR</mi></mrow></math>
+containing the reference values of the graph elements created for
+<!-- l. 164 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math>,
+by processing each insert path pattern immediately contained in
+<!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IGP</mi></mrow></mstyle></mrow></math> as
+follows:
+</p><!-- l. 167 -->
+<ol class="enumerate1">
+<li class="enumerate" id="x25-239002x1">
+<!-- l. 168 --><p class="noindent"><span class="ec-lmri-12">Inserting node pattern. </span>For every insert node pattern
+      <!-- l. 169 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>INP</mi></mrow></mstyle></mrow></math>
+      that is the defining pattern for an element variable
+      <!-- l. 170 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">EV</mi> </mrow></math>, has the
+      name <!-- l. 170 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">EV</mi> <mi>N</mi></mrow></math>,
+      and is not a bound insert element pattern:
+           </p><ol class="enumerate2">
+<li class="enumerate" id="x25-239004x1">Determine the node label set <!-- l. 173 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NLNS</mi></mrow></mstyle></mrow></math>,
+           taking <!-- l. 174 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NLNS</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mi>∅</mi></mrow></math>
+           if no label set is specified. Enforce the implementation-defined
+           minimum and maximum node-label-set cardinalities. If <!-- l. 176 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">|</mo><mstyle mathvariant="normal"><mrow><mi>NLNS</mi></mrow></mstyle><mo class="MathClass-rel">|</mo></mrow></math>
+           is below the supported minimum, raise <span class="ec-lmcsc-10x-x-120">22G0N </span>(<span class="ec-lmri-12">number of node
+           </span><span class="ec-lmri-12">labels below supported minimum</span>); if it exceeds the supported maximum,
+           raise <span class="ec-lmcsc-10x-x-120">22G0P </span>(<span class="ec-lmri-12">number of node labels exceeds supported maximum</span>).
+           </li>
+<li class="enumerate" id="x25-239006x2">Compute the node property set <!-- l. 181 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NPS</mi></mrow></mstyle></mrow></math>
+           from the property key/value list, taking <!-- l. 182 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NPS</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mi>∅</mi></mrow></math>
+                                                                          
+
+                                                                          
+           if no such list is specified. Each property value expression is evaluated
+           in the child execution context and store-assigned to the corresponding
+           new property. If the number of properties exceeds the implementation-defined
+           maximum, raise <span class="ec-lmcsc-10x-x-120">22G0S </span>(<span class="ec-lmri-12">number of node properties exceeds supported
+           </span><span class="ec-lmri-12">maximum</span>).
+           </li>
+<li class="enumerate" id="x25-239008x3">Schedule the insertion into <!-- l. 189 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math>
+           of a new node <!-- l. 189 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">NN</mi></mrow></math>
+           with a new global object identifier, label set <!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NLNS</mi></mrow></mstyle></mrow></math>,
+           and property set <!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NPS</mi></mrow></mstyle></mrow></math>.
+           Let <!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">NR</mi></mrow></math>
+           be the node reference value for <!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">NN</mi></mrow></math>,
+           and include in <!-- l. 192 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">CR</mi></mrow></math>
+           the field named <!-- l. 192 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">EV</mi> <mi>N</mi></mrow></math>
+           with value <!-- l. 192 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">NR</mi></mrow></math>.
+           The same reference value is used by other insert element patterns
+           that refer to this defining node pattern.</li></ol>
+</li>
+<li class="enumerate" id="x25-239010x2">
+<!-- l. 197 --><p class="noindent"><span class="ec-lmri-12">Inserting edge pattern. </span>For every insert edge pattern
+      <!-- l. 198 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IEP</mi></mrow></mstyle></mrow></math> that declares an
+      element variable <!-- l. 199 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">EV</mi> </mrow></math>
+      with name <!-- l. 199 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">EV</mi> <mi>N</mi></mrow></math>:
+           </p><ol class="enumerate2">
+<li class="enumerate" id="x25-239012x1">
+<!-- l. 201 --><p class="noindent">Determine the edge label set <!-- l. 201 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ELNS</mi></mrow></mstyle></mrow></math>,
+           taking <!-- l. 202 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ELNS</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mi>∅</mi></mrow></math>
+           if no label set is specified, and enforce the implementation-defined
+           minimum and maximum edge-label-set cardinalities. If <!-- l. 204 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">|</mo><mstyle mathvariant="normal"><mrow><mi>ELNS</mi></mrow></mstyle><mo class="MathClass-rel">|</mo></mrow></math>
+           is below the supported minimum, raise <span class="ec-lmcsc-10x-x-120">22G0Q </span>(<span class="ec-lmri-12">number of edge
+           </span><span class="ec-lmri-12">labels below supported minimum</span>); if it exceeds the supported maximum,
+           raise <span class="ec-lmcsc-10x-x-120">22G0R </span>(<span class="ec-lmri-12">number of edge labels exceeds supported maximum</span>).
+                                                                          
+
+                                                                          
+           </p><!-- l. 209 --><p class="noindent">Compute the edge property set <!-- l. 209 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>EPS</mi></mrow></mstyle></mrow></math>
+           analogously, evaluating each property value expression in the child
+           execution context and store-assigning its result to the corresponding
+           new property. If the number of properties exceeds the implementation-defined
+           maximum, raise <span class="ec-lmcsc-10x-x-120">22G0T </span>(<span class="ec-lmri-12">number of edge properties exceeds supported
+           </span><span class="ec-lmri-12">maximum</span>).
+           </p></li>
+<li class="enumerate" id="x25-239014x2">
+<!-- l. 215 --><p class="noindent">Determine  the  left  and  right  endpoint  nodes  from  the  nearest
+           surrounding  insert  node  patterns.  If  an  endpoint  pattern  is
+           a bound insert element pattern, use the node denoted by its bound
+           element variable; otherwise, use the node reference value computed
+           for  its  defining  insert  node  pattern.  If  either  endpoint  node  is
+           deleted, raise <span class="ec-lmcsc-10x-x-120">G1002 </span>(<span class="ec-lmri-12">endpoint node is deleted</span>). If either endpoint
+           node is not in the current working graph, raise <span class="ec-lmcsc-10x-x-120">G1003 </span>(<span class="ec-lmri-12">endpoint
+           </span><span class="ec-lmri-12">node not in current working graph</span>).
+           </p><!-- l. 224 --><p class="noindent">Determine whether the new edge is directed or undirected from the
+           syntactic form of <!-- l. 225 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IEP</mi></mrow></mstyle></mrow></math>.
+           For a directed edge, use the arrow orientation to determine which
+           endpoint is the source and which is the destination.
+           </p></li>
+<li class="enumerate" id="x25-239016x3">Schedule the insertion into <!-- l. 228 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math>
+           of a new edge <!-- l. 228 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">NE</mi></mrow></math>
+           with a new global object identifier, label set <!-- l. 229 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ELNS</mi></mrow></mstyle></mrow></math>,
+           property set <!-- l. 230 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>EPS</mi></mrow></mstyle></mrow></math>,
+           and the determined endpoints, direction, and orientation. Let <!-- l. 231 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">ER</mi></mrow></math>
+           be the edge reference value for <!-- l. 231 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">NE</mi></mrow></math>,
+           and include in <!-- l. 231 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">CR</mi></mrow></math>
+           the field named <!-- l. 232 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">EV</mi> <mi>N</mi></mrow></math>
+           with value <!-- l. 232 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">ER</mi></mrow></math>.</li></ol>
+</li></ol>
+<!-- l. 236 --><p class="indent">   After all immediately contained insert path patterns have been processed for
+<!-- l. 237 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math>, construct
+                                                                          
+
+                                                                          
+a record <!-- l. 237 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>N</mi><msub><mrow><mi>R</mi></mrow><mrow><mi>R</mi></mrow></msub></mrow></math> by
+amending <!-- l. 237 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math>
+with <!-- l. 237 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">CR</mi></mrow></math>, and
+append <!-- l. 238 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>N</mi><msub><mrow><mi>R</mi></mrow><mrow><mi>R</mi></mrow></msub></mrow></math>
+to <!-- l. 238 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NEW</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>TABLE</mi></mrow></mstyle></mrow></math>.
+</p><!-- l. 240 --><p class="indent">   After all records of <!-- l. 240 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow></math>
+have been processed, perform all scheduled node insertions, followed by all scheduled edge
+insertions. Let <!-- l. 242 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>
+be the resulting provisional graph. Dynamically validate every direct constraint
+<!-- l. 243 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>C</mi> <mo class="MathClass-rel">∈</mo><mi class="qopname"> ran</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> on
+<!-- l. 243 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>;
+an enforcement failure raises <span class="ec-lmcsc-10x-x-120">23000 </span>(<span class="ec-lmri-12">integrity constraint violation</span>). If
+<!-- l. 245 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow></msub></mrow></math> has a constraining
+graph type <!-- l. 245 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GT</mi></mrow></math>
+and <!-- l. 245 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>G</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>cur</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>
+is not of <!-- l. 245 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GT</mi></mrow></math>,
+raise <span class="ec-lmcsc-10x-x-120">G2000 </span>(<span class="ec-lmri-12">graph type violation</span>). Consequently, a successful <span class="ec-lmtt-12">INSERT </span>has passed
+the required direct-constraint validation and graph-type conformance check,
+including the constraints of that graph type.
+</p><!-- l. 250 --><p class="indent">   Finally, let <!-- l. 250 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> be a copy
+of <!-- l. 251 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>NEW</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>TABLE</mi></mrow></mstyle></mrow></math> with all columns
+whose names belong to <!-- l. 252 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>IDNSET</mi></mrow></mstyle></mrow></math>
+removed, and set <!-- l. 252 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="normal"><mrow><mi>TABLE</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+as the current working table. The execution outcome is successful with
+an omitted result; thus, <span class="ec-lmtt-12">INSERT </span>modifies the graph and propagates the
+extended working table, but does not itself return a result value. See
+<a href="04-gql-by-example.html#x9-200004.3">Section 4.3</a> for a complete insertion of library nodes, edges, labels, and
+properties.
+</p>
+<!-- l. 258 --><p class="noindent"><span class="paragraphHead"><a id="x25-24000014.1"></a><span class="ec-lmbx-12">Identifiers and allocation.</span></span>
+   Every created graph element (node or edge) receives a new <span class="ec-lmri-12">global object
+</span><span class="ec-lmri-12">identifier</span>; copies likewise obtain fresh identifiers. Reference values reify globally
+resolved references to such objects. Element variable names that the syntax
+supplies automatically are system-generated regular identifiers and are <span class="ec-lmri-12">not</span>
+retained as output columns.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 261 --><p class="noindent"><span class="paragraphHead"><a id="x25-24100014.1"></a><span class="ec-lmtk-10x-x-120">CREATE GRAPH</span><a id="dx25-241001"></a> <span class="ec-lmbx-12">(catalog</span><a id="dx25-241002"></a><span class="ec-lmbx-12">).</span></span>
+   A <span class="ec-lmtt-12">CREATE GRAPH </span>statement creates a new graph using an open <span class="ec-lmtt-12">ANY </span>graph
+form or constraining it by an existing graph type reference, an inline graph type
+specification, or a graph type <span class="ec-lmri-12">LIKE </span>another graph. When a source graph is
+provided, all nodes and edges are <span class="ec-lmri-12">copied </span>into the new graph and each copy is
+assigned a new global object identifier. The created graph descriptor
+records the constraining graph type (if any). A violation of a constraint
+defined directly on the graph raises <span class="ec-lmcsc-10x-x-120">23000</span>; a graph-type violation raises
+<span class="ec-lmcsc-10x-x-120">G2000</span>.
+</p><!-- l. 264 -->
+
+<h2 class="sectionHead" id="x25-24200014.2"><span class="titlemark">14.2   </span> <a></a><span class="ec-lmtt-12">DELETE</span></h2>
+<!-- l. 265 --><p class="noindent"><span class="paragraphHead"><a id="x25-24300014.2"></a><span class="ec-lmbx-12">Concrete syntax for </span><span class="ec-lmtk-10x-x-120">DELETE</span><a id="dx25-243001"></a><span class="ec-lmbx-12">.</span></span>
+<span class="ec-lmtt-12">DELETE </span>statements operate on a list of expressions whose declared types are
+graph-element reference value types. At runtime, valid node and edge
+references are collected for deletion, while the null value and invalidated
+references are ignored without accessing their referents. An optional prefix
+keyword controls whether incident edges are automatically removed or must
+already be absent. The following simplified BNF captures the core concrete
+form:
+</p>
+<!-- l. 267 --><div class="code-wrap"><span id="x25-243007r6"></span><span id="x25-243006r5"></span><span id="x25-243005r4"></span><span id="x25-243004r3"></span><span id="x25-243003r2"></span><span id="x25-243002r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>delete-stmt ::= [ "DETACH" | "NODETACH" ] "DELETE"
+                delete-arg { "," delete-arg }
+delete-arg  ::= expr  /* must evaluate to a node or 
+                                  edge reference */
+expr        ::= ...   /* value expression */
+</code></pre></div>
+<!-- l. 274 --><p class="noindent">Intuitively, a <span class="ec-lmtt-12">delete-stmt </span>with <span class="ec-lmtt-12">NODETACH </span>(or without any prefix, for which GQL
+makes <span class="ec-lmtt-12">NODETACH </span>implicit) is interpreted using the <span class="ec-lmri-12">plain delete </span>semantics below,
+which require that every incident edge of a deleted node is also designated for
+deletion. A statement prefixed by <span class="ec-lmtt-12">DETACH </span>is interpreted using the <span class="ec-lmri-12">detach delete</span>
+semantics, which first removes incident edges and then removes the node itself. In
+both cases, the deletion of edges referenced directly by <span class="ec-lmtt-12">delete-arg </span>follows the
+edge-deletion rules outlined next.
+</p>
+<!-- l. 282 --><p class="noindent"><span class="paragraphHead"><a id="x25-24400014.2"></a><span class="ec-lmbx-12">Incident edges.</span></span>
+   For <!-- l. 283 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math>,
+let <!-- l. 283 --><span class="inline-math-scroll"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>x</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mi>e</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi><mo class="MathClass-rel">∣</mo><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>x</mi><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-bin">∨</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>x</mi><mo class="MathClass-close" stretchy="false">}</mo></mrow></math></span>.
+</p>
+<!-- l. 285 --><p class="noindent"><span class="paragraphHead"><a id="x25-24500014.2"></a><span class="ec-lmbx-12">Plain </span><span class="ec-lmtk-10x-x-120">DELETE</span><span class="ec-lmbx-12">.</span></span>
+   A plain <span class="ec-lmtt-12">DELETE</span>, for which <span class="ec-lmtt-12">NODETACH </span>is implicit, first collects the sets
+<!-- l. 287 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>del</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">⊆</mo> <mi>V</mi> </mrow></math> and
+<!-- l. 288 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>E</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>del</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">⊆</mo> <mi>E</mi></mrow></math>
+of nodes and edges designated for deletion. For every
+<!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>del</mi></mrow></mstyle></mrow></msub></mrow></math>,
+deletion is permitted only if </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 290 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">⊆</mo> <msub><mrow><mi>E</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>del</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">;</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 293 --><p class="indent">   otherwise, the statement signals a dependent-object error (<span class="ec-lmcsc-10x-x-120">G1001</span>, edges still exist).
+Every <!-- l. 294 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>E</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>del</mi></mrow></mstyle></mrow></msub></mrow></math> is
+deleted unconditionally, without affecting its endpoint nodes. If the condition holds
+                                                                          
+
+                                                                          
+for all <!-- l. 296 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>del</mi></mrow></mstyle></mrow></msub></mrow></math>,
+all designated nodes and edges are deleted atomically, together with their labels
+and properties.
+</p>
+<!-- l. 300 --><p class="noindent"><span class="paragraphHead"><a id="x25-24600014.2"></a><span class="ec-lmbx-12">Example (plain deletion of an edge).</span></span>
+</p>
+<!-- l. 302 --><div class="code-wrap"><span id="x25-246005r5"></span><span id="x25-246004r4"></span><span id="x25-246003r3"></span><span id="x25-246002r2"></span><span id="x25-246001r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (l:Loan)-[i:INCLUDES]-&gt;(b:Book)
+WHERE b.isbn = '978-83-987...'
+DELETE i
+</code></pre></div>
+The statement deletes only the selected <p><span class="ec-lmtt-12">INCLUDES </span></p>edge; its endpoint nodes <p><span class="ec-lmtt-12">l </span></p>and
+<p><span class="ec-lmtt-12">b </span></p>remain in the graph.
+<!-- l. 311 --><p class="noindent"><span class="paragraphHead"><a id="x25-24700014.2"></a><span class="ec-lmtk-10x-x-120">DETACH DELETE</span><a id="dx25-247001"></a><span class="ec-lmbx-12">.</span></span>
+   For a node <!-- l. 312 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math>,
+<!-- l. 312 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">DETACH DELETE </mtext></mstyle><mi>v</mi></mrow></math> adds
+every edge <!-- l. 313 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>inc</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+to the set of elements to be deleted and then deletes
+<!-- l. 314 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi></mrow></math>.
+It does <span class="ec-lmri-12">not </span>recursively delete nodes adjacent to
+<!-- l. 315 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi></mrow></math>.
+Additional nodes must be designated explicitly by including them
+as separate items in the comma-separated delete-item list, as in
+<!-- l. 317 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">DETACH DELETE </mtext></mstyle><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mstyle class="text"><mtext class="texttt" mathvariant="monospace">, </mtext></mstyle><msub><mrow><mi>v</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>. See
+<a href="04-gql-by-example.html#x9-200004.3">Section 4.3</a> for a concrete use of <span class="ec-lmtt-12">DETACH DELETE </span>in the library graph.
+</p>
+<!-- l. 321 --><p class="noindent"><span class="paragraphHead"><a id="x25-24800014.2"></a><span class="ec-lmbx-12">Constraint validation.</span></span>
+   The sets of nodes and edges to be deleted, including the incident edges added
+by <span class="ec-lmtt-12">DETACH</span>, are collected before any deletion is performed. The resulting copy
+                                                                          
+
+                                                                          
+<!-- l. 324 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+is then checked as one atomic result. Its direct constraints are
+dynamically validated, and, if the graph has a constraining graph type,
+<!-- l. 326 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> is
+checked for conformance to that type. Deleting elements cannot by itself create
+a violation of the key or unique constraints defined by GQL. A graph-type
+violation raises <span class="ec-lmcsc-10x-x-120">G2000</span>; this check is retained for implementation-defined
+extensions and future graph-type constraints even though the constraints
+currently defined by GQL do not make it reachable by deletion alone.
+</p><!-- l. 333 -->
+
+<h2 class="sectionHead" id="x25-24900014.3"><span class="titlemark">14.3   </span> <a></a>Read-then-Update Composition</h2>
+<a id="dx25-249001"></a>
+<!-- l. 335 --><p class="noindent">A data-modifying statement commonly combines a read phase with an update phase. The
+read query <!-- l. 336 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+is evaluated first against the current graph state
+<!-- l. 336 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>, under the authorization
+context of principal <!-- l. 337 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math>,
+producing a binding table </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 338 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msubsup><mrow><mi>B</mi></mrow><mrow><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mi mathvariant="italic">⟦Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow>
+<mi>G</mi><mo class="MathClass-punc">,</mo><mi>u</mi></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 341 --><p class="indent">   Each record in <!-- l. 341 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>B</mi></mrow><mrow><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup></mrow></math>
+identifies graph elements or supplies values that may be used by the subsequent update
+<!-- l. 342 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>. Thus, the
+result of <!-- l. 342 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+                                                                          
+
+                                                                          
+does not itself modify the graph; rather, it determines the bindings with respect to
+which <!-- l. 344 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+is evaluated.
+</p><!-- l. 346 --><p class="indent">   For an update part <!-- l. 346 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>,
+graph <!-- l. 346 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>, binding table
+<!-- l. 346 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>, and authorization
+identifier <!-- l. 347 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math>,
+write <!-- l. 347 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+for the coalesced update delta produced by evaluating
+<!-- l. 348 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math> for all
+records of <!-- l. 348 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>,
+as defined concretely in <a href="#x25-25000014.4">Section 14.4</a>. The partial expression
+<!-- l. 350 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi></mrow></math> denotes application
+of a delta <!-- l. 350 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi></mrow></math>
+to <!-- l. 350 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>.
+Let <!-- l. 351 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>G</mi><mo class="MathClass-punc">,</mo><msup><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow>
+<mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+be the active graph entry. The full validation predicate is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 353 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mo class="MathClass-rel"></mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ok</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace><mo class="MathClass-rel">⇔</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd columnalign="left"><mrow><mi>G</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mstyle class="text"><mtext> is defined,</mtext></mstyle></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mstyle class="text"><mtext>satisfies every direct constraint in </mtext></mstyle><mi class="qopname"> ran</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mstyle class="text"><mtext>and is of its constraining graph type (if any).</mtext></mstyle></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 364 --><p class="indent">   The update phase computes a graph delta </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 365 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi><mo class="MathClass-punc">,</mo><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow>
+<mi>U</mi></mrow></msub><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msubsup><mrow><mi>B</mi></mrow><mrow><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup><mo class="MathClass-punc">,</mo><mi>u</mi></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 370 --><p class="indent">   which collects the insertions, deletions, label changes, and property changes requested by
+<!-- l. 371 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math> for the bindings produced
+by <!-- l. 371 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>. Conceptually,
+<!-- l. 371 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math> is evaluated for
+the records of <!-- l. 372 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>B</mi></mrow><mrow><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup></mrow></math>,
+and the individual changes are combined into a single delta. If
+<!-- l. 373 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>B</mi></mrow><mrow><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup></mrow></math> is
+empty, an update whose effects depend entirely on those bindings normally
+produces the empty delta and leaves the graph unchanged.
+</p><!-- l. 377 --><p class="indent">   The denotation of the composed read-then-update operation is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 378 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦U</mi><mo class="MathClass-bin">∘</mo><mi>Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>u</mi></mrow></msub><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mi>G</mi> <mo class="MathClass-bin">⊕</mo><msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi><mo class="MathClass-punc">,</mo><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mrow><mtext>if principal </mtext><mstyle class="math"><mi>u</mi></mstyle><mtext> is authorized to execute both </mtext><mstyle class="math"><mi>Q</mi></mstyle><mtext> and </mtext><mstyle class="math"><mi>U</mi></mstyle><mtext>,</mtext></mrow></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>and </mtext></mstyle><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ok</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></msub><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi><mo class="MathClass-punc">,</mo><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr class="vspace" style="font-size:2.06664pt"><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext class="textsf" mathvariant="sans-serif">error</mtext></mstyle><mo class="MathClass-punc">,</mo> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>otherwise</mtext></mstyle><mo class="MathClass-punc">.</mo> </mrow></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow></mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 390 --><p class="indent">   Here, <!-- l. 390 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi> <mo class="MathClass-bin">⊕</mo><msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi><mo class="MathClass-punc">,</mo><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup></mrow></math>
+denotes the graph obtained by applying the complete delta to
+<!-- l. 391 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>.
+The authorization condition covers both access to the data inspected by
+<!-- l. 392 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+and permission to perform the modifications requested by
+<!-- l. 393 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>. The predicate
+<!-- l. 394 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ok</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GE</mi></mrow></mstyle></mrow></msub><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi><mo class="MathClass-punc">,</mo><mi>Q</mi></mrow><mrow><mi>u</mi></mrow></msubsup></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow></mrow></math> states that the delta
+is applicable to <!-- l. 395 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>,
+                                                                          
+
+                                                                          
+that the resulting graph satisfies every direct constraint, and that it conforms
+to its constraining graph type, including the constraints of that graph
+type.
+</p><!-- l. 399 --><p class="indent">   Accordingly, the composition is atomic at the level of this denotation: either
+the complete authorized and valid delta is applied, producing the new graph state,
+or the operation yields an error and no resulting graph state is defined by the
+statement.
+</p><!-- l. 404 -->
+
+<h2 class="sectionHead" id="x25-25000014.4"><span class="titlemark">14.4   </span> <a></a>Write-Set Coalescing and Conflicts</h2>
+<a id="dx25-250001"></a>
+<a id="dx25-250002"></a>
+<a id="dx25-250003"></a>
+<!-- l. 405 --><p class="noindent"><span class="paragraphHead"><a id="x25-25100014.4"></a><span class="ec-lmbx-12">Concrete syntax for </span><span class="ec-lmtk-10x-x-120">SET</span><span class="ec-lmbx-12">.</span></span>
+   A <span class="ec-lmtt-12">SET</span><a id="dx25-251001"></a> statement updates properties and labels of elements named by variables
+that are bound by preceding query steps (for example, by <span class="ec-lmtt-12">MATCH</span>). Each item in
+the <span class="ec-lmtt-12">SET </span>list either assigns a single property, replaces the entire property map, or
+adds a label to the element’s label set. The following simplified BNF describes the
+core concrete form:
+</p>
+<!-- l. 407 --><div class="code-wrap"><span id="x25-251012r11"></span><span id="x25-251011r10"></span><span id="x25-251010r9"></span><span id="x25-251009r8"></span><span id="x25-251008r7"></span><span id="x25-251007r6"></span><span id="x25-251006r5"></span><span id="x25-251005r4"></span><span id="x25-251004r3"></span><span id="x25-251003r2"></span><span id="x25-251002r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>set-stmt ::= "SET" set-item { "," set-item }
+
+set-item ::= var "." prop "=" expr
+    | var "=" "{" ... "}" /* replace all properties of var */
+    | var ( ":" | "IS" ) label /* add label to var */
+
+var   ::= identifier /* binding variable from MATCH, etc. */
+prop  ::= identifier /* property name */
+label ::= identifier
+expr  ::= ...     /* value expression */
+</code></pre></div>
+<!-- l. 419 --><p class="noindent">Informally, a <span class="ec-lmtt-12">set-item </span>of the first form assigns a value to a single property of the
+element denoted by <span class="ec-lmtt-12">var</span>, the second form replaces all existing properties of that
+element by the given map, and the third form adds a label to the element’s label
+set (using either the shorthand <span class="ec-lmtt-12">var:Label </span>or the more verbose <span class="ec-lmtt-12">var IS Label</span>). In
+the semantic model below, these surface forms are reinterpreted as combinations
+of primitive property-setting, property-clearing, and label-addition atoms that
+constitute an update template. See <a href="04-gql-by-example.html#x9-200004.3">Section 4.3</a> for a concrete read-then-<span class="ec-lmtt-12">SET</span>
+operation on a library edge property.
+</p>
+<!-- l. 421 --><p class="noindent"><span class="paragraphHead"><a id="x25-25200014.4"></a><span class="ec-lmbx-12">Update context.</span></span>
+<a id="dx25-252001"></a>
+   For a graph pattern <!-- l. 422 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>,
+predicate <!-- l. 422 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϕ</mi></mrow></math>, and
+concrete write part <!-- l. 422 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>,
+an <span class="ec-lmri-12">update pipeline </span>is represented at the meta-level as </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 424 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">MATCH </mtext></mstyle><mi>P</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">WHERE </mtext></mstyle><mi>ϕ</mi><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-bin">⊳</mo> <mi>U</mi>
+</mrow></math></td></tr></table></div>
+<!-- l. 427 --><p class="indent">   where <!-- l. 427 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊳</mo></mrow></math>
+is meta-notation, not a GQL keyword; examples of
+<!-- l. 427 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+include <span class="ec-lmtt-12">SET</span>, <span class="ec-lmtt-12">REMOVE</span>, and <span class="ec-lmtt-12">DELETE</span>. The read part yields a bag
+<!-- l. 429 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">M</mi> <mo class="MathClass-rel">=</mo> <mi mathvariant="italic">⟦P</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">WHERE </mtext></mstyle><mi>ϕ</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math> of
+mappings over variables (node-, edge-, and path-variables). Updates are then staged
+per <!-- l. 429 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></math>
+and coalesced before application to the transaction-visible working state.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 431 --><p class="noindent"><span class="paragraphHead"><a id="x25-25300014.4"></a><span class="ec-lmbx-12">Targets.</span></span>
+   Evaluation of a target binding-variable reference under
+<!-- l. 432 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math> yields
+either a graph-element reference or the null value. A null target contributes no
+modification. A <span class="ec-lmri-12">target reference </span>that is used for an update is therefore either a node-id
+<!-- l. 435 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math> or an
+edge-id <!-- l. 435 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math>;
+accessing the referent of an invalidated reference raises <span class="ec-lmcsc-10x-x-120">22G11</span>. We write
+<!-- l. 437 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>Tgt</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">⊆</mo> <mi>V</mi> <mo class="MathClass-bin">∪</mo> <mi>E</mi></mrow></math> for the valid targets
+referenced by <!-- l. 438 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+under <!-- l. 438 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>.
+</p>
+<!-- l. 440 --><p class="noindent"><span class="paragraphHead"><a id="x25-25400014.4"></a><span class="ec-lmbx-12">Update atoms.</span></span>
+<a id="dx25-254001"></a>
+<a id="dx25-254002"></a>
+   For <!-- l. 441 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math>,
+<!-- l. 441 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math>,
+<!-- l. 441 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕂</mi></mrow></math>,
+<!-- l. 441 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕃</mi></mrow></math>, and a value
+expression <!-- l. 442 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="italic"><mrow><mi>expr</mi></mrow></mstyle></mrow></math>,
+the primitive update atoms are listed below. Here
+<!-- l. 444 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-punc">,</mo><msubsup><mrow><mi>ρ</mi></mrow><mrow>
+<mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-punc">,</mo><msubsup><mrow><mi>λ</mi></mrow><mrow>
+<mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-punc">,</mo><msubsup><mrow><mi>λ</mi></mrow><mrow>
+<mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup></mrow></math>
+denote the provisional post-update maps obtained from
+<!-- l. 445 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub></mrow></math> by
+the indicated assignment; every unmentioned map entry is unchanged.
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 447 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable align="axis" class="array" columnlines="none none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">SET_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mstyle mathvariant="italic"><mrow><mi>expr</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo><mi>⟦</mi><mstyle mathvariant="italic"><mrow><mi>expr</mi></mrow></mstyle><msub><mrow><mi>⟧</mi></mrow><mrow>
+<mi>μ</mi></mrow></msub> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">SET_EDGE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mstyle mathvariant="italic"><mrow><mi>expr</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo><mi>⟦</mi><mstyle mathvariant="italic"><mrow><mi>expr</mi></mrow></mstyle><msub><mrow><mi>⟧</mi></mrow><mrow>
+<mi>μ</mi></mrow></msub> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">CLEAR_NODE_PROPS</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>⋅</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo><mi>∅</mi> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">CLEAR_EDGE_PROPS</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>⋅</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo><mi>∅</mi> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo><mstyle mathvariant="sans-serif"><mrow><mi>absent</mi></mrow></mstyle> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo><mstyle mathvariant="sans-serif"><mrow><mi>absent</mi></mrow></mstyle> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo> <msub><mrow><mi>λ</mi></mrow><mrow>
+<mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">}</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_EDGE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo> <msub><mrow><mi>λ</mi></mrow><mrow>
+<mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">}</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo> <msub><mrow><mi>λ</mi></mrow><mrow>
+<mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∖</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">}</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mo class="MathClass-punc">:</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <msubsup><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow><mrow><mo class="MathClass-bin">+</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">←</mo> <msub><mrow><mi>λ</mi></mrow><mrow>
+<mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∖</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">.</mo> </mrow></mtd></mtr><!-- rll --></mtable>
+</math></td></tr></table></div>
+<!-- l. 471 --><p class="indent">   The two property-setting rows abbreviate the standard store-assignment rules,
+including their nullability and conversion checks. A surface item <span class="ec-lmtt-12">var = {...}</span>
+contributes the appropriate <span class="ec-lmtt-12">CLEAR </span>atom followed by one property-setting atom for
+each property pair in textual order. Endpoint reattachment is <span class="ec-lmri-12">not </span>an
+in-place update; changing endpoints is modeled as deletion followed by
+recreation.
+</p>
+<!-- l. 478 --><p class="noindent"><span class="paragraphHead"><a id="x25-25500014.4"></a><span class="ec-lmbx-12">Notational shorthands (ground update operations).</span></span>
+   The primitive atoms above mix two concerns: (i) the <span class="ec-lmri-12">target </span>(a concrete node/edge
+id) and (ii) an r-value <span class="ec-lmri-12">expression </span>that must be evaluated under a mapping
+<!-- l. 480 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>μ</mi></math>.
+For examples and for write-set reasoning, it is convenient to use <span class="ec-lmri-12">ground</span>
+operations where the r-value has already been evaluated to a concrete
+value.
+</p><!-- l. 484 --><p class="indent">   Let <!-- l. 484 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math> be a node
+identifier, <!-- l. 484 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math> an
+edge identifier, <!-- l. 485 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕂</mi></mrow></math>
+a property key, <!-- l. 485 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕃</mi></mrow></math>
+a label, <!-- l. 486 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>q</mi></mrow></math> a value
+expression, and <!-- l. 486 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>w</mi> <mo class="MathClass-rel">∈</mo> <mi>𝕍</mi></mrow></math>
+a concrete value. Let <!-- l. 487 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+be the function that maps update atoms to ground operations by evaluating r-values
+                                                                          
+
+                                                                          
+under <!-- l. 488 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>μ</mi></math>.
+We use the following shorthands: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 489 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable align="axis" class="array" columnlines="none none none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">SET_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>q</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi mathvariant="italic">⟦q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(set vertex
+property)  " class="pic-halign" loading="lazy" src="assets/test-9bd040e304389f630edfcec8a109a955.svg"/>                                                           </mtext></mstyle> </mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">SET_EDGE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>q</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>setPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi mathvariant="italic">⟦q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(set edge
+
+property)  " class="pic-halign" loading="lazy" src="assets/test-53ce39b81474da29035df81486386e7d.svg"/>                                                            </mtext></mstyle> </mtd>
+</mtr> <mtr class="vspace" style="font-size:2.93745pt"><mtd></mtd><mtd></mtd><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">CLEAR_NODE_PROPS</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>clearPropsV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(clear all vertex
+properties)  " class="pic-halign" loading="lazy" src="assets/test-b9867b9097472311e3f6c4ce6c893925.svg"/>                                                      </mtext></mstyle> </mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">CLEAR_EDGE_PROPS</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>clearPropsE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(clear all edge
+properties)  " class="pic-halign" loading="lazy" src="assets/test-ab56c9abd0c6c048533817c3ac8938eb.svg"/>                                                        </mtext></mstyle> </mtd>
+</mtr> <mtr class="vspace" style="font-size:2.93745pt"><mtd></mtd><mtd></mtd><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>delPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(delete vertex
+
+property)  " class="pic-halign" loading="lazy" src="assets/test-9128da7550123f8ba3426a1bca039fd1.svg"/>                                                        </mtext></mstyle> </mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>delPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(delete edge
+property)  " class="pic-halign" loading="lazy" src="assets/test-4bc4f29a6232c75840566e25e6446ca3.svg"/>                                                          </mtext></mstyle> </mtd>
+</mtr> <mtr class="vspace" style="font-size:2.93745pt"><mtd></mtd><mtd></mtd><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>addLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(add vertex
+label)  " class="pic-halign" loading="lazy" src="assets/test-3a92c3c62c300112df45d66f2710ecb5.svg"/>                                                          </mtext></mstyle> </mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_EDGE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>addLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(add edge
+label)  " class="pic-halign" loading="lazy" src="assets/test-c79b4e44f5d7cc56a1457493eecabf1d.svg"/>                                                            </mtext></mstyle> </mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>delLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(remove  vertex
+
+label)  " class="pic-halign" loading="lazy" src="assets/test-5d21ee93e035f75d1f5208e82fa58ceb.svg"/>                                                       </mtext></mstyle> </mtd>
+</mtr> <mtr><mtd class="array" columnalign="right"><mrow> <msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="center"><mrow> <mo class="MathClass-rel">≜</mo> </mrow></mtd><mtd class="array" columnalign="left"><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>delLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo> </mrow></mtd><mtd class="array" columnalign="left"> <mstyle class="text"><mtext>   <img alt="(remove  edge
+label).  " class="pic-halign" loading="lazy" src="assets/test-17b7377b3da683bf5244303c6350eef5.svg"/>                                                         </mtext></mstyle> </mtd></mtr><!-- rcll --></mtable>
+</math></td></tr></table></div>
+<!-- l. 526 --><p class="indent">   Thus, for example, <!-- l. 526 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+abbreviates the <span class="ec-lmri-12">ground effect </span>“set the vertex-property
+<!-- l. 526 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> to the
+value <!-- l. 526 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>w</mi></math>”.
+</p>
+<!-- l. 528 --><p class="noindent"><span class="paragraphHead"><a id="x25-25600014.4"></a><span class="ec-lmbx-12">Templates and determinism.</span></span>
+   An <span class="ec-lmri-12">update template </span><!-- l. 529 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+is a finite, textually ordered list of atoms whose l-values are expressions over
+<!-- l. 530 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>. For a fixed
+<!-- l. 530 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>, evaluation produces
+a <span class="ec-lmri-12">per-binding write-set </span><!-- l. 531 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+represented as a list of <span class="ec-lmri-12">ground </span>operations on concrete element identifiers. Concretely,
+<!-- l. 533 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> is obtained by
+applying <!-- l. 533 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ground</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub></mrow></math> to the
+atoms of <!-- l. 534 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>, evaluating
+all r-values under <!-- l. 534 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>,
+while preserving their textual order. A set item whose target is null contributes
+the empty list. A set-all- properties item contributes a clear operation followed
+by its evaluated property assignments; an attempted access through an
+invalidated target raises <span class="ec-lmcsc-10x-x-120">22G11 </span>rather than contributing a write.
+</p><!-- l. 540 --><p class="indent"> <span class="ec-lmri-12">Standard options. </span>For a single <span class="ec-lmtt-12">SET </span>statement that would make multiple assignments
+to the same <!-- l. 541 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext>id</mtext></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+even if the assigned values are equal, the GQL standard specifies an
+implementation-defined choice between two behaviors: </p>
+<ul class="itemize1">
+<li class="itemize"> signal data exception <span class="ec-lmcsc-10x-x-120">22G0M</span>, or
+      </li>
+<li class="itemize"> make an implementation-dependent choice of one assignment.</li></ul>
+<!-- l. 548 --><p class="noindent">In this book we adopt a <span class="ec-lmri-12">canonical partial coalescer</span>
+<!-- l. 548 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math> that
+realizes option (a) while preserving the order of records and set items required by the
+standard. Property-assignment operations are pairwise compatible only when they target
+distinct <!-- l. 551 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext>id</mtext></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+pairs. Label additions commute, and repeated additions of the same
+label to the same element are idempotent and may coalesce to one
+effective addition. Clear-all-properties operations are retained at their
+ordered positions. Whenever two property assignments target the same
+<!-- l. 555 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext>id</mtext></mstyle><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> in one
+statement, <!-- l. 555 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math>
+                                                                          
+
+                                                                          
+is undefined and the statement signals <span class="ec-lmcsc-10x-x-120">22G0M</span>. Different
+<!-- l. 556 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>-instances
+are folded in incoming-table order, subject to these rules.
+</p>
+<!-- l. 559 --><p class="noindent"><span class="paragraphHead"><a id="x25-25700014.4"></a><span class="ec-lmbx-12">Staged delta and application.</span></span>
+<a id="dx25-257001"></a>
+   Identifying the binding table <!-- l. 560 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>
+with its bag <!-- l. 560 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">M</mi></mrow></math>
+of mappings, the <span class="ec-lmri-12">staged delta </span>introduced in <a href="#x25-25000014.4">Section 14.4</a> is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 562 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><munder class="msub"><mrow><mi class="MathClass-op"> ⊞</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></munder><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 566 --><p class="indent">   where the indexed <!-- l. 566 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math>
+folds the partial coalescer and is defined only when the combined
+write-set is pairwise-compatible as above. Within this section,
+<!-- l. 568 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub></mrow></math> abbreviates
+<!-- l. 569 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>. Applying
+the ordered <!-- l. 569 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub></mrow></math>
+to <!-- l. 569 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math>
+yields <!-- l. 570 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+by clearing property sets for set-all-properties items, performing their
+property assignments in textual order, overwriting individual properties,
+adding labels, and leaving all other components unchanged. After each
+non-null set item, exceeding the supported maximum for a node label set,
+node property set, edge label set, or edge property set raises <span class="ec-lmcsc-10x-x-120">22G0P</span>,
+<span class="ec-lmcsc-10x-x-120">22G0S</span>, <span class="ec-lmcsc-10x-x-120">22G0R</span>, or <span class="ec-lmcsc-10x-x-120">22G0T</span>, respectively. The direct constraints on
+<!-- l. 576 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math> are dynamically
+                                                                          
+
+                                                                          
+validated against <!-- l. 576 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>. If
+<!-- l. 577 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math> has a constraining
+graph type <!-- l. 577 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GT</mi></mrow></math>
+and <!-- l. 577 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+is not of <!-- l. 577 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GT</mi></mrow></math>,
+the statement raises <span class="ec-lmcsc-10x-x-120">G2000</span>; this conformance check includes the constraints of
+<!-- l. 579 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GT</mi></mrow></math>.
+</p>
+<!-- l. 581 --><p class="noindent"><span class="paragraphHead"><a id="x25-25800014.4"></a><span class="ec-lmbx-12">Read stability.</span></span>
+   All l-values and r-values in <!-- l. 582 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math>
+are evaluated over the <span class="ec-lmri-12">pre-update working state </span>that produced
+<!-- l. 583 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">M</mi></mrow></math>. Thus,
+intra-statement reads do not observe effects of the same statement’s writes; only the
+final <!-- l. 585 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub></mrow></math>
+is materialized atomically. This statement-level evaluation rule does not by itself
+select the transaction isolation extension discussed in <a href="19-transaction-model.html#x33-36500019">Chapter 19</a>.
+</p>
+<!-- l. 589 --><p class="noindent"><span class="paragraphHead"><a id="x25-25900014.4"></a><span class="ec-lmbx-12">Examples of coalescing and conflict detection.</span></span>
+   The following examples illustrate how the canonical coalescer handles repeated
+updates generated by bag-valued pattern matching. The first example considers
+multiple identical and idempotent label additions, which can be safely reduced to
+a single effective update. The second considers incompatible property writes to
+the same target and property key, which cannot be coalesced and therefore result
+in an intra-statement conflict.
+</p>
+<!-- l. 597 --><p class="noindent"><span class="paragraphHead"><a id="x25-26000014.4"></a><span class="ec-lmbx-12">(A) Idempotent label addition under bag matches.</span></span>
+   Suppose the read pattern <!-- l. 598 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+matches the same vertex <!-- l. 598 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>i</mi></mrow></math>
+with multiplicity <!-- l. 598 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>5</mn></mrow></math>. Formally,
+the match result is a bag <!-- l. 599 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">M</mi></mrow></math>
+that contains five mappings <!-- l. 600 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mn>5</mn></mrow></msub></mrow></math>
+                                                                          
+
+                                                                          
+such that the l-value of the label update refers to
+<!-- l. 600 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>i</mi></mrow></math> under each
+mapping (e.g., <!-- l. 602 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><mstyle class="text"><mtext class="texttt" mathvariant="monospace">v</mtext></mstyle><msub><mrow><mi>⟧</mi></mrow><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>i</mi></mrow></math> for
+<!-- l. 602 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi> <mo class="MathClass-rel">=</mo> <mn>1</mn><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo> <mn>5</mn></mrow></math>). Let the write part be
+a single label-add atom <!-- l. 604 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+</p><!-- l. 606 --><p class="indent">   Then, for each <!-- l. 606 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi> <mo class="MathClass-rel">=</mo> <mn>1</mn><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo> <mn>5</mn></mrow></math>,
+evaluation of the template yields the same per-binding write-set: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 608 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">[</mo><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">]</mo></mrow><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 613 --><p class="indent">   Hence, the staged delta is obtained by folding these five identical contributions:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 614 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><munder class="msub"><mrow><mi class="MathClass-op"> ⊞</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></munder><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-bin">⊞</mo><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-rel">⋯</mo><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-bin">⊞</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mn>5</mn></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 623 --><p class="indent">   Because label addition is idempotent and duplicates are pairwise compatible
+under the canonical coalescer, the five identical atoms coalesce into a single
+effective update: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 626 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">{</mo><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ADD_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">}</mo></mrow><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 631 --><p class="indent">   Therefore, although <!-- l. 631 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+matches <!-- l. 631 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>i</mi></mrow></math>
+five times, the statement is equivalent, with respect to the final store state, to a single
+addition of <!-- l. 632 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi></mrow></math>
+to <!-- l. 633 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+</p>
+<!-- l. 635 --><p class="noindent"><span class="paragraphHead"><a id="x25-26100014.4"></a><span class="ec-lmbx-12">(B) Conflicting property writes.</span></span>
+   Consider a mapping <!-- l. 636 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></math>
+and two syntactically distinct l-values, for example <span class="ec-lmtt-12">x.k </span>and <span class="ec-lmtt-12">y.k</span>, that satisfy the
+static non-duplication rule but whose variable references alias at runtime:
+<!-- l. 639 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">x</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>μ</mi><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">y</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>i</mi></mrow></math>.
+Assume that their expressions produce two <span class="ec-lmri-12">different ground </span>writes to the same
+pair <!-- l. 640 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 641 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo> <mn>1</mn><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo> <mn>2</mn><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>U</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>with </mtext></mstyle><mn>1</mn><mo class="MathClass-rel">≠</mo><mn>2</mn><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 647 --><p class="indent">   Equivalently, this arises from the atoms </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 648 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">SET_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">SET_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>e</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 653 --><p class="indent">   such that <!-- l. 654 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><msub><mrow><mi>e</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mi>⟧</mi></mrow><mrow><mi>μ</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mn>1</mn></mrow></math>
+and <!-- l. 655 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><msub><mrow><mi>e</mi></mrow><mrow><mn>2</mn></mrow></msub><msub><mrow><mi>⟧</mi></mrow><mrow><mi>μ</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mn>2</mn></mrow></math>.
+</p><!-- l. 657 --><p class="indent">   Under the standard-permitted option (a) adopted by the canonical model here, the
+coalescer <!-- l. 658 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math> is
+defined only for pairwise-compatible operations. Since the two ground writes target the
+same pair <!-- l. 660 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+but prescribe different values, their union is not compatible. Consequently,
+<!-- l. 661 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math> is undefined,
+the indexed <!-- l. 661 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math>
+rejects the combined write-set, and the statement signals <span class="ec-lmcsc-10x-x-120">22G0M</span>, irrespective of
+the textual ordering of the two writes.
+</p>
+<!-- l. 665 --><p class="noindent"><span class="paragraphHead"><a id="x25-26200014.4"></a><span class="ec-lmbx-12">Concrete syntax for </span><span class="ec-lmtk-10x-x-120">REMOVE</span><span class="ec-lmbx-12">.</span></span>
+   A <span class="ec-lmtt-12">REMOVE</span><a id="dx25-262001"></a> statement removes properties and labels from elements named by
+variables that are bound by preceding query steps (typically by <span class="ec-lmtt-12">MATCH</span>). The
+following simplified BNF mirrors the style of <span class="ec-lmtt-12">SET </span>and isolates the core concrete
+form of the statement:
+</p>
+<!-- l. 669 --><div class="code-wrap"><span id="x25-262010r9"></span><span id="x25-262009r8"></span><span id="x25-262008r7"></span><span id="x25-262007r6"></span><span id="x25-262006r5"></span><span id="x25-262005r4"></span><span id="x25-262004r3"></span><span id="x25-262003r2"></span><span id="x25-262002r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>remove-stmt ::= "REMOVE" remove-item { "," remove-item }
+
+remove-item ::= var "." prop  
+              | var ( ":" | "IS" ) label 
+
+var   ::= identifier  /* binding variable from MATCH, etc. */
+prop  ::= identifier  /* property name */
+label ::= identifier  /* label name */
+</code></pre></div>
+<!-- l. 679 --><p class="noindent">Each <span class="ec-lmtt-12">remove-item </span>uses a binding variable whose declared type is a graph-element
+reference (node or edge). The first form <span class="ec-lmtt-12">var.prop </span>schedules the removal of
+a single property (if present) from the element denoted by <span class="ec-lmtt-12">var</span>. The second form
+<span class="ec-lmtt-12">var:Label </span>or <span class="ec-lmtt-12">var IS Label </span>schedules removal of a label (if present) from the
+element’s label set. The statement has empty declared type and does not change
+the working table: incoming and outgoing working record/table types coincide,
+and the result is omitted.
+</p>
+<!-- l. 686 --><p class="noindent"><span class="paragraphHead"><a id="x25-26300014.4"></a><span class="ec-lmbx-12">Remove templates and atoms.</span></span>
+   We reuse the update context and the notion of an update target introduced for
+<span class="ec-lmtt-12">SET</span>. Consider an update pipeline </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 689 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">MATCH </mtext></mstyle><mi>P</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">WHERE </mtext></mstyle><mi>ϕ</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE </mtext></mstyle><msub><mrow><mi>I</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 692 --><p class="indent">   whose read part yields the bag </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 693 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="bold-script">M</mi> <mo class="MathClass-rel">=</mo> <mi mathvariant="italic">⟦P</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">WHERE </mtext></mstyle><mi>ϕ</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi></mrow></msub>
+</mrow></math></td></tr></table></div>
+<!-- l. 697 --><p class="indent">   of mappings over node, edge, and path variables. Each occurrence of a mapping
+in <!-- l. 698 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">M</mi></mrow></math> is
+processed separately; hence duplicate mappings may generate duplicate removal
+atoms.
+</p><!-- l. 701 --><p class="indent">   The construction of the update proceeds in three stages. First, for every mapping occurrence
+<!-- l. 702 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></math> and every remove item
+<!-- l. 702 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math>, the binding-variable
+reference contained in <!-- l. 703 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math>
+is evaluated under <!-- l. 703 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 704 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>t</mi></mrow><mrow><mi>μ</mi><mo class="MathClass-punc">,</mo><mi>j</mi></mrow></msub> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">var</mtext></mstyle></mrow><mrow><mi>j</mi></mrow></msub><msub><mrow><mi>⟧</mi></mrow><mrow><mi>μ</mi><mo class="MathClass-punc">,</mo><mi>G</mi></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 708 --><p class="indent">   This <span class="ec-lmri-12">target-resolution stage </span>determines the node or edge to which the item
+refers but does not yet modify the graph. In particular, all targets are resolved
+with respect to the bindings produced by the read part before the corresponding
+removal effects are applied.
+</p><!-- l. 713 --><p class="indent">   Second, the resolved items are inspected in textual order. Each item
+contributes either one concrete removal atom or no atom. Writing
+<!-- l. 715 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜖</mi></mrow></math> for
+the empty list, let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 716 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo> <mrow><mo fence="true" form="prefix"> {</mo><mrow><mtable class="aligned"><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi>𝜖</mi><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo></mrow></mtd>
+</mtr> </mtable></mrow><mo fence="true" form="postfix">}</mo></mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 729 --><p class="indent">   be the contribution of <!-- l. 729 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math>.
+The per-binding write-set is the textual-order concatenation </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 731 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>U</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-bin"><mrow> +<mspace class="negthinspace" width="-0.17em"></mspace><mspace class="negthinspace" width="-0.17em"></mspace>+</mrow></mo> <mo class="MathClass-rel">⋯</mo><mo class="MathClass-bin"><mrow> +<mspace class="negthinspace" width="-0.17em"></mspace><mspace class="negthinspace" width="-0.17em"></mspace>+</mrow></mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 737 --><p class="indent">   where <!-- l. 737 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">+</mo><mspace class="negthinspace" width="-0.17em"></mspace><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-bin">+</mo></mrow></math>
+denotes list concatenation.
+</p><!-- l. 739 --><p class="indent">   Finally, the per-binding write-sets may be folded over all occurrences to give
+an extensional summary of the removals completed by a successful statement:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 741 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo><munder class="msub"><mrow><mi class="MathClass-op"> ⊞</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></munder><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>U</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 747 --><p class="indent">   This delta notation is not a replacement for the operational order required by
+<span class="ec-lmtt-12">REMOVE</span>. Records are processed in current-working-table order and, for
+each record, remove items are performed in textual order. The applicable
+label-cardinality check is made immediately after each label item. After every
+remove item, the graph’s direct constraints are dynamically validated and its
+conformance to the constraining graph type is checked. An exception stops that
+ordered execution. Repeated removals remain harmless once the property or label
+is absent.
+</p><!-- l. 756 --><p class="indent">   The contribution <!-- l. 756 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+is determined as follows.
+</p>
+<ul class="itemize1">
+<li class="itemize">
+<!-- l. 759 --><p class="noindent"><span class="ec-lmri-12">Property removal </span><span class="ec-lmtt-12">var.prop</span>. Let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 761 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>t</mi> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>t</mi></mrow><mrow><mi>μ</mi><mo class="MathClass-punc">,</mo><mi>j</mi></mrow></msub>
+</mrow></math></td></tr></table></div>
+<!-- l. 764 --><p class="noindent">be the previously resolved target and let <!-- l. 764 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math>
+      be the property name.
+      </p><!-- l. 766 --><p class="noindent">If <!-- l. 766 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>
+      is the null value, then the item has no effect: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 767 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>𝜖</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 770 --><p class="noindent">If <!-- l. 770 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>
+      is an invalidated reference, inspecting its property set raises <span class="ec-lmcsc-10x-x-120">22G11</span>.
+      Otherwise: </p>
+<ul class="itemize2">
+<li class="itemize">
+<!-- l. 773 --><p class="noindent">if <!-- l. 773 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math>
+           and <!-- l. 773 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math>
+           occurs in the node-property set of
+           <!-- l. 773 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>,
+           then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 774 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>t</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">;</mo>
+</mrow></math></td></tr></table></div>
+</li>
+<li class="itemize">
+<!-- l. 779 --><p class="noindent">if <!-- l. 779 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math>
+           and <!-- l. 779 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math>
+           occurs in the edge-property set of
+                                                                          
+
+                                                                          
+           <!-- l. 779 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>,
+           then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 780 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_PROP</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>t</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">;</mo>
+</mrow></math></td></tr></table></div>
+</li>
+<li class="itemize">
+<!-- l. 785 --><p class="noindent">if <!-- l. 785 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math>
+           is not present in the property set of
+           <!-- l. 785 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>,
+           then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 786 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>𝜖</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+</li></ul>
+</li>
+<li class="itemize">
+<!-- l. 791 --><p class="noindent"><span class="ec-lmri-12">Label removal </span><span class="ec-lmtt-12">var:Label </span>or <span class="ec-lmtt-12">var IS Label</span>. Let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 794 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>t</mi> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>t</mi></mrow><mrow><mi>μ</mi><mo class="MathClass-punc">,</mo><mi>j</mi></mrow></msub>
+</mrow></math></td></tr></table></div>
+<!-- l. 797 --><p class="noindent">be the previously resolved target and let
+      <!-- l. 797 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi></mrow></math>
+      be the label name.
+      </p><!-- l. 799 --><p class="noindent">If <!-- l. 799 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>
+      is the null value, then the item has no effect: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 800 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>𝜖</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 803 --><p class="noindent">If <!-- l. 803 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>
+      is an invalidated reference, inspecting its label set raises <span class="ec-lmcsc-10x-x-120">22G11</span>. Otherwise:
+      </p>
+<ul class="itemize2">
+<li class="itemize">
+<!-- l. 806 --><p class="noindent">if <!-- l. 806 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math>
+           and <!-- l. 806 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>t</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+           then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 807 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_NODE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>t</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">;</mo>
+</mrow></math></td></tr></table></div>
+</li>
+<li class="itemize">
+<!-- l. 812 --><p class="noindent">if <!-- l. 812 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi> <mo class="MathClass-rel">∈</mo> <mi>E</mi></mrow></math>
+           and <!-- l. 812 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>t</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+           then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 813 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">[</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">REMOVE_EDGE_LABEL</mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>t</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">;</mo>
+</mrow></math></td></tr></table></div>
+</li>
+<li class="itemize">
+<!-- l. 818 --><p class="noindent">if <!-- l. 818 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi></mrow></math>
+           is not contained in the label set of
+           <!-- l. 818 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi></mrow></math>,
+           then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 819 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>A</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>𝜖</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+</li></ul>
+</li></ul>
+<!-- l. 825 --><p class="indent">   Thus, <!-- l. 825 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>U</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+records the removal effects generated by one occurrence of a match, whereas
+<!-- l. 826 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub></mrow></math>
+collects the effects generated by the complete match bag. Applying
+<!-- l. 828 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub></mrow></math>
+removes the indicated properties and labels without deleting the affected nodes or
+edges themselves.
+</p>
+<!-- l. 831 --><p class="noindent"><span class="paragraphHead"><a id="x25-26400014.4"></a><span class="ec-lmbx-12">Extensional coalescing for </span><span class="ec-lmtk-10x-x-120">REMOVE</span><span class="ec-lmbx-12">.</span></span>
+   For describing the final graph of a successful execution, write-sets generated
+for different binding occurrences can be summarized using the canonical coalescer
+<!-- l. 834 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math>:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 835 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><munder class="msub"><mrow><mi class="MathClass-op"> ⊞</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><mi mathvariant="bold-script">M</mi></mrow></munder><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WS</mi></mrow></mstyle></mrow><mrow><mi>μ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>U</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 841 --><p class="indent">   Because <!-- l. 841 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>U</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub></mrow></math>
+contains only removal atoms, all contributions are pairwise compatible:
+</p>
+<ul class="itemize1">
+<li class="itemize">Removing the same property or label from the same element multiple
+      times is idempotent; duplicate atoms may therefore be coalesced into
+      a single removal.
+      </li>
+<li class="itemize">Removing  different  properties  or  labels,  whether  from  the  same  or
+      different graph elements, commutes; their order does not affect the final
+      graph state.</li></ul>
+<!-- l. 851 --><p class="noindent">Consequently, <!-- l. 851 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊞</mo></mrow></math>
+is defined when combining raw write-sets that contain only removal atoms, and there is
+no analog of the <span class="ec-lmri-12">multiple assignments to the same property </span>conflict (status <span class="ec-lmcsc-10x-x-120">22G0M</span>)
+that may arise for <span class="ec-lmtt-12">SET</span>. This extensional commutativity does not license reordering
+the operational steps: intermediate label-cardinality and graph-type checks remain
+observable. A successful <span class="ec-lmtt-12">REMOVE </span>statement has a uniquely determined summary
+<!-- l. 858 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub></mrow></math>. This
+delta may be empty when every remove item resolves to null, or when none of the
+indicated properties or labels is present; an invalidated reference instead raises
+<span class="ec-lmcsc-10x-x-120">22G11 </span>when its referent is accessed.
+</p>
+<!-- l. 863 --><p class="noindent"><span class="paragraphHead"><a id="x25-26500014.4"></a><span class="ec-lmbx-12">Application and label-set cardinalities.</span></span>
+   Applying <!-- l. 864 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub></mrow></math>
+to <!-- l. 864 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math> produces
+a graph <!-- l. 864 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+in which: </p>
+<ul class="itemize1">
+<li class="itemize">Every  <span class="ec-lmtt-12">REMOVE_NODE_PROP </span>and  <span class="ec-lmtt-12">REMOVE_EDGE_PROP </span>atom  deletes  the
+      indicated property from the respective property set, if present.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize">Every <span class="ec-lmtt-12">REMOVE_NODE_LABEL </span>and <span class="ec-lmtt-12">REMOVE_EDGE_LABEL </span>atom removes the
+      designated label from the respective label set, if present.</li></ul>
+<!-- l. 871 --><p class="noindent">Immediately after each label-removal item, the node-label set
+<!-- l. 872 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> (resp. edge-label
+set <!-- l. 872 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>)
+must still satisfy the implementation-defined minimum label-set cardinality. If the
+resulting cardinality for a node falls below the supported minimum, the
+statement signals data exception <span class="ec-lmcsc-10x-x-120">22G0N</span>; if it falls below the supported
+minimum for an edge, it signals <span class="ec-lmcsc-10x-x-120">22G0Q</span>. These label-set cardinality checks are
+data-exception rules of the operation. After each remove item, the graph’s
+direct constraints are dynamically validated. If the containing graph has
+a constraining graph type but the graph is not of that type, the operation raises
+<span class="ec-lmcsc-10x-x-120">G2000</span>; this conformance check includes the constraints of that graph
+type.
+</p>
+<!-- l. 882 --><p class="noindent"><span class="paragraphHead"><a id="x25-26600014.4"></a><span class="ec-lmbx-12">Read stability.</span></span>
+   A <span class="ec-lmtt-12">REMOVE </span>statement inherits the same statement-level read stability
+as <span class="ec-lmtt-12">SET</span>. All variable references used as l-values in <span class="ec-lmtt-12">remove-item</span>s are
+evaluated over the incoming working-table records. The removals
+are then performed in the record and item order described above;
+<!-- l. 887 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rem</mi></mrow></mstyle></mrow></msub></mrow></math> is
+only an extensional summary of a successful final effect. Transaction rollback
+rules govern the effects of a failed procedure.
+</p><!-- l. 890 -->
+
+<h2 class="sectionHead" id="x25-26700014.5"><span class="titlemark">14.5   </span> <a></a>Update Model for Property Graphs</h2>
+<a id="dx25-267001"></a>
+<!-- l. 891 --><p class="noindent">The mutable graph state is the complete property-graph tuple introduced in
+<a href="06-data-model.html#x12-510006">Chapter 6</a>: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 893 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>G</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>V</mi><mo class="MathClass-punc">,</mo><mi>E</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>V</mi> </mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi>E</mi></mrow></msub><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>src</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>dst</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>dir</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 897 --><p class="indent">   Primitive mutations (expressible using GQL data-modification statements) are
+modeled as deltas over all of these components: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 899 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="gathered" columnalign="center"><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>insNode</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo> <mi>Λ</mi><mo class="MathClass-punc">,</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>delNode</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>insEdge</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo> <mi>Λ</mi><mo class="MathClass-punc">,</mo><mi>P</mi><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>d</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>delEdge</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>setPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>setPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-punc">,</mo><mi>w</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>clearPropsV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>clearPropsE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>delPropV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>delPropE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>k</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>addLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>addLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="sans-serif"><mrow><mi>delLabelV</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>v</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="quad" width="1em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>delLabelE</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>e</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 913 --><p class="noindent">where <!-- l. 913 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Λ</mi></mrow></math> and
+<!-- l. 913 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math> are the new element’s
+label and property sets, <!-- l. 914 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi><mo class="MathClass-punc">,</mo><mi>v</mi> <mo class="MathClass-rel">∈</mo> <mi>V</mi> </mrow></math>
+are endpoints, and <!-- l. 914 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>d</mi></mrow></math>
+records whether an edge is directed and, when directed, its orientation. Application
+of a well-formed delta updates the corresponding components together; deleting
+a node is defined only when every incident edge is also deleted. A statement
+                                                                          
+
+                                                                          
+<!-- l. 917 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>U</mi></mrow></math> therefore denotes
+a partial transformation <!-- l. 918 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi><mo class="MathClass-rel">↦</mo><mi>G</mi> <mo class="MathClass-bin">⊕</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>U</mi></mrow></msub></mrow></math>.
+Failure of dynamic validation for a direct constraint in
+<!-- l. 920 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="qopname">ran</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> raises
+<span class="ec-lmcsc-10x-x-120">23000</span>. Independently, if the result of a primitive data-modifying statement is not
+of its constraining graph type, its mandatory conformance check raises
+<span class="ec-lmcsc-10x-x-120">G2000</span>.
+</p><!-- l. 924 -->
+
+<h2 class="sectionHead" id="x25-26800014.6"><span class="titlemark">14.6   </span> <a></a>Dynamic Constraint Validation</h2>
+<a id="dx25-268001"></a>
+<!-- l. 926 --><p class="noindent">Some DML forms are <span class="ec-lmri-12">set-based</span>: effects are computed from the whole input
+multiset to avoid statement-order anomalies (e.g., key and unique-constraint
+satisfaction), then applied atomically. After a primitive data-modifying operation,
+every constraint defined directly on the modified graph is dynamically validated.
+The graph is then checked for conformance to its constraining graph type, when
+present; that check includes the constraints of the graph type. Constraints
+registered for unrelated catalog subjects are not consulted.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 14 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Specified how data-modification statements transformed the
+      graph store via structured, compositional update semantics.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:          </span>Update           actions           as           deltas
+      derived from bindings; statement-level conflict detection and write-set
+      coalescing; implementation configuration affecting update behavior.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key   distinctions:   </span>Computing   updates   from   the   full   input
+      multiset versus stepwise application; direct-constraint validation versus
+      graph-type conformance.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Made   updates   analyzable   and   predictable   by
+      describing effects as explicit deltas; ensured well-defined behavior under
+      multiple matches and duplicates; clarified when statements failed due
+      to intra-statement conflicts or constraint interactions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Motivated a static layer (types and schemas) that constrained
+      what graphs and updates were admissible.</li></ul>
+</aside>
+<!-- l. 293 -->
+<!-- l. 293 --> <a id="tailtestch14.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-06-data-modification.html"><small>← Previous</small>Data Modification</a><a rel="next" href="part-07-types-schemas-and-constraints.html"><small>Next →</small>Types, Schemas, and Constraints</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x25-23600014.1">14.1 INSERT and CREATE</a><a href="#x25-24200014.2">14.2 DELETE</a><a href="#x25-24900014.3">14.3 Read-then-Update Composition</a><a href="#x25-25000014.4">14.4 Write-Set Coalescing and Conflicts</a><a href="#x25-26700014.5">14.5 Update Model for Property Graphs</a><a href="#x25-26800014.6">14.6 Dynamic Constraint Validation</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

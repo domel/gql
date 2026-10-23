@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Authorization — GQL Essentials, by Dominik Tomaszuk.">
+<title>Authorization · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part" open><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html" aria-current="page"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Authorization</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Security and Diagnostics</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x35-38700020"><span class="chapter-number">Chapter 20</span><a></a>Authorization</h1>
+<!-- l. 3 --><p class="noindent">This chapter gives an abstract, implementation-neutral description of
+authorization in GQL, focusing on how principals, roles, and privileges
+constrain access to catalog and data objects. In the broader security context,
+we use the term <span class="ec-lmri-12">security </span>primarily in the sense of <span class="ec-lmri-12">authorization</span><a id="dx35-387001"></a> (access
+control<a id="dx35-387002"></a>): the rules that determine which principals may reference which
+GQL-objects, and which operations are permitted on them. Rather than
+fixing a specific access-control mechanism, we model privilege grants,
+obligation sets, and object availability in a way that can be instantiated by
+concrete implementations while preserving the previously defined pure
+semantics.
+</p>
+<h2 class="sectionHead" id="x35-38800020.1"><span class="titlemark">20.1   </span> <a></a>Roles and Privileges</h2>
+<a id="dx35-388001"></a>
+<!-- l. 7 --><p class="noindent"><span class="paragraphHead"><a id="x35-38900020.1"></a><span class="ec-lmbx-12">Privileges</span><a id="dx35-389001"></a><span class="ec-lmbx-12">.</span></span>
+   Let <!-- l. 8 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">ℙℝ𝕀𝕍</mi></mrow></math> be
+the (implementation-defined) set of <span class="ec-lmri-12">privilege kinds/levels </span>(e.g., read, write, execute,
+administer, or finer-grained variants thereof). Privileges are modeled as a finite poset
+<!-- l. 10 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="italic">ℙℝ𝕀𝕍</mi><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">≤</mo><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>, where
+<!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϖ</mi> <mo class="MathClass-rel">≤</mo> <msup><mrow><mi>ϖ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> is read as
+“<!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>ϖ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> dominates (implies)
+<!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϖ</mi></mrow></math>”, i.e., possessing
+<!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>ϖ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> suffices wherever
+<!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϖ</mi></mrow></math> is required. We write
+<!-- l. 12 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊔</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+<!-- nolimits --><mi>P</mi></mrow></math> for the <span class="ec-lmri-12">least upper bound</span>
+(join) of a finite set <!-- l. 12 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi> <mo class="MathClass-rel">⊆</mo> <mi mathvariant="italic">ℙℝ𝕀𝕍</mi></mrow></math>
+(assumed to exist in this abstract model). The concrete elements of
+<!-- l. 14 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">ℙℝ𝕀𝕍</mi></mrow></math> and
+their ordering are implementation-defined; here we reason over abstract elements
+<!-- l. 15 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϖ</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">ℙℝ𝕀𝕍</mi></mrow></math>
+without fixing names or generators.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 17 --><p class="noindent"><span class="paragraphHead"><a id="x35-39000020.1"></a><span class="ec-lmbx-12">Authorization identifiers, roles, and authorization targets.</span></span>
+<a id="dx35-390001"></a>
+<a id="dx35-390002"></a>
+   Let (<!-- l. 18 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">𝔸𝕀𝔻</mi></mrow></math>)
+be the set of <span class="ec-lmri-12">authorization identifiers</span>. Each authorization identifier
+(<!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝔸𝕀𝔻</mi></mrow></math>)
+identifies a principal together with a set of privileges under which GQL requests
+associated with (a) are executed. A single principal may be identified
+by more than one authorization identifier, allowing the same principal
+to operate under different privilege sets, for example under a restricted
+context for ordinary queries and a more privileged context for management
+operations.
+</p><!-- l. 22 --><p class="indent">   Let (<!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">ℝ𝕆𝕃𝔼</mi></mrow></math>)
+be an implementation-defined set of roles<a id="dx35-390003"></a> used to structure privilege assignments.
+A role represents a reusable grouping of related privileges and may be associated
+with one or more authorization identifiers. Typical role categories may provide
+read-only access, permission to modify graph data, permission to execute
+named procedures, permission to manage schema objects, or permission to
+administer privilege assignments. The available roles, their names, and the
+mechanism by which they are associated with authorization identifiers are
+implementation-defined.
+</p><!-- l. 27 --><p class="indent">   Let (<!-- l. 27 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">𝕆𝔹𝕁</mi></mrow></math>)
+be the set of <span class="ec-lmri-12">authorization targets</span>, that is, entities to which privileges may apply.
+In the core model, authorization targets are complete GQL-objects, such as
+graphs, graph types, binding tables, and named procedures. Thus, a privilege may
+permit a particular class of operations, such as reading, modifying, executing,
+defining, or administering, on an individual authorization target or on a class of
+such targets. The set of privileges identified by an authorization identifier is
+implementation-defined. An implementation may additionally define privileges on
+graph elements, labels, or properties, but that is an extension whose effect
+on query evaluation must also be defined by that implementation; the
+core semantics below does not silently turn a stored graph into a filtered
+subgraph.
+</p>
+<!-- l. 37 --><p class="noindent"><span class="paragraphHead"><a id="x35-39100020.1"></a><span class="ec-lmbx-12">Grants.</span></span>
+<a id="dx35-391001"></a>
+<a id="dx35-391002"></a>
+<a id="dx35-391003"></a>
+<a id="dx35-391004"></a>
+<a id="dx35-391005"></a>
+   An authorization state <!-- l. 38 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">Z</mi></mrow></math>
+is a finite set of facts: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 39 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>hasRole</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝔸𝕀𝔻</mi><mo class="MathClass-punc">,</mo><mspace class="thinspace" width="0.17em"></mspace><mi>r</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">ℝ𝕆𝕃𝔼</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>grant</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>g</mi><mo class="MathClass-punc">,</mo><mi>x</mi><mo class="MathClass-punc">,</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 45 --><p class="indent">   where <!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>g</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝔸𝕀𝔻</mi></mrow></math> is
+a grantor, <!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝔸𝕀𝔻</mi> <mo class="MathClass-bin">∪</mo> <mi mathvariant="italic">ℝ𝕆𝕃𝔼</mi></mrow></math>,
+<!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϖ</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">ℙℝ𝕀𝕍</mi></mrow></math>,
+<!-- l. 45 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝕆𝔹𝕁</mi></mrow></math>. (Grant-option
+policy and catalog specifics are implementation-defined.) Effective privilege for authorization
+identifier <!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math>
+on object <!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi></mrow></math>
+is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 48 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mo> ⊔</mo>
+<mo class="MathClass-open" stretchy="false">{</mo><mspace class="thinspace" width="0.17em"></mspace><mi>ϖ</mi><mo class="MathClass-rel">∣</mo><mi class="MathClass-op">∃</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>r</mi><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>hasRole</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∧</mo><mstyle mathvariant="sans-serif"><mrow><mi>grant</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">−</mo><mo class="MathClass-punc">,</mo><mi>r</mi><mo class="MathClass-punc">,</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext>or</mtext></mstyle><mspace class="nbsp" width="0.33em"></mspace><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>grant</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">−</mo><mo class="MathClass-punc">,</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 53 --><p class="indent">   taking joins in the poset <!-- l. 53 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="italic">ℙℝ𝕀𝕍</mi><mo class="MathClass-punc">,</mo><mo class="MathClass-rel">≤</mo><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>.
+</p>
+<aside class="tcolorbox note-box"><div class="tcolorbox-title">Note</div> Formally, the GQL standard reserves the keywords <span class="ec-lmtt-12">GRANT </span>and
+<span class="ec-lmtt-12">REVOKE</span>, but at the time of writing, it does not assign them any normative
+statement syntax or execution semantics. In this chapter, we therefore model
+authorization abstractly, in terms of roles, grants, and effective privileges, without
+committing to a particular concrete language for privilege-management
+statements. Future versions of the standard are expected to refine this
+situation by introducing explicit syntax and semantics for such statements,
+at which point this abstract account can be instantiated accordingly. </aside>
+<!-- l. 59 -->
+
+<h2 class="sectionHead" id="x35-39200020.2"><span class="titlemark">20.2   </span> <a></a>Privilege Obligations and Enforcement</h2>
+<a id="dx35-392001"></a>
+<a id="dx35-392002"></a>
+<!-- l. 61 --><p class="noindent"><span class="paragraphHead"><a id="x35-39300020.2"></a><span class="ec-lmbx-12">Obligation judgments.</span></span>
+<a id="dx35-393001"></a>
+   Let <!-- l. 62 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Θ</mi></mrow></math>
+be the binding-name-to-type environment used while typing a statement, and let
+<!-- l. 63 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝔖</mi></mrow></math> be
+the applicable static schema/type context. We extend typing with a privilege
+obligation set: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 65 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>Θ</mi><mo class="MathClass-punc">;</mo> <mi>𝔖</mi><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">⊢</mo><mspace class="thickpace" width="0.28em"></mspace><mi>S</mi> <mo class="MathClass-punc">:</mo> <mi>τ</mi><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-bin">⊳</mo> <mspace class="thickpace" width="0.28em"></mspace><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 68 --><p class="indent">   where <!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub> <mo class="MathClass-rel">⊆</mo> <mi mathvariant="italic">ℙℝ𝕀𝕍</mi> <mo class="MathClass-bin">×</mo> <mi mathvariant="italic">𝕆𝔹𝕁</mi></mrow></math>
+is the least set of privilege–object pairs required by the syntactic constituents of
+<!-- l. 71 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>. The
+set is computed compositionally: each primitive language construct contributes
+the obligations specified by its typing rule, while the obligations of a compound
+construct are obtained by taking the union of the obligations computed for its
+immediate subconstructs. For example, sequential composition satisfies
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 77 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<img alt="Θ;-𝔖--⊢-S1-: τ1 ⊳-1-Θ;-𝔖-⊢-S2-: τ2-⊳ 2-Seq
+      Θ; 𝔖  ⊢ S1;S2 : τ2 ⊳ 1 ∪ 2" loading="lazy" src="assets/test-014aec644d1e27fd124a1d989fc82777.svg"/><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 87 --><p class="indent">   Thus, no privilege obligation belongs to
+<!-- l. 87 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math> unless it is introduced
+by a constituent of <!-- l. 88 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+or by a rule for composing such constituents; repeated occurrences of the same obligation
+collapse because <!-- l. 90 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math>
+is a set.
+</p><!-- l. 92 --><p class="indent">   The mapping from language constructs to required privilege kinds
+is implementation-defined; we therefore use abstract placeholders: let
+<!-- l. 95 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><msub><mrow><mi>ϖ</mi></mrow><mrow><mi mathvariant="italic">match</mi></mrow></msub></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><msub><mrow><mi>ϖ</mi></mrow><mrow><mi mathvariant="italic">insert</mi></mrow></msub></mstyle> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">ℙℝ𝕀𝕍</mi></mrow></math>
+                                                                          
+
+                                                                          
+be representative required privilege kinds and let
+<!-- l. 97 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>o</mi></mrow><mrow><mi>φ</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>o</mi></mrow><mrow><mi>G</mi></mrow></msub> <mo class="MathClass-rel">∈</mo> <mi mathvariant="italic">𝕆𝔹𝕁</mi></mrow></math> be
+the corresponding authorization targets. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 98 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt="      Θ; 𝔖  ⊢ φ well- typed  on object oφ
+----------------------------------------------Match
+Θ;𝔖  ⊢ MATCH   φ : empty  type ⊳ {(ϖmatch,oφ)}" loading="lazy" src="assets/test-fe2acefe08b3e1d9f3c1c2ef0eb20d16.svg"/>
+</math></td></tr></table></div>
+<div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 110 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<img alt="-------Θ;𝔖--⊢-(v:L)-well- typed--in-graph--oG--------Insert
+Θ; 𝔖 ⊢ INSERT   (v:L ) : empty type ⊳ {(ϖinsert,oG )}" loading="lazy" src="assets/test-1a72ac3ef198284903c1ad9b02abf3cb.svg"/><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 122 --><p class="noindent"><span class="paragraphHead"><a id="x35-39400020.2"></a><span class="ec-lmbx-12">Authorization check (dynamic).</span></span>
+<a id="dx35-394001"></a>
+   At execution under session authorization identifier
+<!-- l. 123 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math>,
+the engine verifies that, for every required privilege–object pair
+<!-- l. 124 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math>, the effective
+privileges of <!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math> on
+<!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi></mrow></math> include or dominate
+                                                                          
+
+                                                                          
+the required privilege <!-- l. 126 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϖ</mi></mrow></math>:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 127 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-open" stretchy="false">(</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≥</mo> <mi>ϖ</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 130 --><p class="indent">   Equivalently, authorization succeeds only if there is no
+<!-- l. 131 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math> such
+that <!-- l. 132 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">≱</mo><mi>ϖ</mi></mrow></math>.
+If this condition is not satisfied, the statement is rejected before its evaluation
+begins, and an appropriate authorization diagnostic is raised.
+</p><!-- l. 137 --><p class="indent">   The objects in <!-- l. 137 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math>
+are determined from the syntactic form and catalog context so that authorization
+completes before the statement’s General Rules are evaluated. Refining this
+required check later from objects actually accessed during execution is outside the
+core model.
+</p>
+<!-- l. 142 --><p class="noindent"><span class="paragraphHead"><a id="x35-39500020.2"></a><span class="ec-lmbx-12">Minimality/monotonicity.</span></span>
+<!-- l. 143 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math>
+is minimal up to poset equivalence. We write
+<!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi> <mo class="MathClass-rel">≼</mo> <msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> to mean that
+<!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> is a <span class="ec-lmri-12">contextual
+</span><span class="ec-lmri-12">extension </span>of <!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>,
+i.e., there exists a (single-hole) statement context
+<!-- l. 145 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>C</mi><mo class="MathClass-open" stretchy="false">[</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">]</mo></mrow></math> such
+that <!-- l. 145 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup> <mo class="MathClass-rel">=</mo> <mi>C</mi><mo class="MathClass-open" stretchy="false">[</mo><mi>S</mi><mo class="MathClass-close" stretchy="false">]</mo></mrow></math> (so
+<!-- l. 146 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math> occurs as a syntactic
+substatement of <!-- l. 146 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>).
+                                                                          
+
+                                                                          
+Then obligations are monotone under such extensions: if
+<!-- l. 148 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi> <mo class="MathClass-rel">≼</mo> <msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>, then
+<!-- l. 148 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub> <mo class="MathClass-rel">⊆</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub></mrow></math>.
+</p><!-- l. 150 -->
+
+<h2 class="sectionHead" id="x35-39600020.3"><span class="titlemark">20.3   </span> <a></a>Authorized Object Access</h2>
+<!-- l. 151 --><p class="noindent"><span class="paragraphHead"><a id="x35-39700020.3"></a><span class="ec-lmbx-12">Object availability.</span></span>
+<a id="dx35-397001"></a>
+   An execution context provides access only to the complete GQL-objects
+available to it. We represent this implementation-defined availability by
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 154 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>available</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-rel">⊆</mo><mspace class="nbsp" width="0.33em"></mspace><mi mathvariant="italic">𝔸𝕀𝔻</mi> <mo class="MathClass-bin">×</mo> <mi mathvariant="italic">𝕆𝔹𝕁</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 157 --><p class="indent">   Availability controls object reference and name resolution; permission to
+perform an operation is separately determined by the effective privileges of the
+session authorization identifier. In particular, availability of a graph does not
+denote availability of an induced subgraph.
+</p>
+<!-- l. 162 --><p class="noindent"><span class="paragraphHead"><a id="x35-39800020.3"></a><span class="ec-lmbx-12">Query semantics under authorization.</span></span>
+<a id="dx35-398001"></a>
+   Let <!-- l. 163 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦S</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi mathvariant="bold-script">K</mi><mo class="MathClass-punc">,</mo><mi>G</mi></mrow></msub></mrow></math>
+                                                                          
+
+                                                                          
+denote the pure semantics of a query statement
+<!-- l. 164 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>. Its
+authorization-identifier-indexed semantics is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 165 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦S</mi><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi mathvariant="bold-script">K</mi><mo class="MathClass-punc">,</mo><mi>G</mi></mrow><mrow><mi>u</mi></mrow></msubsup> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mi mathvariant="italic">⟦S</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi mathvariant="bold-script">K</mi><mo class="MathClass-punc">,</mo><mi>G</mi></mrow></msub> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mrow><mtext>if every referenced object is available to </mtext><mstyle class="math"><mi>u</mi></mstyle><mtext></mtext></mrow></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>and </mtext></mstyle><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-open" stretchy="false">(</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≥</mo> <mi>ϖ</mi><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr class="vspace" style="font-size:3.0pt"><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>exception </mtext></mstyle><mstyle class="text"><mtext class="textsc" mathvariant="normal">42000</mtext></mstyle><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 174 --><p class="indent">   Thus an authorized query reads the ordinary, complete graph state. If the
+execution would perform an operation not permitted by the privileges identified
+by the session authorization identifier, the request instead raises <span class="ec-lmri-12">syntax error or
+</span><span class="ec-lmri-12">access rule violation </span>(<span class="ec-lmcsc-10x-x-120">42000</span>). Any finer-grained row-, element-, label-, or
+property-filtering semantics is an implementation-defined extension and is not
+inferred from this core model.
+</p><!-- l. 181 -->
+
+<h2 class="sectionHead" id="x35-39900020.4"><span class="titlemark">20.4   </span> <a></a>Write Checks</h2>
+<a id="dx35-399001"></a>
+<!-- l. 182 --><p class="noindent"><span class="paragraphHead"><a id="x35-40000020.4"></a><span class="ec-lmbx-12">Write-related obligations.</span></span>
+   The obligation set <!-- l. 183 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math>
+for a statement <!-- l. 183 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+may contain privileges corresponding to read-only operations, write operations
+(data-modifying or catalog-modifying), or both. GQL characterizes privileges as
+permissions to cause certain kinds of operations to be performed and specifies that
+if the execution of a GQL-request would perform an operation not permitted by
+the privileges of the session authorization identifier, then the exception 42000 is
+                                                                          
+
+                                                                          
+raised. We model this by requiring that, for every operational step of
+<!-- l. 189 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+that attempts to modify a catalog or data object
+<!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi></mrow></math>, there is
+some <!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math> such
+that <!-- l. 190 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≥</mo> <mi>ϖ</mi></mrow></math>;
+otherwise, execution raises 42000 before that modification takes effect.
+</p>
+<!-- l. 193 --><p class="noindent"><span class="paragraphHead"><a id="x35-40100020.4"></a><span class="ec-lmbx-12">Interaction with transaction access mode.</span></span>
+   GQL distinguishes the transaction access modes
+<!-- l. 194 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>READ</mi><mspace class="nbsp" width="0.33em"></mspace><mi>ONLY</mi></mrow></mstyle></mrow></math> and
+<!-- l. 195 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>READ</mi><mspace class="nbsp" width="0.33em"></mspace><mi>WRITE</mi></mrow></mstyle></mrow></math>, abbreviated
+as <!-- l. 195 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RO</mi></mrow></mstyle></mrow></math>
+and <!-- l. 195 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RW</mi></mrow></mstyle></mrow></math>,
+respectively, and mandates that: </p>
+<ul class="itemize1">
+<li class="itemize">Executing a <span class="ec-lmri-12">linear catalog-modifying statement </span>when the current transaction
+      access mode is <!-- l. 199 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RO</mi></mrow></mstyle></mrow></math>
+      raises <span class="ec-lmri-12">invalid transaction state—read-only GQL-transaction </span>(25G03).
+      </li>
+<li class="itemize">Executing a <span class="ec-lmri-12">linear data-modifying statement </span>when the current transaction
+      access mode is <!-- l. 202 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RO</mi></mrow></mstyle></mrow></math>
+      likewise raises 25G03.
+      </li>
+<li class="itemize">Executing such statements when the current transaction access mode is
+      <!-- l. 203 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RW</mi></mrow></mstyle></mrow></math>
+      is not rejected by the transaction access-mode rule (i.e., 25G03 is not
+      raised on that basis); any rejection must arise from other rules, such as
+      privilege checks.</li></ul>
+<!-- l. 209 --><p class="indent">   Let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 210 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>txMode</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="sans-serif"><mrow><mi>RO</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>RW</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">}</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 213 --><p class="indent">   be the current transaction access mode. For a statement
+<!-- l. 214 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+whose syntactic statement kind is data-modifying or catalog-modifying,
+dynamic execution under session authorization identifier
+<!-- l. 216 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math>
+proceeds as follows: first perform the privilege check </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 218 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-open" stretchy="false">(</mo><mi>ϖ</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mi>S</mi></mrow></msub><mo class="MathClass-punc">.</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>eff</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mi>o</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≥</mo> <mi>ϖ</mi><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 221 --><p class="indent">   raising 42000 on failure before the statement’s General Rules are applied. If
+authorization succeeds, those General Rules then apply the transaction-mode
+check </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 224 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext>if </mtext></mstyle><mstyle mathvariant="sans-serif"><mrow><mi>txMode</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>RO</mi></mrow></mstyle><mstyle class="text"><mtext> and </mtext></mstyle><mi>S</mi><mstyle class="text"><mtext> may modify catalog or data, then raise 25G03.</mtext></mstyle>
+</mrow></math></td></tr></table></div>
+<!-- l. 228 --><p class="indent">   The modifying operations of <!-- l. 228 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+are permitted to proceed only if both checks succeed; the authorization step
+precedes the statement-level read-only check.
+</p>
+<!-- l. 231 --><p class="noindent"><span class="paragraphHead"><a id="x35-40200020.4"></a><span class="ec-lmbx-12">Atomicity and failure behavior.</span></span>
+   Transaction management in GQL requires that a transaction is atomic with
+respect to recovery: a request that raises <span class="ec-lmcsc-10x-x-120">25G03 </span>or <span class="ec-lmcsc-10x-x-120">42000 </span>has no effect on the
+GQL-catalog or on GQL-data. If the condition propagates to a failed outcome of
+the executing procedure, the implementation attempts to roll back the current
+transaction. Thus: </p>
+<ul class="itemize1">
+<li class="itemize">No partial writes performed by <!-- l. 238 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>
+      are observable in the committed state.
+      </li>
+<li class="itemize">No  later  component  of  the  failed  request  is  executed.  If  rollback
+      succeeds, the transaction is terminated; the effect of a failed rollback
+      attempt  is  governed  by  the  transaction  rules  rather  than  by  the
+      authorization condition itself.</li></ul>
+<!-- l. 244 --><p class="noindent">An authorization failure therefore supplies the standard access-rule condition; it is
+not itself reclassified as a transaction-rollback condition. If a transaction-rollback
+condition is also raised, the diagnostic precedence rules select that condition as
+primary.
+                                                                          
+
+                                                                          
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 20 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose:  </span>Gave  an  abstract,  implementation-neutral  semantics  of
+      authorization for GQL programs.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:      </span>Principals       and       roles;       privileges       and
+      grants; object-availability and obligation concepts that control access;
+      a read-only versus read-write transaction mode distinction.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key  distinctions:  </span>Availability  of  a complete  GQL-object  versus
+      permission  to  perform  an  operation  on  it;  catalog-object  privileges
+      versus data-object privileges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Preserved  ordinary  graph  semantics  for  authorized
+      queries; prevented unauthorized updates by making permission checks
+      part of the semantics; left finer-grained filtering to explicitly defined
+      implementation extensions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Motivated diagnostics as the mechanism that made failures,
+      warnings, and authorization denials observable and standardized.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch20.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-10-security-and-diagnostics.html"><small>← Previous</small>Security and Diagnostics</a><a rel="next" href="21-diagnostics.html"><small>Next →</small>Diagnostics</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x35-38800020.1">20.1 Roles and Privileges</a><a href="#x35-39200020.2">20.2 Privilege Obligations and Enforcement</a><a href="#x35-39600020.3">20.3 Authorized Object Access</a><a href="#x35-39900020.4">20.4 Write Checks</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

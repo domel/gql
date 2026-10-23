@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Algebra of Binding Tables — GQL Essentials, by Dominik Tomaszuk.">
+<title>Algebra of Binding Tables · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part" open><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html" aria-current="page"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Algebra of Binding Tables</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Expressions and Algebra</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x16-1300009"><span class="chapter-number">Chapter 09</span><a></a>Algebra of Binding Tables</h1>
+<!-- l. 3 --><p class="noindent">This chapter introduces the algebra of binding tables, which forms the
+intermediate value domain on which query blocks and statements operate. We
+treat binding tables as bags of records and present selection, projection, joins,
+unwinding, and subquery composition as operations that transform them. The
+algebra is formulated with explicit bag semantics, three-valued logic, and
+ordering metadata, in a manner that aligns with the GQL standard’s
+treatment of optional pattern matching, correlation, and primitive result
+statements.
+</p><!-- l. 5 --><p class="indent">   Classical bag-query algebras provide background on duplicates, aggregation,
+nesting, and expressive power (<a id="x16-130001"></a><a href="bibliography.html#cite.0@GrumbachMilo1996">Grumbach and Milo 1996</a>; <a id="x16-130002"></a><a href="bibliography.html#cite.0@LibkinWong1997">Libkin and Wong 1997</a>).
+They serve here only as mathematical background; binding-table descriptors,
+ordering metadata, preferred column names, and the operator rules remain
+governed by GQL.
+</p>
+<h2 class="sectionHead" id="x16-1310009.1"><span class="titlemark">9.1   </span> <a></a>Selection and Projection</h2>
+<!-- l. 8 --><p class="noindent">Let <!-- l. 8 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>T</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle></mrow></math> be a binding
+table with <!-- l. 9 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>T</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>rec</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>.
+The formulas below act on this bag projection; each operator separately preserves
+or updates the ordered/unordered and preferred-column metadata of the complete
+binding-table descriptor. Projecting actions are modeled as functions on multisets
+of records:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmri-12">Selection</span><a id="dx16-131001"></a><span class="ec-lmri-12">: </span><!-- l. 15 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>σ</mi></mrow><mrow><mi>φ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+      — the submultiset of records satisfying predicate <!-- l. 15 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi></mrow></math>
+      (evaluated in GQL types, with null handling according to the comparison
+      semantics and the three-valued truth tables from <a href="08-expressions-and-evaluation.html#x15-1130008">Chapter 8</a>).
+      </li>
+<li class="itemize"><span class="ec-lmri-12">Projection</span><a id="dx16-131002"></a><span class="ec-lmri-12">: </span><!-- l. 16 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>π</mi></mrow><mrow><msub><mrow><mi>E</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-rel">↦</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>E</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class="MathClass-rel">↦</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+      — each input record occurrence contributes once to a new record <!-- l. 16 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>r</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+      with fields named <!-- l. 16 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+      taking values <!-- l. 16 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><msub><mrow><mi>E</mi></mrow><mrow><mi>i</mi></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>;
+      multiplicities of equal projected records are summed.
+      </li>
+<li class="itemize"><span class="ec-lmri-12">Natural join</span><a id="dx16-131003"></a><span class="ec-lmri-12">: </span><!-- l. 17 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-rel"> ⋊⋉</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>
+      — join based on name compatibility and equal values of shared fields;
+      the bag multiplicity is consistent with the product of multiplicities of
+      the paired records.
+      </li>
+<li class="itemize"><span class="ec-lmri-12">Ordering</span><a id="dx16-131004"></a><span class="ec-lmri-12">:  </span>ordering  metadata  may  be  included  in  the  descriptor  of
+      a binding table, distinguishing ordered from unordered tables; it does
+      not affect the underlying bag semantics but determines the order in
+      which records are emitted.<span class="footnote-mark"><a href="footnote-17.html#fn2x9"><sup class="textsuperscript">2</sup></a></span><a id="x16-131005f2"></a> </li></ul>
+<!-- l. 22 --><p class="indent">   For example, let <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub></mrow></math>
+have the two rows </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 23 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><msub><mrow><mi>r</mi></mrow><mrow><mn>1</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">title</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">’Graph DB 101’</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">late_fee</mtext></mstyle><mo class="MathClass-rel">↦</mo><mn>0</mn><mo class="MathClass-punc">.</mo><mn>0</mn><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>r</mi></mrow><mrow><mn>2</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">title</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">’Graph Theory’</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">late_fee</mtext></mstyle><mo class="MathClass-rel">↦</mo><mn>2</mn><mo class="MathClass-punc">.</mo><mn>5</mn><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 31 --><p class="indent">   Then <!-- l. 31 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>σ</mi></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">late_fee</mtext></mstyle><mo class="MathClass-rel">&gt;</mo><mn>0</mn></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+retains only <!-- l. 32 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>r</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>,
+and projecting it onto <span class="ec-lmtt-12">title </span>yields the singleton row
+<!-- l. 33 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">title</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">’Graph Theory’</mtext></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>.
+</p><!-- l. 35 -->
+
+<h2 class="sectionHead" id="x16-1320009.2"><span class="titlemark">9.2   </span> <a></a>Joins and <span class="ec-lmtt-12">OPTIONAL </span>(Left-Outer Join)</h2>
+<a id="dx16-132001"></a>
+<!-- l. 37 --><p class="noindent"><span class="paragraphHead"><a id="x16-1330009.2"></a><span class="ec-lmbx-12">Compatibility and merge.</span></span>
+   Mappings <!-- l. 38 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi><mo class="MathClass-punc">,</mo><mi>ν</mi></mrow></math> are <span class="ec-lmri-12">naturally
+</span><span class="ec-lmri-12">compatible</span>, written <!-- l. 39 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-rel">∼</mo> <mi>ν</mi></mrow></math>,
+iff their fields with the same name have equal values in the value-level
+sense used by the GQL definition of natural joinability. This is not an
+evaluation of the three-valued comparison predicate; in particular, two common
+fields that both contain the null value have equal values. Their <span class="ec-lmri-12">merge</span>
+<!-- l. 43 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-bin">⊔</mo> <mi>ν</mi></mrow></math> is the
+union partial map after any required common-type coercion and is well-defined when
+<!-- l. 44 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-rel">∼</mo> <mi>ν</mi></mrow></math>.
+</p>
+<!-- l. 46 --><p class="noindent"><span class="paragraphHead"><a id="x16-1340009.2"></a><span class="ec-lmbx-12">Binding-table semantics of </span><span class="ec-lmtk-10x-x-120">OPTIONAL MATCH</span><a id="dx16-134001"></a><span class="ec-lmbx-12">.</span></span>
+   Let <!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></math> be the
+current table, let <!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>Γ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> be
+a pattern, and let <!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>gpbt</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>
+be its graph pattern binding table with an explicit or implicit <span class="ec-lmtt-12">YIELD </span>clause. In
+ISO/IEC 39075, <span class="ec-lmtt-12">OPTIONAL MATCH </span>is specified via a translation to an <span class="ec-lmtt-12">OPTIONAL
+</span><span class="ec-lmtt-12">CALL </span>whose <span class="ec-lmtt-12">RETURN </span>list contains only the <span class="ec-lmri-12">new </span>output bindings. The call
+is evaluated separately for every occurrence of an incoming record, so
+the correlation columns must not be projected away before the optional
+expansion.
+</p><!-- l. 56 --><p class="indent">   More generally, let <!-- l. 56 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">F</mi></mrow></math>
+be a correlated binding-table transformer and let
+                                                                          
+
+                                                                          
+<!-- l. 57 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>C</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>new</mi></mrow></mstyle></mrow></msub></mrow></math> be
+the columns in its declared output record type that are not columns of
+<!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>. For every
+occurrence of <!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>
+in <!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>,
+put </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 59 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>Out</mi></mrow></mstyle></mrow><mrow><mi mathvariant="bold-script">F</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mi mathvariant="bold-script">F</mi><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-open" stretchy="false">{</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">}</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>C</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>new</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 62 --><p class="indent">   where the singleton is an incoming table occurrence and the final parentheses
+denote projection. Define the correlated optional expansion by </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 64 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>OptExpand</mi></mrow></mstyle></mrow><mrow><mi mathvariant="bold-script">F</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo><munder class="msub"><mrow><mo> ⊎</mo>
+</mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></munder><mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><munder class="msub"><mrow><mo>⊎</mo>
+</mrow><mrow><mi>ν</mi><mo class="MathClass-rel">∈</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Out</mi></mrow></mstyle></mrow><mrow><mi mathvariant="bold-script">F</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></munder><mo class="MathClass-open" stretchy="false">{</mo><mi>μ</mi> <mo class="MathClass-bin">⊔</mo> <mi>ν</mi><mo class="MathClass-close" stretchy="false">}</mo> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Out</mi></mrow></mstyle></mrow><mrow><mi mathvariant="bold-script">F</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">≠</mo><mo class="MathClass-ord">∅</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> <mtr class="vspace" style="font-size:5.16667pt"><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="left"><mrow><mo class="MathClass-open" stretchy="false">{</mo><mi>μ</mi> <mo class="MathClass-bin">⊔</mo><mo class="MathClass-open" stretchy="false">{</mo><mi>c</mi><mo class="MathClass-rel">↦</mo><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle><mo class="MathClass-rel">∣</mo><mi>c</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>C</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>new</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-close" stretchy="false">}</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 75 --><p class="indent">   Thus, with <!-- l. 75 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">F</mi> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>GPBT</mi></mrow></mstyle></mrow><mrow><msubsup><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>gpbt</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></msub></mrow></math>,
+<!-- l. 76 --><span class="inline-math-scroll"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>OPT</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>MATCH</mi></mrow></mstyle></mrow><mrow><msup><mrow><mi>Γ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>OptExpand</mi></mrow></mstyle></mrow><mrow><mi mathvariant="bold-script">F</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math></span>. This
+preserves correlation with each incoming record and fills all statically declared new
+fields with <!-- l. 79 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+exactly when that record has no matching extension.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 81 --><p class="noindent"><span class="paragraphHead"><a id="x16-1350009.2"></a><span class="ec-lmbx-12">Bag join.</span></span>
+   For bags <!-- l. 82 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>
+of mappings, define the (natural) bag join </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 83 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-rel"> ⋊⋉</mo> <msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><munder class="msub"><mrow><mo> ⊎</mo>
+</mrow><mrow><mi>μ</mi><mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></munder><mspace class="nbsp" width="0.33em"></mspace><munder class="msub"><mrow><mo> ⊎</mo>
+</mrow><mrow><mi>ν</mi><mo class="MathClass-rel">∈</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></munder><mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mo class="MathClass-open" stretchy="false">{</mo><mi>μ</mi> <mo class="MathClass-bin">⊔</mo> <mi>ν</mi><mo class="MathClass-close" stretchy="false">}</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><mi>μ</mi> <mo class="MathClass-rel">∼</mo> <mi>ν</mi><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mo class="MathClass-ord">∅</mo> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 91 --><p class="noindent"><span class="paragraphHead"><a id="x16-1360009.2"></a><span class="ec-lmbx-12">Guarded join (ON-condition).</span></span>
+   Given a Boolean guard <!-- l. 92 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math>,
+the guarded join is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 93 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mo class="MathClass-rel"> ⋊⋉</mo> </mrow><mrow><mi>𝜃</mi></mrow></msub><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="normal"><mrow><mi>filter</mi></mrow></mstyle></mrow><mrow><mi>𝜃</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-rel"> ⋊⋉</mo> <msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 96 --><p class="indent">   where <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math> is
+evaluated over <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-bin">⊔</mo> <mi>ν</mi></mrow></math>.
+Note that <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>
+or <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⊥</mo></mrow></math> in
+<!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math> discards the pair
+(no match), <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>
+                                                                          
+
+                                                                          
+keeps it. If <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math>
+evaluates to <!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>err</mi></mrow></mstyle></mrow></math>
+for some pair, the join is undefined (signals a dynamic exception).
+</p>
+<!-- l. 98 --><p class="noindent"><span class="paragraphHead"><a id="x16-1370009.2"></a><span class="ec-lmbx-12">Left outer join.</span></span>
+   Let <!-- l. 99 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="bold-script">B</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+be the set of variables in the declared record type of
+<!-- l. 100 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">B</mi></mrow></math>, including
+when <!-- l. 100 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">B</mi></mrow></math> is
+empty. Let <!-- l. 101 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>π</mi></mrow><mrow><mstyle mathvariant="normal"><mi>L</mi></mstyle></mrow></msub></mrow></math>
+project a merged mapping to the left variables
+<!-- l. 102 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, let
+<!-- l. 102 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊖</mo></mrow></math>
+denote bag difference on these left projections, and let
+<!-- l. 103 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>pad</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mi>R</mi></mstyle></mrow></msub></mrow></math> map each remaining
+left mapping <!-- l. 104 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math>
+to <!-- l. 104 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi> <mo class="MathClass-bin">⊔</mo> <mi>η</mi></mrow></math>, where
+<!-- l. 104 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>η</mi></mrow></math> binds every
+right-only variable in <!-- l. 106 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∖</mo><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+to <!-- l. 107 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>. For
+<!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math> and
+guard <!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math>,
+the left outer join is the bag </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 109 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-bin"> <msub><mrow>⊲</mrow><mrow>𝜃</mrow></msub></mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mo class="MathClass-rel"> ⋊⋉</mo> </mrow><mrow><mi>𝜃</mi></mrow></msub><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-bin">⊎</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>pad</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mi>R</mi></mstyle></mrow></msub><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub> <mo class="MathClass-bin">⊖</mo> <msub><mrow><mi>π</mi></mrow><mrow><mstyle mathvariant="normal"><mi>L</mi></mstyle></mrow></msub><mspace class="negthinspace" width="-0.17em"></mspace><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> (</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mo class="MathClass-rel"> ⋊⋉</mo> </mrow><mrow><mi>𝜃</mi></mrow></msub><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mn>2</mn></mrow></msub><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> )</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle></mrow><mo fence="true" form="postfix">)</mo></mrow> <mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 115 --><p class="noindent"><span class="paragraphHead"><a id="x16-1380009.2"></a><span class="ec-lmbx-12">Denotational semantics of </span><span class="ec-lmtk-10x-x-120">OPTIONAL MATCH</span><span class="ec-lmbx-12">.</span></span>
+   For a basic pattern <!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+and an optional pattern <!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+with internal guard <!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math>
+(e.g., a <span class="ec-lmtt-12">WHERE</span>-predicate inside the optional clause), denotation is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 117 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦P</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">OPTIONAL</mtext></mstyle><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi>Q</mi><mo class="MathClass-close" stretchy="false">)</mo><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>OptExpand</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi mathvariant="bold-script">F</mi></mrow><mrow><mi>Q</mi></mrow></msub></mrow></msub><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><mi mathvariant="italic">⟦P</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow><mo fence="true" form="postfix">)</mo></mrow> <mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 121 --><p class="indent">   where <!-- l. 121 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">F</mi></mrow><mrow><mi>Q</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-open" stretchy="false">{</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mi>μ</mi><mo class="MathClass-close" stretchy="false">}</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi mathvariant="italic">⟦Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow></msub></mrow></math> includes the internal
+guard <!-- l. 122 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math>. A separate <span class="ec-lmtt-12">FILTER
+</span><span class="ec-lmtt-12">WHERE</span><!-- l. 123 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϕ</mi></mrow></math> after <span class="ec-lmtt-12">OPTIONAL </span>is
+applied by <!-- l. 124 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>filter</mi></mrow></mstyle></mrow><mrow><mi>ϕ</mi></mrow></msub></mrow></math> to the outer-join
+result (hence <!-- l. 125 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>-sensitive);
+a <span class="ec-lmtt-12">WHERE </span>belonging to the optional graph pattern remains inside
+<!-- l. 126 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">F</mi></mrow><mrow><mi>Q</mi></mrow></msub></mrow></math>.
+</p>
+<!-- l. 128 --><p class="noindent"><span class="paragraphHead"><a id="x16-1390009.2"></a><span class="ec-lmtk-10x-x-120">OPTIONAL </span><span class="ec-lmbx-12">Block Denotation</span></span>
+   For a block consisting of a basic pattern
+<!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>, an optional
+pattern <!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math> with
+guard <!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math>, a separate
+trailing filter <!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ϕ</mi></mrow></math>,
+and a projection <!-- l. 129 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>s</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>,
+let <!-- l. 130 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>proj</mi></mrow></mstyle></mrow><mrow><mover accent="true"><mrow><mrow><mi>s</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></msub></mrow></math>
+denote the corresponding record projection, including evaluation of its expressions
+with the null-and-error semantics of <a href="08-expressions-and-evaluation.html#x15-1130008">Chapter 8</a> and preservation of bag
+multiplicities. Then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 133 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mi>⟦</mi><mstyle class="text"><mtext class="texttt" mathvariant="monospace">MATCH </mtext></mstyle><mi>P</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">OPTIONAL </mtext></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>Q</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">FILTER WHERE </mtext></mstyle><mi>ϕ</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">RETURN </mtext></mstyle><mover accent="true"><mrow><mrow><mi>s</mi></mrow><mo accent="true">→</mo></mrow></mover><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd><mtd columnalign="left"><mrow><mspace class="quad" width="1em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="normal"><mrow><mi>proj</mi></mrow></mstyle></mrow><mrow><mover accent="true"><mrow><mrow><mi>s</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></msub><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>filter</mi></mrow></mstyle></mrow><mrow><mi>ϕ</mi></mrow></msub><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>OptExpand</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi mathvariant="bold-script">F</mi></mrow><mrow><mi>Q</mi></mrow></msub></mrow></msub><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><mi mathvariant="italic">⟦P</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow><mo fence="true" form="postfix">)</mo></mrow></mrow><mo fence="true" form="postfix">)</mo></mrow></mrow><mo fence="true" form="postfix">)</mo></mrow> <mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<aside class="tcolorbox note-box"><div class="tcolorbox-title">Note</div> <span class="ec-lmtt-12">OPTIONAL </span>is evaluated per current row; if the optional part yields no rows,
+a single all-<!-- l. 143 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+row is produced on its side before composing with the current row by cartesian
+product, matching the effect of the standard transformation via <span class="ec-lmtt-12">OPTIONAL CALL</span>. </aside>
+<!-- l. 146 -->
+
+<h2 class="sectionHead" id="x16-1400009.3"><span class="titlemark">9.3   </span> <a></a><span class="ec-lmtt-12">FOR </span>and List Unnesting</h2>
+<a id="dx16-140001"></a>
+<!-- l. 148 --><p class="noindent"><span class="ec-lmtt-12">FOR </span>on a list is modeled by <!-- l. 149 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>unnest</mi></mrow></mstyle></mrow><mrow><mi>n</mi><mo class="MathClass-punc">:</mo><mi>L</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>. For
+each occurrence of a record <!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>,
+if the field <!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>L</mi></mrow></math> contains
+the list <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, the operator
+produces the <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>m</mi></mrow></math>
+records </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 153 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>r</mi><mo class="MathClass-open" stretchy="false">[</mo><mi>n</mi><mo class="MathClass-rel">↦</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mi>r</mi><mo class="MathClass-open" stretchy="false">[</mo><mi>n</mi><mo class="MathClass-rel">↦</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 156 --><p class="indent">   Under bag semantics, each generated record inherits the multiplicity of
+<!-- l. 156 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>;
+thus, multiplicities are multiplied when identical output records
+arise from different input occurrences or list positions. If
+<!-- l. 159 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>L</mi></mrow></math> evaluates to
+<!-- l. 159 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>, no output record
+is generated for <!-- l. 159 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>.
+</p><!-- l. 161 -->
+
+<h2 class="sectionHead" id="x16-1410009.4"><span class="titlemark">9.4   </span> <a></a>Subqueries and Scope</h2>
+<a id="dx16-141001"></a>
+<!-- l. 162 --><p class="noindent">A <span class="ec-lmri-12">query block</span><a id="dx16-141002"></a> is a triple <!-- l. 162 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mi>Γ</mi><mo class="MathClass-punc">,</mo> <mi>Φ</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Π</mi><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>:
+</p>
+<ul class="itemize1">
+<li class="itemize"><!-- l. 164 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Γ</mi></mrow></math>:
+      (possibly empty) conjunction of graph/path patterns with a <span class="ec-lmtt-12">WHERE</span>-predicate
+      producing a base binding table as in <a href="07-patterns-and-matching.html#x13-660007.1">Section 7.1</a>.
+      </li>
+<li class="itemize"><!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Φ</mi></mrow></math>:
+      a sequence of algebraic operators over binding tables (<!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>select</mi></mrow></mstyle></mrow></math>,
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>extend</mi></mrow></mstyle></mrow></math>,
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>join</mi></mrow></mstyle></mrow></math>,
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>unwind</mi></mrow></mstyle></mrow></math>,
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>group</mi></mrow></mstyle></mrow></math>,
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>distinct</mi></mrow></mstyle></mrow></math>,
+                                                                          
+
+                                                                          
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>order</mi></mrow></mstyle></mrow></math>,
+      <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>slice</mi></mrow></mstyle></mrow></math>).
+      </li>
+<li class="itemize"><!-- l. 166 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Π</mi></mrow></math>:
+      a final projection (RETURN-style) specifying visible columns and expressions
+      to emit.</li></ul>
+<!-- l. 168 --><p class="noindent">The grouping, ordering, and slicing stages are defined in <a href="12-grouping-and-aggregation.html#x22-19900012">Chapters 12</a><a href="13-ordering-and-pagination.html#x23-21300013"> and 13</a>. For a store
+state <!-- l. 169 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>,
+let <!-- l. 169 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mi>Γ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+denote the base binding table obtained by evaluating
+<!-- l. 170 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Γ</mi></mrow></math>
+in the working graph and correlation environment of
+<!-- l. 171 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>; for
+empty <!-- l. 171 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Γ</mi></mrow></math>,
+it is the unit binding table. The denotation of a block is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 174 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>⟦</mi><mo class="MathClass-open" stretchy="false">⟨</mo><mi>Γ</mi><mo class="MathClass-punc">,</mo> <mi>Φ</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Π</mi><mo class="MathClass-close" stretchy="false">⟩</mo><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mi mathvariant="normal">Π</mi><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mspace class="thinspace" width="0.17em"></mspace><mi>Φ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mi>Γ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thinspace" width="0.17em"></mspace></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 180 --><p class="noindent"><span class="paragraphHead"><a id="x16-1420009.4"></a><span class="ec-lmbx-12">Example (query-block decomposition).</span></span>
+   For the second query in <a href="04-gql-by-example.html#x9-24002x6">Section 4.4</a>, which computes <span class="ec-lmtt-12">total_late_fee</span>, let
+<!-- l. 182 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Γ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mrow></math>
+denote its two path patterns together with the two ISBN conditions in their
+<span class="ec-lmtt-12">WHERE </span>clause. In the abstraction above, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 185 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><msub><mrow><mi>Φ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>σ</mi></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">total_late_fee</mtext></mstyle><mo class="MathClass-rel">&gt;</mo><mn>0</mn><mo class="MathClass-punc">.</mo><mn>0</mn></mrow></msub> <mo class="MathClass-bin">∘</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>EXT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i1.late_fee</mtext></mstyle><mo class="MathClass-bin">+</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i2.late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">total_late_fee</mtext></mstyle></mrow></msub><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>π</mi></mrow><mrow>
+<mtable class="subarray-c" columnalign="center" rowspacing="0"><mtr><mtd><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">l.loanid</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">loanid</mtext></mstyle><mo class="MathClass-punc">,</mo>
+</mrow></mtd></mtr><mtr><mtd><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">total_late_fee</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">totalLateFee</mtext></mstyle> </mrow></mtd></mtr> </mtable></mrow></msub><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>QB</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>Γ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo> <msub><mrow><mi>Φ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 203 --><p class="indent">   Thus the graph-pattern <span class="ec-lmtt-12">WHERE </span>belongs to
+<!-- l. 204 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Γ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mrow></math>;
+<span class="ec-lmtt-12">LET </span>and the subsequent <span class="ec-lmtt-12">FILTER WHERE </span>determine
+<!-- l. 205 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Φ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mrow></math>, while <span class="ec-lmtt-12">RETURN</span>
+determines <!-- l. 206 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Π</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fee</mi></mrow></mstyle></mrow></msub></mrow></math>.
+</p>
+<!-- l. 208 --><p class="noindent"><span class="paragraphHead"><a id="x16-1430009.4"></a><span class="ec-lmbx-12">Linear-query pipelining.</span></span>
+   ISO/IEC 39075 does not use a <span class="ec-lmtt-12">WITH </span>clause as a query-block boundary.
+Instead, the incoming and outgoing working record and working table types are
+threaded from each simple query statement to the next in a linear query
+statement. Projection and renaming are performed by the applicable result
+statement, and only the columns of its outgoing working table type are visible to
+a following statement.
+</p>
+<!-- l. 216 --><p class="noindent"><span class="paragraphHead"><a id="x16-1440009.4"></a><span class="ec-lmbx-12">Subqueries.</span></span>
+   A subquery evaluates to a binding table in the current
+<!-- l. 217 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>.
+When the subquery is correlated, references to names from the enclosing query are
+resolved in the current outer-row environment. The resulting binding table is
+consumed according to the surrounding evaluation context, as specified below for
+relational, scalar, and row-producing subqueries.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 224 --><p class="noindent"><span class="paragraphHead"><a id="x16-1450009.4"></a><span class="ec-lmbx-12">Environments and scopes.</span></span>
+   A <span class="ec-lmri-12">static environment </span><!-- l. 225 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">E</mi></mrow></math>
+maps names (variables, parameters, functions, and relevant
+catalog objects) to denotations. A <span class="ec-lmri-12">dynamic environment</span>
+<!-- l. 227 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Dyn</mi></mrow></mstyle></mrow></math> provides the current
+graph <!-- l. 227 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>G</mi></mrow></math> and the current
+outer-row mapping <!-- l. 228 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></math>
+during correlated evaluation.
+</p>
+<!-- l. 230 --><p class="noindent"><span class="paragraphHead"><a id="x16-1460009.4"></a><span class="ec-lmbx-12">Uncorrelated subquery</span><a id="dx16-146001"></a><span class="ec-lmbx-12">.</span></span>
+   A subquery <!-- l. 231 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+that contains no reference to an outer binding is independent of the outer row. Its
+result is consumed according to its surrounding context; the additional static
+restrictions for a value query expression are stated below under scalar
+subqueries.
+</p>
+<!-- l. 236 --><p class="noindent"><span class="paragraphHead"><a id="x16-1470009.4"></a><span class="ec-lmbx-12">Correlated subquery</span><a id="dx16-147001"></a><span class="ec-lmbx-12">.</span></span>
+   A subquery referencing outer attributes is a function of the outer row:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 238 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦Q⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mi mathvariant="italic">⟦Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi mathvariant="bold-script">E</mi><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>Dyn</mi></mrow></mstyle><mo class="MathClass-rel">=</mo><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 242 --><p class="indent">   The <span class="ec-lmtt-12">EXISTS </span>context consumes the resulting bag as follows: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 243 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>EXISTS</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>Q</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><mi mathvariant="italic">⟦Q⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">≠</mo><mo class="MathClass-ord">∅</mo><mo class="MathClass-punc">,</mo></mrow></mtd></mtr> <mtr><mtd class="array" columnalign="left"><mrow><mo class="MathClass-rel">⊥</mo><mspace class="quad" width="1em"></mspace></mrow></mtd> <mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 251 --><p class="noindent"><span class="paragraphHead"><a id="x16-1480009.4"></a><span class="ec-lmbx-12">Row-producing subqueries.</span></span>
+   In the <span class="ec-lmtt-12">FROM</span>/pattern position, a subquery
+<!-- l. 252 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+contributes its bag of rows to the surrounding algebra just like a base
+pattern.
+</p>
+<!-- l. 254 --><p class="noindent"><span class="paragraphHead"><a id="x16-1490009.4"></a><span class="ec-lmbx-12">Dynamic-context notation.</span></span>
+   In the formulas below, <!-- l. 255 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+abbreviates the corresponding components of
+<!-- l. 256 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Dyn</mi></mrow></mstyle></mrow></math>; function
+and procedure registries continue to be resolved through the static environment
+<!-- l. 257 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">E</mi></mrow></math>. The outer
+mapping <!-- l. 257 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></math>
+may be empty.
+</p>
+<!-- l. 259 --><p class="noindent"><span class="paragraphHead"><a id="x16-1500009.4"></a><span class="ec-lmbx-12">Variable hygiene.</span></span>
+   Each subquery has its own local variable namespace
+<!-- l. 260 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>loc</mi></mrow></mstyle></mrow></msub></mrow></math> disjoint from outer
+variables by <!-- l. 260 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>α</mi></mrow></math>-renaming,
+                                                                          
+
+                                                                          
+except for explicitly correlated references to outer names, which are resolved in
+<!-- l. 260 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></math>.
+Shadowing of names by aliases is disallowed unless explicitly stated.
+</p>
+<!-- l. 263 --><p class="noindent"><span class="paragraphHead"><a id="x16-1510009.4"></a><span class="ec-lmbx-12">Relational subqueries</span><a id="dx16-151001"></a><span class="ec-lmbx-12">.</span></span>
+   A subquery <!-- l. 264 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+used by an <span class="ec-lmtt-12">EXISTS </span>predicate is evaluated as a bag
+<!-- l. 264 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mi>Q</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi mathvariant="italic">⟦Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></msub></mrow></math> in
+environment <!-- l. 264 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">(</mo><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+Here <!-- l. 264 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></math>
+is the current left-row mapping. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 265 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>⟦</mi><mstyle mathvariant="normal"><mrow><mi>EXISTS</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>Q</mi><mo class="MathClass-close" stretchy="false">)</mo><msubsup><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow><mrow><mstyle mathvariant="sans-serif"><mrow>
+<mi>tv</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mi>Q</mi></mrow></msub><mo class="MathClass-rel">≠</mo><mo class="MathClass-ord">∅</mo><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mo class="MathClass-rel">⊥</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mi>Q</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-ord">∅</mo></mrow></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 272 --><p class="indent">   (never <!-- l. 272 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>);
+errors from inside the subquery propagate to the enclosing expression.
+</p>
+<!-- l. 274 --><p class="noindent"><span class="paragraphHead"><a id="x16-1520009.4"></a><span class="ec-lmbx-12">Scalar subqueries</span><a id="dx16-152001"></a><span class="ec-lmbx-12">.</span></span>
+   A scalar subquery is a value query expression
+<!-- l. 275 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">VALUE </mtext></mstyle><mi>Q</mi></mrow></math>.
+Its nested query has a single result column, and its emitting <span class="ec-lmtt-12">RETURN </span>is
+statically required either to use <span class="ec-lmtt-12">LIMIT 1 </span>or to contain an aggregate without
+<span class="ec-lmtt-12">GROUP BY</span>; hence its result has at most one record. Formally, with
+<!-- l. 279 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mi>Q</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi mathvariant="italic">⟦Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></msub></mrow></math>:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 280 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>⟦</mi><mstyle class="text"><mtext class="texttt" mathvariant="monospace">VALUE </mtext></mstyle><mi>Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>o</mi></mrow></msub></mrow></msub> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mi>Q</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-ord">∅</mo><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mi>v</mi> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if the sole field of the sole record of </mtext></mstyle><msub><mrow><mi mathvariant="bold-script">B</mi></mrow><mrow><mi>Q</mi></mrow></msub><mstyle class="text"><mtext> has value </mtext></mstyle><mi>v</mi><mo class="MathClass-punc">.</mo></mrow></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow></mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 288 --><p class="noindent"><span class="paragraphHead"><a id="x16-1530009.4"></a><span class="ec-lmbx-12">Subquery in </span><span class="ec-lmtk-10x-x-120">OPTIONAL</span><span class="ec-lmbx-12">.</span></span>
+   When <!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math> is
+correlated and appears on the right of <span class="ec-lmtt-12">OPTIONAL</span>, the correlation uses the left-row mapping
+<!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math> at the point of
+join; each <!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>μ</mi></mrow></math> yields
+<!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦Q</mi><msub><mrow><mi>⟧</mi></mrow><mrow><mi>G</mi><mo class="MathClass-punc">,</mo><mi>μ</mi></mrow></msub></mrow></math> independently,
+composing via <!-- l. 289 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊲</mo></mrow></math>
+as above.
+</p><!-- l. 291 -->
+
+<h2 class="sectionHead" id="x16-1540009.5"><span class="titlemark">9.5   </span> <a></a>Whole-Query Denotation</h2>
+<a id="dx16-154001"></a>
+<!-- l. 293 --><p class="noindent">A full read-only query is a pipeline of blocks </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 294 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>Q</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">;</mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-punc">;</mo> <mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">;</mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>B</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 297 --><p class="indent">   Each block is evaluated with respect to the fixed store state
+<!-- l. 297 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>
+and transforms the binding table produced by its predecessor. Let
+<!-- l. 299 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>0</mn></mrow></msub> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>unit</mi></mrow></mstyle></mrow></msub></mrow></math>, and,
+for <!-- l. 300 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>1</mn> <mo class="MathClass-rel">≤</mo> <mi>i</mi> <mo class="MathClass-rel">≤</mo> <mi>m</mi></mrow></math>,
+define </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 301 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">;</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mi>i</mi><mo class="MathClass-bin">−</mo><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 305 --><p class="indent">   The denotation of the complete query is therefore </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 306 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦Q⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 310 --><p class="indent">   Equivalently, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 311 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦Q⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>B</mi></mrow><mrow><mi>m</mi></mrow></msub><mi>⟧</mi><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">;</mo> <mi>⟦</mi><msub><mrow><mi>B</mi></mrow><mrow><mi>m</mi><mo class="MathClass-bin">−</mo><mn>1</mn></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">;</mo> <mo class="MathClass-rel">⋯</mo><mi>⟦</mi><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">;</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>unit</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">⋯</mo><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-close" stretchy="false">)</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 327 --><p class="noindent"><span class="paragraphHead"><a id="x16-1550009.5"></a><span class="ec-lmbx-12">Example (linear-query pipeline).</span></span>
+   The linear-composition query in <a href="04-gql-by-example.html#x9-26016x8">Line 14</a> instantiates
+this recurrence with four successive transformations. Let
+<!-- l. 330 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>gpbt</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub></mrow></math> denote the first
+<span class="ec-lmtt-12">MATCH </span>graph pattern together with its last-name <span class="ec-lmtt-12">WHERE </span>predicate and its implicit <span class="ec-lmtt-12">YIELD</span>
+clause, let <!-- l. 332 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>gpbt</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub></mrow></math>
+denote the corresponding graph pattern binding table for the second <span class="ec-lmtt-12">MATCH</span>, and
+let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 335 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>φ</mi> <mo class="MathClass-rel">≡</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.due_date &lt; DATE ’2025-12-31’</mtext></mstyle>
+</mrow></math></td></tr></table></div>
+<!-- l. 338 --><p class="indent">   be the predicate of the subsequent <span class="ec-lmtt-12">FILTER WHERE</span>. At the level of the abstraction
+above, <!-- l. 339 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lin</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">;</mo> <msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-punc">;</mo> <msub><mrow><mi>B</mi></mrow><mrow><mn>3</mn></mrow></msub><mo class="MathClass-punc">;</mo> <msub><mrow><mi>B</mi></mrow><mrow><mn>4</mn></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>,
+where </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 340 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>1</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>GPBT</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>gpbt</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>1</mn></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>unit</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>2</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="sans-serif"><mrow><mi>GPBT</mi></mrow></mstyle></mrow><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>gpbt</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mn>2</mn></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>3</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>σ</mi></mrow><mrow><mi>φ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>4</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>order</mi></mrow></mstyle></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">due_date</mtext></mstyle><mi>↑</mi></mrow></msub> <mrow><mo fence="true" form="prefix"> (</mo><mrow><msub><mrow><mi>π</mi></mrow><mrow>
+<mtable class="subarray-c" columnalign="center" rowspacing="0"><mtr><mtd><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">l.loanid</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">loanid</mtext></mstyle><mo class="MathClass-punc">,</mo><mspace class="thinspace" width="0.17em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">b.title</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">title</mtext></mstyle><mo class="MathClass-punc">,</mo>
+</mrow></mtd></mtr><mtr><mtd><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.due_date</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">due_date</mtext></mstyle><mo class="MathClass-punc">,</mo><mspace class="thinspace" width="0.17em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.late_fee</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">late_fee</mtext></mstyle> </mrow></mtd></mtr> </mtable></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>3</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow><mo fence="true" form="postfix">)</mo></mrow> <mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 360 --><p class="indent">   Here <!-- l. 360 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>order</mi></mrow></mstyle></mrow><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">due_date</mtext></mstyle><mi>↑</mi></mrow></msub></mrow></math>
+denotes ascending ordering by the projected <span class="ec-lmtt-12">due_date </span>field. Consequently,
+<!-- l. 363 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lin</mi></mrow></mstyle></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow><mrow><mn>4</mn></mrow></msub></mrow></math>.
+</p><!-- l. 365 --><p class="indent">   An updating statement is modeled separately because its
+evaluation may change the store state. Given an input binding table
+<!-- l. 366 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>, its
+denotation has the form </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 368 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="italic">⟦U⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">;</mo> <mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class="MathClass-punc">,</mo><mi>R</mi><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 372 --><p class="indent">   where <!-- l. 372 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> is the
+resulting store state and <!-- l. 372 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math>
+is either a result binding table or an omitted result. When
+no preceding query blocks supply bindings to the update,
+<!-- l. 374 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle></mrow></math> is
+typically the unit binding table.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 376 --><p class="noindent"><span class="paragraphHead"><a id="x16-1560009.5"></a><span class="ec-lmbx-12">Soundness checks and algebraic laws (selected)</span></span>
+   Let <!-- l. 378 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">≡</mo></mrow></math>
+denote bag-equivalence of binding tables (same records with same multiplicities,
+ignoring order). The following laws are intended only when every relevant
+expression evaluation yields the same value and raises no dynamic exception:
+</p>
+<ul class="itemize1">
+<li class="itemize"><!-- l. 381 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>σ</mi></mrow><mrow><msub><mrow><mi>φ</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></msub><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> (</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><msub><mrow><mi>σ</mi></mrow><mrow><msub><mrow><mi>φ</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> )</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-rel">≡</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>σ</mi></mrow><mrow><msub><mrow><mi>φ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-bin">∧</mo><msub><mrow><mi>φ</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+      </li>
+<li class="itemize"><!-- l. 382 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>π</mi></mrow><mrow><mi>X</mi></mrow></msub><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> (</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><msub><mrow><mi>σ</mi></mrow><mrow><mi>φ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> )</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace> <mo class="MathClass-rel">≡</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>σ</mi></mrow><mrow><mi>φ</mi><msub><mrow><mo class="MathClass-rel">|</mo></mrow><mrow><mi>X</mi></mrow></msub></mrow></msub><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> (</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><msub><mrow><mi>π</mi></mrow><mrow><mi>X</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> )</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle></mrow></math>
+      when <!-- l. 382 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi></mrow></math>
+      mentions only <!-- l. 382 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>X</mi></mrow></math>.
+      </li>
+<li class="itemize"><!-- l. 383 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">⋊⋉</mo></mrow></math>
+      is associative and commutative up to field renaming and multiplicity
+      algebra.
+      </li>
+<li class="itemize"><!-- l. 384 --><span class="inline-math-scroll"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≡</mo><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="normal"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math></span>.</li></ul>
+<!-- l. 387 -->
+
+<h2 class="sectionHead" id="x16-1570009.6"><span class="titlemark">9.6   </span> <a></a>Composite Queries and Set Operators</h2>
+<a id="dx16-157001"></a>
+<a id="dx16-157002"></a>
+<!-- l. 389 --><p class="noindent">A <span class="ec-lmri-12">composite query </span>combines the results of one or more linear query pipelines
+using set-like operators <span class="ec-lmtt-12">UNION</span>, <span class="ec-lmtt-12">EXCEPT</span>, <span class="ec-lmtt-12">INTERSECT </span>and the fallback operator
+                                                                          
+
+                                                                          
+<span class="ec-lmtt-12">OTHERWISE</span>. At the semantic level, a composite query expression denotes
+a binding table obtained by composing the binding tables produced by its
+constituent linear queries.
+</p>
+<!-- l. 395 --><p class="noindent"><span class="paragraphHead"><a id="x16-1580009.6"></a><span class="ec-lmbx-12">Syntactic shape.</span></span>
+   The grammar fragment </p>
+<div class="center">
+<!-- l. 398 -->
+<!-- l. 399 --><p class="noindent"><span class="ec-lmtt-12">composite-query ::= query-part { query-conj query-part }</span></p></div>
+<!-- l. 401 --><p class="noindent">introduces a left-associative composition of <span class="ec-lmtt-12">query-part</span>s.
+Each <span class="ec-lmtt-12">query-part </span>is a <span class="ec-lmtt-12">linear-query</span>. A <span class="ec-lmtt-12">query-conj </span>is one of <span class="ec-lmtt-12">UNION</span>, <span class="ec-lmtt-12">EXCEPT</span>,
+<span class="ec-lmtt-12">INTERSECT</span>, or <span class="ec-lmtt-12">OTHERWISE</span>, with the set operators optionally qualified by a set
+quantifier <span class="ec-lmtt-12">ALL </span>or <span class="ec-lmtt-12">DISTINCT</span>.
+   In line with the GQL standard, the following constraints are imposed:
+</p>
+<ul class="itemize1">
+<li class="itemize">If a set operator (<span class="ec-lmtt-12">UNION</span>, <span class="ec-lmtt-12">EXCEPT</span>, <span class="ec-lmtt-12">INTERSECT</span>) is specified without an
+      explicit set quantifier, the quantifier <span class="ec-lmtt-12">DISTINCT </span>is implicit.
+      </li>
+<li class="itemize">Within a single <span class="ec-lmtt-12">composite-query</span>, all occurrences of <span class="ec-lmtt-12">query-conj </span>must
+      be  the  same  query  conjunction:  the  same  operator  and,  for  a set
+      operator, the same <span class="ec-lmtt-12">ALL</span>/<span class="ec-lmtt-12">DISTINCT </span>choice after applying the implicit
+      <span class="ec-lmtt-12">DISTINCT</span>. Thus neither mixed operators such as <span class="ec-lmtt-12">UNION ... EXCEPT
+      </span><span class="ec-lmtt-12">... </span>nor mixed quantifiers such as <span class="ec-lmtt-12">UNION ALL ... UNION DISTINCT
+      </span><span class="ec-lmtt-12">... </span>are permitted.</li></ul>
+<!-- l. 422 --><p class="indent">   Thus, each well-formed composite query expression has the form </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 423 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mn>1</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub>
+</mrow></math></td></tr></table></div>
+<!-- l. 426 --><p class="indent">   for a fixed query conjunction <!-- l. 426 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle></mrow></math>,
+including its fixed set quantifier when applicable, and
+<!-- l. 427 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi> <mo class="MathClass-rel">≥</mo> <mn>0</mn></mrow></math>, and
+is interpreted as left-associative: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 429 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 433 --><p class="noindent"><span class="paragraphHead"><a id="x16-1590009.6"></a><span class="ec-lmbx-12">Typing and column combination.</span></span>
+   Each <span class="ec-lmtt-12">linear-query </span>is a (possibly focused) linear query statement in
+the sense of the standard. We assume that evaluation of a linear query
+<!-- l. 435 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>L</mi></mrow></math> produces
+a binding table <!-- l. 436 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi mathvariant="italic">⟦L⟧</mi><mo class="MathClass-rel">∈</mo><mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>
+whose bag projection is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 438 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 441 --><p class="indent">   where <!-- l. 441 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>L</mi></mrow></msub></mrow></math>
+is a record type describing the columns and their value types, and
+<!-- l. 442 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mi>L</mi></mrow></msub></mrow></math> is a finite multiset
+of records of type <!-- l. 442 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>L</mi></mrow></msub></mrow></math>.
+</p><!-- l. 444 --><p class="indent">   Let <!-- l. 444 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></math> be the query parts
+of a composite query, <!-- l. 445 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mi>⟧</mi></mrow></math>,
+and <!-- l. 446 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+(these are the results of the immediately contained linear queries). Typing of the
+composite query is governed by the following constraints, mirroring Subclause
+14.2:
+</p>
+<ul class="itemize1">
+<li class="itemize">All <!-- l. 451 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+      must be <span class="ec-lmri-12">column name-equal</span>: they have the same set of column names.
+      </li>
+<li class="itemize">The <!-- l. 453 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+      must be <span class="ec-lmri-12">column-combinable</span>, in the sense of the type-combination relation:
+      for each column name, the corresponding value types in <!-- l. 455 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+      admit a combined type, possibly a dynamic union type.
+      </li>
+<li class="itemize">Let <!-- l. 457 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>
+                                                                          
+
+                                                                          
+      be the combined record type obtained from <!-- l. 458 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></math>.
+      The declared type of the composite query is the material binding table
+      type with column type <!-- l. 459 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>.</li></ul>
+<!-- l. 462 --><p class="indent">   Operationally, each operand <!-- l. 462 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mi>⟧</mi></mrow></math>
+can be coerced to the common type <!-- l. 463 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>
+before applying the set operator, using the same coercion and dynamic-union
+rules as for column-combinable record types. When the operator is one of
+<!-- l. 466 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">UNION DISTINCT</mtext></mstyle></mrow></math>,
+<!-- l. 466 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">EXCEPT ALL</mtext></mstyle></mrow></math>,
+<!-- l. 467 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">EXCEPT DISTINCT</mtext></mstyle></mrow></math>,
+<!-- l. 467 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">INTERSECT ALL</mtext></mstyle></mrow></math>,
+<!-- l. 468 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle class="text"><mtext class="texttt" mathvariant="monospace">INTERSECT DISTINCT</mtext></mstyle></mrow></math>,
+the standard additionally requires that no column in
+<!-- l. 469 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math> has
+a dynamic union type that mixes incomparable value types; otherwise, the
+composite query fails static validation. In these cases, every column acts as
+a grouping key, and the general grouping rules apply to the composite
+query.
+</p>
+<!-- l. 474 --><p class="noindent"><span class="paragraphHead"><a id="x16-1600009.6"></a><span class="ec-lmbx-12">Bag-based semantics of set operators.</span></span>
+   We now describe the algebraic semantics in terms of the binding-table
+algebra. Recall that a binding table is the descriptor-bearing object in
+<!-- l. 477 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>
+fixed in <a href="06-data-model.html#x12-520006.1">Section 6.1</a>. The equations below determine its bag projection
+<!-- l. 478 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>;
+the ordered/unordered indicator and preferred column-name sequence
+remain components of the complete result descriptor and are
+determined by the corresponding operation. Bag union is written
+<!-- l. 481 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub> <mo class="MathClass-bin">⊎</mo> <msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>, with
+multiplicities added element-wise.
+</p><!-- l. 483 --><p class="indent">   For a binary composite expression of the form
+<!-- l. 484 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle></mrow><mrow><mi>q</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub></mrow></math>, where
+<!-- l. 484 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub></mrow></math> and
+<!-- l. 484 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub></mrow></math>
+denote, respectively, the left and right query part, with set operator </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 486 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">UNION</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">EXCEPT</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">INTERSECT</mtext></mstyle><mo class="MathClass-close" stretchy="false">}</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 489 --><p class="indent">   and quantifier <!-- l. 490 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>q</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ALL</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">DISTINCT</mtext></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math> (with
+<span class="ec-lmtt-12">DISTINCT </span>as the default), let <!-- l. 491 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mi>⟧</mi></mrow></math>
+and <!-- l. 492 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>R</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mi>⟧</mi></mrow></math>, with
+<!-- l. 493 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math> and
+<!-- l. 494 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>R</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>R</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math> after coercion to
+the common type <!-- l. 495 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>.
+For any record <!-- l. 496 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>
+of type <!-- l. 496 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>,
+write <!-- l. 497 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>M</mi> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>B</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+and <!-- l. 497 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>N</mi> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>B</mi></mrow><mrow><mi>R</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+for its multiplicities in the left and right operand (with
+<!-- l. 498 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>M</mi><mo class="MathClass-punc">,</mo><mi>N</mi> <mo class="MathClass-rel">≥</mo> <mn>0</mn></mrow></math>).
+      </p><dl class="description"><dt class="description">
+<!-- l. 501 --><p class="noindent">
+<span class="ec-lmbx-12">UNION ALL.</span> </p></dt><dd class="description">
+<!-- l. 501 --><p class="noindent"><a id="dx16-160001"></a> The result is the bag union </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 503 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mi mathvariant="italic">UNION</mi><mspace class="nbsp" width="0.33em"></mspace><mi mathvariant="italic">ALL</mi><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mi>⟧</mi></mrow><mo fence="true" form="postfix">)</mo></mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">⟩</mo><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>with</mtext></mstyle><mspace class="quad" width="1em"></mspace><mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi>M</mi> <mo class="MathClass-bin">+</mo> <mi>N</mi><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 509 --><p class="noindent">This  is  the  <span class="ec-lmri-12">bag  </span>analog  of  GQL  <span class="ec-lmtt-12">UNION ALL</span>:  duplicates  from  both
+      operands are preserved, and their multiplicities added.
+      </p></dd><dt class="description">
+<!-- l. 513 --><p class="noindent">
+<span class="ec-lmbx-12">UNION (distinct).</span> </p></dt><dd class="description">
+<!-- l. 513 --><p class="noindent"><a id="dx16-160002"></a> The result is the set-union of the supports of the two bags: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 515 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mn>1</mn><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><mi>M</mi> <mo class="MathClass-bin">+</mo> <mi>N</mi> <mo class="MathClass-rel">&gt;</mo> <mn>0</mn><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mn>0</mn><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle> </mtd></mtr><!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 522 --><p class="noindent">Equivalently, <!-- l. 522 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mi mathvariant="italic">UNION</mi><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mi>⟧</mi></mrow></math>
+      is obtained by applying the DISTINCT operator to <!-- l. 524 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mi mathvariant="italic">UNION</mi><mspace class="nbsp" width="0.33em"></mspace><mi mathvariant="italic">ALL</mi><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mi>⟧</mi></mrow></math>.
+      </p></dd><dt class="description">
+<!-- l. 526 --><p class="noindent">
+<span class="ec-lmbx-12">EXCEPT ALL.</span> </p></dt><dd class="description">
+<!-- l. 526 --><p class="noindent"><a id="dx16-160003"></a> The result is bag difference: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 528 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><mi class="qopname"> max</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class="MathClass-open" stretchy="false">(</mo><mi>M</mi> <mo class="MathClass-bin">−</mo> <mi>N</mi><mo class="MathClass-punc">,</mo> <mn>0</mn><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 531 --><p class="noindent">Intuitively, duplicates of <!-- l. 531 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>
+      in the right operand cancel duplicates in the left operand, but never
+      below zero.
+      </p></dd><dt class="description">
+<!-- l. 534 --><p class="noindent">
+<span class="ec-lmbx-12">EXCEPT (distinct).</span> </p></dt><dd class="description">
+<!-- l. 534 --><p class="noindent"><a id="dx16-160004"></a> The result is set difference: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 536 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mn>1</mn><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><mi>M</mi> <mo class="MathClass-rel">&gt;</mo> <mn>0</mn><mstyle class="text"><mtext> and </mtext></mstyle><mi>N</mi> <mo class="MathClass-rel">=</mo> <mn>0</mn><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mn>0</mn><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle> </mtd></mtr><!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 543 --><p class="noindent">Equivalently, one can first apply <span class="ec-lmtt-12">DISTINCT </span>to both operands and then
+      form their <span class="ec-lmtt-12">EXCEPT ALL </span>bag difference.
+      </p></dd><dt class="description">
+<!-- l. 546 --><p class="noindent">
+<span class="ec-lmbx-12">INTERSECT ALL.</span> </p></dt><dd class="description">
+<!-- l. 546 --><p class="noindent"><a id="dx16-160005"></a> The result is bag intersection: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 548 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><mi class="qopname"> min</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class="MathClass-open" stretchy="false">(</mo><mi>M</mi><mo class="MathClass-punc">,</mo><mi>N</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 551 --><p class="noindent">Each duplicate appears as many times as it is present in both operands.
+      </p></dd><dt class="description">
+<!-- l. 553 --><p class="noindent">
+<span class="ec-lmbx-12">INTERSECT (distinct).</span> </p></dt><dd class="description">
+<!-- l. 553 --><p class="noindent"><a id="dx16-160006"></a> The result is set intersection: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 555 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mn>1</mn><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><mi>M</mi> <mo class="MathClass-rel">&gt;</mo> <mn>0</mn><mstyle class="text"><mtext> and </mtext></mstyle><mi>N</mi> <mo class="MathClass-rel">&gt;</mo> <mn>0</mn><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><mn>0</mn><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle> </mtd></mtr><!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 562 --><p class="noindent">Again, this can be seen as <span class="ec-lmtt-12">INTERSECT ALL </span>followed by <span class="ec-lmtt-12">DISTINCT</span>.</p></dd></dl>
+<!-- l. 566 --><p class="indent">   For any of the distinct variants, and for <span class="ec-lmtt-12">EXCEPT ALL </span>and <span class="ec-lmtt-12">INTERSECT ALL</span>, if
+a record of the left operand and a record of the right operand are not comparable
+values, evaluation raises the data exception “values not comparable” (22G04)
+instead of producing a binding table.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 571 --><p class="noindent"><span class="paragraphHead"><a id="x16-1610009.6"></a><span class="ec-lmbx-12">Fallback semantics of </span><span class="ec-lmtk-10x-x-120">OTHERWISE</span><span class="ec-lmbx-12">.</span></span>
+<a id="dx16-161001"></a>
+<a id="dx16-161002"></a>
+   The operator <span class="ec-lmtt-12">OTHERWISE </span>is a fallback query conjunction rather than a set
+operator. For a binary composite </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 574 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-bin" mathvariant="normal">OTHERWISE</mo> <msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 577 --><p class="indent">   where <!-- l. 577 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub></mrow></math>
+and <!-- l. 577 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub></mrow></math>
+denote the left and right operands, respectively, let
+<!-- l. 578 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mi>⟧</mi></mrow></math> and
+<!-- l. 578 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>R</mi></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mi>⟧</mi></mrow></math>, with
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 579 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mspace class="qquad" width="2em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>R</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>R</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 584 --><p class="indent">   where <!-- l. 584 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi></mrow></math>
+is their common combined type. Then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 585 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-bin" mathvariant="normal">OTHERWISE</mo><msub><mrow><mi>Q</mi></mrow><mrow><mi>R</mi></mrow></msub><mi>⟧</mi> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>L</mi></mrow></msub><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>if </mtext></mstyle><msub><mrow><mi>B</mi></mrow><mrow><mi>L</mi></mrow></msub><mo class="MathClass-rel">≠</mo><mo class="MathClass-ord">∅</mo><mo class="MathClass-punc">,</mo> </mrow></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>R</mi></mrow></msub><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise.</mtext></mstyle></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow>
+</mrow></math></td></tr></table></div>
+<!-- l. 593 --><p class="indent">   For a longer chain </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 594 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-bin" mathvariant="normal">OTHERWISE</mo> <msub><mrow><mi>Q</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-bin" mathvariant="normal">OTHERWISE</mo> <mo class="MathClass-rel">⋯</mo><mo class="MathClass-bin" mathvariant="normal">OTHERWISE</mo> <msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 599 --><p class="indent">   the result is the binding table produced by the leftmost query operand whose
+result is non-empty, or the empty binding table of the combined type if all
+operands produce empty results. The same column-combination discipline as for
+the set operators applies; no duplicate elimination or bag arithmetic is performed.
+This describes result selection, not short-circuit evaluation: the General Rules for
+a composite query expression obtain the results of its query parts before choosing
+between them, so an operand is not skipped merely because an earlier result is
+non-empty.
+</p>
+<!-- l. 608 --><p class="noindent"><span class="paragraphHead"><a id="x16-1620009.6"></a><span class="ec-lmbx-12">Folding over multiple query parts.</span></span>
+   Let a composite query be written, after enforcing the uniform-operator rule,
+as </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 611 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mn>1</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 614 --><p class="indent">   and let <!-- l. 614 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Comb</mi></mrow></mstyle><mstyle class="text"><mtext>_</mtext></mstyle><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>q</mi></mrow></math>
+be the binary operation on binding tables induced by the chosen operator and
+quantifier (one of the six set operations, or the <span class="ec-lmtt-12">OTHERWISE </span>fallback). Then the
+denotation of the composite query is the left fold </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 618 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub><mi>⟧</mi> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="sans-serif"><mrow><mi>Comb</mi></mrow></mstyle><mstyle class="text"><mtext>_</mtext></mstyle><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>q</mi><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mstyle mathvariant="sans-serif"><mrow><mi>Comb</mi></mrow></mstyle><mstyle class="text"><mtext>_</mtext></mstyle><mstyle mathvariant="bold"><mrow><mi>op</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mi>q</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mn>0</mn></mrow></msub><mi>⟧</mi><mo class="MathClass-punc">,</mo><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mn>1</mn></mrow></msub><mi>⟧</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mi>⟦</mi><msub><mrow><mi>Q</mi></mrow><mrow><mi>n</mi></mrow></msub><mi>⟧</mi></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 628 --><p class="indent">   This algebraic account is extensionally equivalent to the stepwise binding
+table construction described for the <span class="ec-lmri-12">composite query expression </span>in the
+GQL standard and provides a compact description of how composite
+queries act on the intermediate binding tables produced by linear query
+statements.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 9 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Defined the compositional algebra over binding tables as the
+      intermediate semantic domain of queries.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>Binding tables as bags of records with a fixed header;
+      core operators such as selection, projection, joins, optional matching,
+      unwinding/construction; a clause-by-clause denotation of query blocks.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Inner join versus optional (left-outer) join and the
+      resulting padding with unknowns; bag (multiset) behavior versus set
+      behavior and where duplicates were preserved or eliminated.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Made   queries   compositional   and   mechanically
+      translatable into algebra; explained how optional matching changed
+      both  shapes  and  multiplicities  of  results;  established  a reusable
+      semantic engine for subqueries and set operators.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Prepared the path chapters by fixing how path results were
+      represented and combined with other bindings.</li></ul>
+</aside>
+<!-- l. 279 -->
+<!-- l. 279 --> <a id="tailtestch9.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="08-expressions-and-evaluation.html"><small>← Previous</small>Expressions and Evaluation</a><a rel="next" href="part-04-paths-and-regular-path-expressions.html"><small>Next →</small>Paths and Regular Path Expressions</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x16-1310009.1">9.1 Selection and Projection</a><a href="#x16-1320009.2">9.2 Joins and OPTIONAL (Left-Outer Join)</a><a href="#x16-1400009.3">9.3 FOR and List Unnesting</a><a href="#x16-1410009.4">9.4 Subqueries and Scope</a><a href="#x16-1540009.5">9.5 Whole-Query Denotation</a><a href="#x16-1570009.6">9.6 Composite Queries and Set Operators</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

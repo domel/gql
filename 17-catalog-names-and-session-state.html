@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Catalog, Names and Session State — GQL Essentials, by Dominik Tomaszuk.">
+<title>Catalog, Names and Session State · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part" open><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html" aria-current="page"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Catalog, Names and Session State</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Catalogs, Sessions, and Procedures</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x30-33900017"><span class="chapter-number">Chapter 17</span><a></a>Catalog, Names and Session State</h1>
+<!-- l. 3 --><p class="noindent">This chapter axiomatizes the abstract catalog that underlies GQL programs,
+explaining how named objects, schemas, and graphs are organized and resolved
+during query and update execution. We explicitly define the normative core
+catalog objects, specify qualified names and the rules for resolving them relative
+to a working schema and working graph, and describe the notion of a session,
+including its execution sites and policy settings. These ingredients provide the
+ambient context in which the semantic rules of earlier and later chapters are
+interpreted.
+</p>
+<h2 class="sectionHead" id="x30-34000017.1"><span class="titlemark">17.1   </span> <a></a>Named Objects and Namespaces</h2>
+<!-- l. 10 --><p class="noindent"><span class="paragraphHead"><a id="x30-34100017.1"></a><span class="ec-lmbx-12">Catalog</span><a id="dx30-341001"></a><span class="ec-lmbx-12">.</span></span>
+   A <span class="ec-lmri-12">GQL-catalog </span>is a persistent, hierarchically organized collection whose root
+is either a GQL-directory or a GQL-schema. Directories contain directories and
+schemas; schemas contain the normative primary catalog objects: graphs, graph
+types, binding tables, and named procedures. Node and edge types are secondary
+objects contained in graph types.
+</p>
+<!-- l. 17 --><p class="noindent"><span class="paragraphHead"><a id="x30-34200017.1"></a><span class="ec-lmbx-12">Identifiers</span><a id="dx30-342001"></a> <span class="ec-lmbx-12">and qualification.</span></span>
+   Let <!-- l. 18 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>ℝ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>cat</mi></mrow></mstyle></mrow></msub></math>
+denote the syntactically well-formed catalog object references of the GQL grammar,
+and let <!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>ℚ</mi></math>
+denote their globally resolved references to catalog objects. A syntactic reference
+consists of an optional catalog object parent reference and a local object name.
+Schema paths use “/” and may be absolute or relative (including <span class="ec-lmtt-12">CURRENT_SCHEMA</span>,
+<span class="ec-lmtt-12">HOME_SCHEMA</span>, “.”, and “..”); periods separate any nested secondary-object names.
+Thus <!-- l. 24 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>ℝ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>cat</mi></mrow></mstyle></mrow></msub></math>
+is not modeled as dot-concatenated identifiers detached from the catalog
+hierarchy.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 27 --><p class="noindent"><span class="paragraphHead"><a id="x30-34300017.1"></a><span class="ec-lmbx-12">Catalog descriptors and derived projections.</span></span>
+<a id="dx30-343001"></a>
+   Abstractly, a catalog instance is a rooted tree </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 29 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="bold-script">C</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle mathvariant="sans-serif"><mrow><mi>Root</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 32 --><p class="indent">   where every directory descriptor maps local identifiers to directory or
+schema descriptors and every schema descriptor maps local identifiers to
+primary catalog object descriptors. A schema descriptor also records
+its owner, which is an authorization identifier; a schema created by
+<span class="ec-lmtt-12">CREATE SCHEMA </span>has the session authorization identifier as its owner. Let
+<!-- l. 36 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle></mrow></math>
+denote the domain of named procedure descriptors; its tuple structure is
+defined in <a href="18-procedures.html#x31-35300018">Chapter 18</a>. For concise semantic rules, the following are derived
+projections after standard reference resolution, not independent top-level
+dictionaries:
+                                                                          
+
+                                                                          
+</p><!-- tex4ht:inline --><!-- l. 46 --><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mtable class="align-star" columnalign="left">
+<mtr><mtd class="align-odd" columnalign="right"><mstyle mathvariant="sans-serif"><mrow><mi>Graphs</mi></mrow></mstyle></mtd> <mtd class="align-even"><mrow> <mo class="MathClass-punc">:</mo> <mi>ℚ</mi> <mo class="MathClass-rel">⇀</mo> <mstyle mathvariant="bold"><mrow><mi>GraphEntry</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace width="2em"></mspace></mrow></mtd> <mtd class="align-label" columnalign="right"></mtd> <mtd class="align-label"><mrow>
+<mspace width="2em"></mspace></mrow></mtd></mtr><mtr><mtd class="align-odd" columnalign="right"><mstyle mathvariant="sans-serif"><mrow><mi>GraphTypes</mi></mrow></mstyle></mtd> <mtd class="align-even"><mrow> <mo class="MathClass-punc">:</mo> <mi>ℚ</mi> <mo class="MathClass-rel">⇀</mo> <mstyle mathvariant="bold"><mrow><mi>GTypeDesc</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace width="2em"></mspace></mrow></mtd> <mtd class="align-label" columnalign="right"></mtd> <mtd class="align-label"><mrow>
+<mspace width="2em"></mspace></mrow></mtd></mtr><mtr><mtd class="align-odd" columnalign="right"><mstyle mathvariant="sans-serif"><mrow><mi>BindingTables</mi></mrow></mstyle></mtd> <mtd class="align-even"><mrow> <mo class="MathClass-punc">:</mo> <mi>ℚ</mi> <mo class="MathClass-rel">⇀</mo> <mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace width="2em"></mspace></mrow></mtd> <mtd class="align-label" columnalign="right"></mtd> <mtd class="align-label"><mrow>
+<mspace width="2em"></mspace></mrow></mtd></mtr><mtr><mtd class="align-odd" columnalign="right"><mstyle mathvariant="sans-serif"><mrow><mi>Procs</mi></mrow></mstyle></mtd> <mtd class="align-even"><mrow> <mo class="MathClass-punc">:</mo> <mi>ℚ</mi> <mo class="MathClass-rel">⇀</mo> <mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle><mo class="MathClass-punc">.</mo><mspace width="2em"></mspace></mrow></mtd> <mtd class="align-label" columnalign="right"></mtd> <mtd class="align-label"><mrow>
+<mspace width="2em"></mspace></mrow></mtd></mtr></mtable></math>
+<!-- l. 47 --><p class="noindent">Here a member of <!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle></mrow></math>
+is the binding-table object, including its record collection and associated
+descriptor: binding-table type, ordered/unordered indication, and preferred
+column-name sequence. The schema’s single named-subobject dictionary ensures
+that two primary objects with the same local name cannot silently occupy
+separate sort-specific namespaces.
+</p>
+<!-- l. 53 --><p class="noindent"><span class="paragraphHead"><a id="x30-34400017.1"></a><span class="ec-lmbx-12">Active context</span><a id="dx30-344001"></a> <span class="ec-lmbx-12">and working schema/graph.</span></span>
+   An <span class="ec-lmri-12">active context </span>is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 55 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="bold-script">X</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="bold-script">C</mi><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>WSR</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 58 --><p class="indent">   where <!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WSR</mi></mrow></mstyle></mrow></math> (working
+schema reference) and <!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle></mrow></math>
+(working graph site) determine relative resolution and execution scope as in the
+GQL standard object-reference and <span class="ec-lmtt-12">USE </span>rules.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 60 --><p class="noindent"><span class="paragraphHead"><a id="x30-34500017.1"></a><span class="ec-lmbx-12">Working graph and unnamed patterns.</span></span>
+   The working schema component <!-- l. 61 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WSR</mi></mrow></mstyle></mrow></math>
+is a working schema reference. The graph reference value occupying the working graph
+site <!-- l. 62 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle></mrow></math>
+identifies the graph against which unqualified pattern clauses and data-modification
+operations are evaluated. A <span class="ec-lmtt-12">USE GE </span>graph-selection step evaluates <span class="ec-lmtt-12">GE </span>and
+establishes the current working graph. Subsequent pattern clauses and
+data-modification operations use that current working graph; they do not carry
+a separate graph expression of their own.
+</p><!-- l. 70 --> <a id="likesection.10"></a><a id="x30-345001x10"></a>
+
+<!-- l. 71 --><p class="noindent"><span class="paragraphHead"><a id="x30-34600010"></a><span class="ec-lmbx-12">Example: library catalog projections.</span></span>
+   Let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 73 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="bold"><mrow><mi>GTypeDesc</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi mathvariant="normal">Σ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi mathvariant="bold-script">I</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 77 --><p class="indent">   represent the abstract graph type descriptor of <span class="ec-lmtt-12">libraryGraphType </span>defined in <a href="15-types-and-schemas.html#x27-28600015.4">Sections 15.4</a><a href="15-types-and-schemas.html#x27-29000015.5">
+and 15.5</a>. Let <!-- l. 79 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>q</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">∈</mo> <mi>ℚ</mi></mrow></math>
+be the globally resolved references denoted in the current working schema by
+<span class="ec-lmtt-12">libraryGraph </span>and <span class="ec-lmtt-12">libraryGraphType</span>. A catalog containing those objects
+satisfies </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 82 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><msub><mrow><mi mathvariant="bold-script">C</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Root</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Graphs</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>q</mi></mrow><mrow><mi>G</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="bold"><mrow><mi>GraphEntry</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GraphTypes</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>q</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GT</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="bold"><mrow><mi>GTypeDesc</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 89 --><p class="indent">   The two maps are derived projections of
+<!-- l. 89 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">C</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mrow></math>, not
+additional components of its one-component tuple.
+</p><!-- l. 92 --> <a id="likesection.11"></a><a id="x30-346001x11"></a>
+
+<!-- l. 93 --><p class="noindent"><span class="paragraphHead"><a id="x30-34700011"></a><span class="ec-lmbx-12">Example: active library context.</span></span>
+   In the active-context abstraction used here, let
+<!-- l. 94 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>S</mi></mrow></msub></mrow></math> be
+the current working schema reference and let the graph reference value denoted by
+<!-- l. 95 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>G</mi></mrow></msub></mrow></math> occupy
+<!-- l. 96 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mrow></math>.
+Then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 98 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="bold-script">X</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi mathvariant="bold-script">C</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mi>q</mi></mrow><mrow><mi>S</mi></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 104 --><p class="indent">   and an unqualified <span class="ec-lmtt-12">MATCH </span>is evaluated against the graph referenced by
+<!-- l. 105 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mrow></math>.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 107 --><p class="noindent"><span class="paragraphHead"><a id="x30-34800011"></a><span class="ec-lmbx-12">Name resolution.</span></span>
+<a id="dx30-348001"></a>
+   Given a syntactic reference <!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>ℝ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>cat</mi></mrow></mstyle></mrow></msub></mrow></math>
+of sort </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 109 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>S</mi> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="bold"><mrow><mi>Graph</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="bold"><mrow><mi>GraphType</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="bold"><mrow><mi>BindingTable</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="bold"><mrow><mi>Proc</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 112 --><p class="indent"> <!-- l. 112 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>resolve</mi></mrow></mstyle></mrow><mrow><mi>S</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="bold-script">X</mi><mo class="MathClass-punc">,</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+first resolves its explicit schema/object parent. If the parent is omitted,
+the grammar supplies the implicit parent “<span class="ec-lmtt-12">./</span>”, i.e. the current
+working schema. The local name must identify an object of sort
+<!-- l. 115 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math> in
+that parent; on success, resolution determines its globally resolved reference in
+<!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℚ</mi></mrow></math>.
+Absolute, relative, home, and current-schema references follow their distinct
+grammar rules, so resolution is not an ordered search between two textual
+names.
+</p><!-- l. 120 -->
+
+<h2 class="sectionHead" id="x30-34900017.2"><span class="titlemark">17.2   </span> <a></a>Qualified References and <span class="ec-lmtt-12">USE</span></h2>
+<!-- l. 122 --><p class="noindent"><span class="paragraphHead"><a id="x30-35000017.2"></a><span class="ec-lmbx-12">Syntactic form of the </span><span class="ec-lmtk-10x-x-120">USE</span><a id="dx30-350001"></a> <span class="ec-lmbx-12">graph clause.</span></span>
+   The standard use-graph clause declares a working graph and its syntactically
+defined scope:
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 125 --><div class="code-wrap"><span id="x30-350005r4"></span><span id="x30-350004r3"></span><span id="x30-350003r2"></span><span id="x30-350002r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>use-graph-clause ::= "USE" graph-expr
+
+graph-expr ::= ...  /* graph reference or expression */
+</code></pre></div>
+<!-- l. 130 --><p class="noindent">Here <span class="ec-lmtt-12">graph-expr </span>denotes an expression whose value is a graph reference. The clause
+has neither an intervening <span class="ec-lmtt-12">GRAPH </span>keyword nor an <span class="ec-lmtt-12">AS </span>alias. Uses in modifying and
+read-only statements appear in <a href="04-gql-by-example.html#x9-200004.3">Sections 4.3</a><a href="04-gql-by-example.html#x9-240004.4"> and 4.4</a>. This clause requires optional
+Feature GQ01, <span class="ec-lmri-12">USE graph clause</span>.
+</p>
+<!-- l. 136 --><p class="noindent"><span class="paragraphHead"><a id="x30-35100017.2"></a><span class="ec-lmbx-12">Using a graph for a statement.</span></span>
+   Let <!-- l. 137 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GE</mi></mrow></math> be the graph
+expression in <span class="ec-lmtt-12">USE </span><!-- l. 137 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GE</mi></mrow></math>.
+It is evaluated in a new child execution context with a material unit incoming
+working table. The working graph site identified by the clause is set to the resulting
+graph reference value. Its scope is the enclosing focused linear query or focused linear
+data-modifying statement part determined by the grammar; there is no concrete
+<span class="ec-lmtt-12">USE </span><!-- l. 142 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">GE</mi></mrow></math>
+<span class="ec-lmtt-12">IN </span><!-- l. 142 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math>
+form.
+</p><!-- l. 144 -->
+
+<h2 class="sectionHead" id="x30-35200017.3"><span class="titlemark">17.3   </span> <a></a>Session State and Sites</h2>
+<a id="dx30-352001"></a>
+<a id="dx30-352002"></a>
+<a id="dx30-352003"></a>
+<!-- l. 145 --><p class="noindent">A session context is represented here by the compact tuple </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 146 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>SCX</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>a</mi><mo class="MathClass-punc">,</mo><mi>π</mi><mo class="MathClass-punc">,</mo><mi>z</mi><mo class="MathClass-punc">,</mo><msup><mrow><mi>S</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><msup><mrow><mi>G</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>Params</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>ListBeh</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><msup><mrow><mi>T</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><msup><mrow><mi>R</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup><mo class="MathClass-punc">,</mo><mi>f</mi><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 150 --><p class="indent">   Here <!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi></mrow></math> is the session
+authorization identifier, <!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>π</mi></mrow></math> is
+the principal it identifies, <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>z</mi></mrow></math> is
+the time-zone displacement, <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>S</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup></mrow></math>
+and <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>G</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup></mrow></math>
+are the session schema and session graph (each possibly not set),
+<!-- l. 153 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Params</mi></mrow></mstyle></mrow></math> is the session-parameter
+dictionary, <!-- l. 154 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>ListBeh</mi></mrow></mstyle></mrow></math>
+records offset/ordinal indexing, negative-index, and out-of-range behavior,
+<!-- l. 155 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>T</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup></mrow></math> and
+<!-- l. 155 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>R</mi></mrow><mrow><mo class="MathClass-punc">?</mo></mrow></msup></mrow></math> are
+the current transaction and request context (each possibly not set), and
+<!-- l. 156 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>f</mi></mrow></math> is the
+termination flag. The list-behavior policies affect list element references and
+indexing, not list unwinding. Session <span class="ec-lmtt-12">SET </span>and <span class="ec-lmtt-12">RESET </span>commands modify or restore
+the corresponding characteristics, while session close sets the termination
+flag.
+</p><!-- l. 162 --><p class="indent">   GQL also operates with execution contexts and sites; assignments to sites
+(read/write locations) respect declared types, including dynamic unions.
+Nullability and inference of site nullability are part of the type and assignment
+semantics. In general, a store assignment is modeled as a partial function from
+memory state to memory state, equipped with dynamic type checking and the
+possibility of raising exceptions.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title"><a href="#x30-33900017">Chapter 17</a> — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Axiomatized the catalog and session context in which all
+      earlier semantics were interpreted.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>Qualified naming and name-resolution rules; cataloged
+      objects  such  as  graphs,  schemas,  and  procedures;  session  state,
+      including working graph/schema selection and related scope rules.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Qualified versus unqualified references and their
+      resolution scope; global catalog state versus local session context.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Eliminated  ambiguity  about  what  object  a name
+      denoted  at  any  point;  enabled  multi-graph  workflows  with  explicit
+      working-graph selection; ensured that procedures and updates inherited
+      the correct ambient context.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge:  </span>Enabled  reusable  abstractions  by  defining  how  named
+      procedures were cataloged and resolved.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch17.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-08-catalogs-sessions-and-procedures.html"><small>← Previous</small>Catalogs, Sessions, and Procedures</a><a rel="next" href="18-procedures.html"><small>Next →</small>Procedures</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x30-34000017.1">17.1 Named Objects and Namespaces</a><a href="#x30-34900017.2">17.2 Qualified References and USE</a><a href="#x30-35200017.3">17.3 Session State and Sites</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

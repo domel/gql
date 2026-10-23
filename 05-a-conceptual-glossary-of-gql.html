@@ -1,0 +1,2126 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="A Conceptual Glossary of GQL — GQL Essentials, by Dominik Tomaszuk.">
+<title>A Conceptual Glossary of GQL · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part" open><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html" aria-current="page"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> A Conceptual Glossary of GQL</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Core Model and Patterns</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x11-300005"><span class="chapter-number">Chapter 05</span><a></a>A Conceptual Glossary of GQL</h1>
+<!-- l. 4 --><p class="noindent">This chapter collects the technical vocabulary used in the semantic chapters of the
+book. It is not arranged alphabetically, because an alphabetic list is convenient for
+lookup but poor for learning a model. Instead, the terms are ordered as a reading
+path: elementary notions come first, and later sections build on the words that
+have already been introduced. The aim is that a reader can move through the
+chapter without encountering a central technical term before it has been
+explained.
+</p><!-- l. 9 --><p class="indent">   The definitions are intentionally short. They do not replace the full formal
+development in the main chapters, but they provide a compact conceptual map of
+that development. When a term has a precise formal treatment elsewhere,
+the definition below states the role of the term and the intuition needed
+to follow later references. The sequence also indicates how the parts of
+GQL fit together: values and names support stored structures, stored
+structures support patterns, patterns produce tables, tables are transformed by
+queries, while updates, transactions, authorization, and diagnostics govern
+execution.
+</p>
+<h2 class="sectionHead" id="x11-310005.1"><span class="titlemark">5.1   </span> <a></a>Foundations</h2>
+<!-- l. 16 --><p class="noindent">We begin with the vocabulary that is needed before any particular data model is
+discussed. A statement manipulates data by means of values, and the language
+needs types to say which values are admissible in a given position. Names and
+identifiers then give the text of a statement a way to refer to things, while
+variables and bindings explain how evaluation records intermediate choices.
+The last terms in this section move from single bindings to mappings
+and merges, because later evaluation rules repeatedly combine partial
+assignments into larger assignments. No structural assumptions are needed
+yet; the point is only to establish the naming and binding machinery on
+which the rest of the chapter depends. The basic terms for this layer
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Data</span><a id="dx11-31001"></a>: facts or stored content available to GQL for reading, returning,
+      or changing.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Type</span><a id="dx11-31002"></a>: a classification that determines which data items are admissible
+      in a particular place.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Value</span><a id="dx11-31003"></a>: a definite, immutable, and irreducible unit of data of some
+      type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Null value</span><a id="dx11-31004"></a>: the special value used to indicate the absence of other
+      data.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Data type</span><a id="dx11-31005"></a>: a set of elements with shared characteristics representing
+      data.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-program</span><a id="dx11-31006"></a>: a complete top-level syntactic unit of GQL.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-request</span><a id="dx11-31007"></a>:  a GQL-program  together  with  a possibly  empty
+      dictionary of named, typed parameter values supplied for that request.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Execution</span><a id="dx11-31008"></a>: carrying out of a GQL-request to compute a result and
+      possibly change runtime state.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Operation</span><a id="dx11-31009"></a>:  an  identifiable  action  performed  while  carrying  out
+      a GQL-request.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Side effect</span><a id="dx11-31010"></a>: a change caused during execution of a GQL-request that
+      can  be  detected  by  execution  of  another  operation  in  the  same  or
+      another GQL-request.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Evaluation</span><a id="dx11-31011"></a>: a computation of a result that is not permitted to cause
+      side effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Procedure</span><a id="dx11-31012"></a>: a description of a computation on input arguments whose
+      execution reports success or failure and may cause side effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Command</span><a id="dx11-31013"></a>: an operation not specified by a procedure written in GQL.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Statement</span><a id="dx11-31014"></a>: an operation executed as part of a procedure that may
+      update runtime state and cause side effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Implementation-defined</span><a id="dx11-31015"></a>:    possibly    differing    between    GQL
+      implementations, but specified by the implementer for each particular
+      implementation.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Implementation-dependent</span><a id="dx11-31016"></a>:   possibly   differing   between   GQL
+      implementations, but not required to be specified by the implementer.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Identifier</span><a id="dx11-31017"></a>: a value by which something is identified.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Name</span><a id="dx11-31018"></a>: an identifier used by people and by statement text to refer to
+      something.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Variable</span><a id="dx11-31019"></a>: a name used inside a statement to hold a value or formal
+      item found during evaluation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Binding</span><a id="dx11-31020"></a>: an association between a variable name and a value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Mapping</span><a id="dx11-31021"></a>: a partial assignment from variables to values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unbound variable</span><a id="dx11-31022"></a>: a variable for which the current mapping has no
+      binding; this is distinct from a variable bound to the null value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Compatible mappings</span><a id="dx11-31023"></a>: two mappings that agree on every variable
+      they both bind.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Merge</span><a id="dx11-31024"></a>: the union of two compatible mappings.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Qualified name</span><a id="dx11-31025"></a>: a name made from several components, used when
+      a short name would not be precise enough.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Object</span><a id="dx11-31026"></a>:  something  that  the  system  can  refer  to,  type,  protect,  or
+      manipulate.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-object</span><a id="dx11-31027"></a>:  an  object  capable  of  being  manipulated  directly  by
+      execution of a GQL-request.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Global object identifier</span><a id="dx11-31028"></a>: an effectively immutable internal object
+      identifier associated with a GQL-object that reifies its identity during
+      execution of a GQL-request.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Globally   identifiable   object</span><a id="dx11-31029"></a>:   a GQL-object   associated   with
+      a global object identifier.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Syntactically  resolved  reference</span><a id="dx11-31030"></a>:  a grammatical  reference  that
+      statically  identifies  a GQL-object  from  the  reference’s  syntax  and
+      location.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Globally resolved reference</span><a id="dx11-31031"></a>: a reference that identifies its referent
+      by a global object identifier.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Descriptor</span><a id="dx11-31032"></a>: a coded description of the metadata of a GQL-object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primary  object</span><a id="dx11-31033"></a>:  an  independently  definable  GQL-object;  every
+      primary object is globally identifiable and has a descriptor.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Secondary object</span><a id="dx11-31034"></a>: a GQL-object necessarily defined as a component
+      of another GQL-object.</li></ul>
+<!-- l. 60 -->
+
+<h2 class="sectionHead" id="x11-320005.2"><span class="titlemark">5.2   </span> <a></a>Graphs</h2>
+<!-- l. 62 --><p class="noindent">With the naming layer in place, we can introduce the structure that gives GQL its
+distinctive character. A graph is built from points and links, and the language
+treats those parts as objects that can be named, typed, selected, and
+changed. The first definitions below describe the bare connectivity structure:
+nodes, edges, endpoints, direction, loops, and multiple edges. The later
+definitions add labels and properties, which are the features that turn a simple
+connected structure into a property graph. This section also introduces the
+idea that a stored graph may either stand without a fixed structural
+contract or be checked against one. The graph vocabulary introduced here
+is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Graph</span><a id="dx11-32001"></a>: a primary GQL-object comprising zero or more identifiable
+      points and zero or more identifiable connections between them.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Node (vertex)</span><a id="dx11-32002"></a>: an identifiable point in a graph that represents an
+      entity.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Edge (relationship)</span><a id="dx11-32003"></a>: an identifiable connection in a graph between
+      two nodes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph element</span><a id="dx11-32004"></a>: a node or an edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Source node</span><a id="dx11-32005"></a>: the node where an oriented link starts.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Destination node</span><a id="dx11-32006"></a>: the node where an oriented link ends.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Endpoint</span><a id="dx11-32007"></a>: one of the two nodes connected by an edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Directed  edge</span><a id="dx11-32008"></a>:  an  edge  whose  endpoints  have  a source  and
+      a destination.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Undirected edge</span><a id="dx11-32009"></a>: an edge that may be traversed without choosing
+      a fixed source-to-destination direction.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Directionality</span><a id="dx11-32010"></a>: the information saying whether an edge is directed or
+      undirected.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Loop</span><a id="dx11-32011"></a>: an edge whose two endpoints are the same node.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Multiple edges</span><a id="dx11-32012"></a>: several edges between the same pair of nodes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Multigraph</span><a id="dx11-32013"></a>: a graph that permits multiple distinct edges between the
+      same pair of nodes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Mixed graph</span><a id="dx11-32014"></a>: a graph that can contain both directed and undirected
+      edges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Label</span><a id="dx11-32015"></a>: a name attached to a node or edge to classify it.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Label set</span><a id="dx11-32016"></a>: the finite set of labels attached to one node or edge.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Edge label</span><a id="dx11-32017"></a>: a label contained in the label set of an edge; by itself it
+      is only a classification mark and does not specify the edge’s complete
+      structural contract.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property key</span><a id="dx11-32018"></a>: the name used as the key part in an attribute key-value
+      pair.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property value</span><a id="dx11-32019"></a>: the value stored under such a key.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property</span><a id="dx11-32020"></a>: a key-value pair attached to a node or edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property map</span><a id="dx11-32021"></a>: mapping from property keys to property values for
+      one node or edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property set</span><a id="dx11-32022"></a>: the group of properties carried by one node or edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property graph</span><a id="dx11-32023"></a>: a graph whose nodes and edges can have labels and
+      properties.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL graph</span><a id="dx11-32024"></a>: the book’s structural property-graph model, comprising
+      disjoint finite sets of identifiable nodes and edges together with their
+      labels, properties, edge endpoints, and edge directionality.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint</span><a id="dx11-32025"></a>: a rule that a graph must satisfy.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint dictionary</span><a id="dx11-32026"></a>: a dictionary associated with a graph that
+      maps zero or more unique names to constraints imposed directly on the
+      graph’s elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraining graph type</span><a id="dx11-32027"></a>: an optional globally resolved reference
+      recorded for a graph; its referent supplies the structural and integrity
+      rules that the graph must satisfy.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph descriptor</span><a id="dx11-32028"></a>: optional constraining graph type together with
+      the graph’s constraint dictionary.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Open graph</span><a id="dx11-32029"></a>: a graph that has no declared structural contract, so it
+      is not checked against one fixed graph shape.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Closed graph</span><a id="dx11-32030"></a>: a graph that has a declared structural contract and
+      must satisfy it.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Conformance</span><a id="dx11-32031"></a>: the fact that a value, element, graph, statement, or
+      implementation satisfies the rules that apply to it.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph-entry conformance</span><a id="dx11-32032"></a>: the requirement that a graph satisfy its
+      directly defined constraints and, when it has a constraining graph type,
+      the structural and constraint requirements supplied by that referent.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph type violation</span><a id="dx11-32033"></a>: an error reported when a graph does not
+      satisfy the structural requirements or constraints of its constraining
+      graph type.</li></ul>
+<!-- l. 105 -->
+
+<h2 class="sectionHead" id="x11-330005.3"><span class="titlemark">5.3   </span> <a></a>Context</h2>
+<!-- l. 107 --><p class="noindent">Graphs and other GQL-objects are not interpreted in isolation. A statement is
+evaluated against a current store state, and names are resolved through
+a catalog, namespaces, and the current working defaults. The terms in this
+section describe that ambient setting. They explain where named objects live, how
+a short name is connected to a particular object, and how a session records the
+context and options that influence later statements. The order starts with the
+global store and catalog and ends with session-local choices, because session state
+is meaningful only after the available objects and naming rules are clear. The
+context terms used in this part are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Catalog</span><a id="dx11-33001"></a>:  a persistent,  hierarchically  organized  collection  of  named
+      GQL-objects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Catalog object</span><a id="dx11-33002"></a>: a GQL-object defined, possibly transitively, in the
+      GQL-catalog.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primary  catalog  object</span><a id="dx11-33003"></a>:  a GQL-object  that  is  both  a primary
+      object and a catalog object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-schema</span><a id="dx11-33004"></a>: a persistent dictionary of primary catalog objects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-directory</span><a id="dx11-33005"></a>:  a persistent  dictionary  of  GQL-directories  and
+      GQL-schemas.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Store state</span><a id="dx11-33006"></a>: the current abstract state of the stored graphs, catalog,
+      and other data that statements evaluate against.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Execution context</span><a id="dx11-33007"></a>: the runtime state created for an execution and
+      updated as its operations proceed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Catalog entry</span><a id="dx11-33008"></a>: one item in the catalog, such as a stored graph item
+      or a type definition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph entry</span><a id="dx11-33009"></a>: a catalog entry that stores a graph together with its
+      optional constraining graph type and its own constraint dictionary.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Site</span><a id="dx11-33010"></a>: a place occupied by an instance of a specified data type.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Declared type</span><a id="dx11-33011"></a>: the unique data type common to every instance that
+      may occupy a site, or to every result of a specified operation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Assignment</span><a id="dx11-33012"></a>:  the  operation  that  initializes  or  replaces  the  value
+      at  a target  site  with  a source  value,  applying  the  relevant  type
+      conversions when required.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Store assignment</span><a id="dx11-33013"></a>: assignment to a site using the assignment and
+      type-conversion rules defined for stored values and references.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Namespace</span><a id="dx11-33014"></a>: a naming area that helps the same short name mean
+      different things in different contexts without conflicts.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Name  resolution</span><a id="dx11-33015"></a>:  the  process  that  decides  which  catalog  object,
+      variable, type, or local binding a name refers to.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Working schema reference</span><a id="dx11-33016"></a>: the schema reference used as the default
+      parent for resolving relative catalog-object references.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Working  graph  site</span><a id="dx11-33017"></a>:  a site  identified  by  statement  syntax  and
+      occupied by a reference to the graph used within its scope.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Working graph</span><a id="dx11-33018"></a>: the graph identified by the reference occupying the
+      current working graph site.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Active context</span><a id="dx11-33019"></a>: the catalog, working schema reference, and working
+      graph site used to interpret names and execute statements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Session context</span><a id="dx11-33020"></a>: the context in which multiple GQL-requests of one
+      session are executed consecutively.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Implementation configuration</span><a id="dx11-33021"></a>: the set of implementation-defined
+      choices, such as supported limits and supported reference forms, made
+      explicit in the semantics.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Session options</span><a id="dx11-33022"></a>: per-session settings, such as list-index behavior, that
+      affect statement behavior.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">List-behavior  policy</span><a id="dx11-33023"></a>:  the  session  setting  that  determines  offset
+      or  ordinal  list  indexing,  negative-index  behavior,  and  out-of-range
+      behavior for list element references; it does not affect list unwinding.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Session state</span><a id="dx11-33024"></a>: the session-local information, such as active context
+      and options, that affects how statements are interpreted.</li></ul>
+<!-- l. 141 -->
+
+<h2 class="sectionHead" id="x11-340005.4"><span class="titlemark">5.4   </span> <a></a>Values</h2>
+<!-- l. 143 --><p class="noindent">The previous section located named objects in a store and explained how
+statements find them. We now need the vocabulary for the items that can
+be carried through evaluation as data. Some values are scalar, such as
+numbers or character strings; others are structured, such as lists and records.
+The section also introduces bags, because GQL keeps multiplicities in
+many intermediate results rather than silently collapsing duplicates. It
+ends with binding tables and references, which connect the value layer
+back to the GQL-objects introduced earlier. The value-level vocabulary
+is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Base type</span><a id="dx11-34001"></a>: a set of data types that have shared characteristics.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primary base type</span><a id="dx11-34002"></a>: the unique base type associated with a data
+      type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Data  type  descriptor</span><a id="dx11-34003"></a>:  a descriptor  that  identifies  a data  type,
+      including  its  declared  primary  base  type  name  and  associated
+      metadata.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Value type</span><a id="dx11-34004"></a>: a data type comprising values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-object type</span><a id="dx11-34005"></a>: a data type whose elements are GQL-objects.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Material value</span><a id="dx11-34006"></a>: any value other than the null value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Material data type</span><a id="dx11-34007"></a>: a data type that does not contain the null value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Comparable values</span><a id="dx11-34008"></a>: two values that are capable of being compared.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Distinct values</span><a id="dx11-34009"></a>: comparable values that are distinguishable by GQL’s
+      distinctness relation; two null values are not distinct, whereas a null
+      value and a material value are distinct.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Nullable  value  type</span><a id="dx11-34010"></a>:  a value  type  that  admits  the  null  value  in
+      addition to its ordinary material values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Immaterial value type</span><a id="dx11-34011"></a>: the null type, which contains the null value,
+      or the empty type, which contains no values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Supported property value type</span><a id="dx11-34012"></a>: a non-empty value type that an
+      implementation accepts as the type of a property value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Scalar  type</span><a id="dx11-34013"></a>:  a type  for  a single  simple  value,  such  as  an  integer,
+      string, Boolean value, date, time, or duration.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Numeric type</span><a id="dx11-34014"></a>: a scalar type for numbers, such as integer, decimal,
+      float, or double.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Truth value</span><a id="dx11-34015"></a>: a value used by conditions: true, false, or unknown.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Boolean type</span><a id="dx11-34016"></a>: a scalar type for truth values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Character string type</span><a id="dx11-34017"></a>: a scalar type for text.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Byte string type</span><a id="dx11-34018"></a>: a scalar type for binary data.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Temporal  type</span><a id="dx11-34019"></a>:  a scalar  type  for  dates,  times,  date-times,  or
+      durations.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Vector  type</span><a id="dx11-34020"></a>:  a value  type  for  vector-shaped  values  where  the
+      implementation supports them.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Collection type</span><a id="dx11-34021"></a>: a type for values that contain other values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bag (multiset)</span><a id="dx11-34022"></a>: a collection that can contain the same item multiple
+      times.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Multiplicity</span><a id="dx11-34023"></a>: the number of occurrences of an item in a bag.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bag cardinality</span><a id="dx11-34024"></a>: the total number of occurrences in a bag, counting
+      duplicates.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">List value</span><a id="dx11-34025"></a>: an ordered finite collection of values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">List value type</span><a id="dx11-34026"></a>: a type describing list values, including the type of
+      their elements, maximum size, and nullability.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Field</span><a id="dx11-34027"></a>: one named component of structured data.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Group list value type</span><a id="dx11-34028"></a>: a list type used when one variable contributes
+      several values to one result field.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Record</span><a id="dx11-34029"></a>: a finite set of named fields, where each field has a value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Record type</span><a id="dx11-34030"></a>: a type that states which fields a record has and what
+      type each field may contain.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Closed record type</span><a id="dx11-34031"></a>: a record type specified with an explicit, possibly
+      empty, set of field types.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unit record type</span><a id="dx11-34032"></a>: the record type with no fields, used as a neutral
+      empty row in some evaluations.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Binding  table</span><a id="dx11-34033"></a>:  a primary  GQL-object  comprising  zero  or  more,
+      possibly duplicate, records of one record type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Binding table type</span><a id="dx11-34034"></a>: the GQL-object type of binding tables whose
+      records have a specified record type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Column</span><a id="dx11-34035"></a>: a field position shared across all records in a binding table.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Ordered binding table</span><a id="dx11-34036"></a>: a binding table whose ordering indication
+      records an order of its record occurrences.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unordered binding table</span><a id="dx11-34037"></a>: a binding table whose ordering indication
+      does not determine an order of its record occurrences.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Preferred column name sequence</span><a id="dx11-34038"></a>: binding-table metadata that is
+      either not set or is a permutation of the table’s column names.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effective  column  name  sequence</span><a id="dx11-34039"></a>:  the  preferred  column  name
+      sequence when it is set, and otherwise the table’s column names in
+      ascending order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Binding  table  descriptor</span><a id="dx11-34040"></a>:  the  binding  table  type,  an  indication
+      of  whether  the  table  is  ordered  or  unordered,  and  a preferred
+      column-name sequence that is either not set or is a permutation of the
+      table’s column names.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Working record</span><a id="dx11-34041"></a>: the record in the current execution context whose
+      fields provide scalar bindings during execution.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Working table</span><a id="dx11-34042"></a>: the binding table in the current execution context
+      whose records drive statement execution.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Binding variable</span><a id="dx11-34043"></a>: an execution-context variable associated with an
+      identified field of the working record or with the corresponding fields
+      of records in the working table.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Dynamic union type</span><a id="dx11-34044"></a>: a type that can contain values from several
+      component  types,  useful  when  different  branches  of  a query  can
+      produce different value kinds.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constructed value type</span><a id="dx11-34045"></a>: a value type built from other parts rather
+      than supplied as a single primitive family.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reference value</span><a id="dx11-34046"></a>: a value that describes a globally resolved reference
+      to a GQL-object, such as a graph, node, edge, or binding table.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reference value type</span><a id="dx11-34047"></a>: a type for reference values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph reference value</span><a id="dx11-34048"></a>: a reference value that points to a graph
+      object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Node reference value</span><a id="dx11-34049"></a>: a reference value that points to a node.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Edge reference value</span><a id="dx11-34050"></a>: a reference value that points to an edge.</li></ul>
+<!-- l. 203 -->
+
+<h2 class="sectionHead" id="x11-350005.5"><span class="titlemark">5.5   </span> <a></a>Expressions</h2>
+<!-- l. 205 --><p class="noindent">With values and references in place, we can define the language forms for
+operating on them. An expression evaluates to a value or reports an error, while
+a predicate is the special case used as a condition. Because missing information is
+common in graph data, GQL uses three-valued logic, where a condition may be
+true, false, or unknown. The definitions below also introduce comparison and
+ordering behavior, runtime errors, and named functions. Function terminology
+appears here before the later routine section so that the built-in terms
+                                                                          
+
+                                                                          
+can be read without a forward dependency. The expression vocabulary
+is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Expression</span><a id="dx11-35001"></a>: a piece of statement syntax that computes a value or
+      returns an error.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Typing</span><a id="dx11-35002"></a>: the process of assigning and checking types for expressions,
+      statements, properties, and results.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Static  judgment</span><a id="dx11-35003"></a>:  a formal  type-checking  statement  made  before
+      runtime evaluation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Evaluation judgment</span><a id="dx11-35004"></a>: a formal statement saying what value or error
+      an expression evaluates to under a store state and the information
+      available during evaluation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Predicate</span><a id="dx11-35005"></a>: an expression used as a Boolean test.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unknown truth value</span><a id="dx11-35006"></a>: the third truth value, represented by the null
+      value, used when a Boolean result is unknown.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Three-valued logic</span><a id="dx11-35007"></a>: a logic with true, false, and unknown, used to
+      ensure that the null value has a precise influence on predicates.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Connective</span><a id="dx11-35008"></a>: a Boolean operator such as conjunction, disjunction, or
+      negation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Short-circuiting</span><a id="dx11-35009"></a>:  the  possible  non-evaluation  of  an  inessential
+      expression  part,  whose  result  cannot  affect  the  enclosing  result;  if
+      evaluating that part would raise an exception, whether it is evaluated
+      is implementation-dependent.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Comparison</span><a id="dx11-35010"></a>: a test such as equality or sort precedence between two
+      values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Weak  order</span><a id="dx11-35011"></a>:  a total  preorder  on  the  values  of  a base  type  that
+      determines their relative order for sorting, while allowing distinct values
+      to be equivalent with respect to that order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Totalization</span><a id="dx11-35012"></a>:  the  act  of  extending  sort  behavior  so  sorting  has
+      a defined policy for null values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Null-intolerant predicate</span><a id="dx11-35013"></a>: a predicate that returns unknown when
+      one of its relevant inputs is null.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Function</span><a id="dx11-35014"></a>: a named computation that returns a value.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Null-tolerant  predicate</span><a id="dx11-35015"></a>:  a predicate  or  function  that  defines
+      a non-null result for at least some null inputs.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Strict function</span><a id="dx11-35016"></a>: a function that returns the null value if any of its
+      arguments is the null value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Runtime  error</span><a id="dx11-35017"></a>:  an  error  that  occurs  during  evaluation,  such  as
+      numeric overflow, access through an invalidated reference, or an invalid
+      path representation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Error token</span><a id="dx11-35018"></a>: the formal value used to carry information about an
+      error result.</li></ul>
+<!-- l. 233 -->
+
+<h2 class="sectionHead" id="x11-360005.6"><span class="titlemark">5.6   </span> <a></a>Schemas</h2>
+<!-- l. 235 --><p class="noindent">Values, references, labels, and properties give us the ingredients for stored
+structures. Schemas describe which combinations of those ingredients are
+expected or allowed. In GQL, this includes the types of properties, the types
+of nodes and edges, and the graph types that collect such declarations
+into a larger contract. An open graph has no constraining graph type;
+a closed graph must contain only elements of the exact node and edge types
+specified by its constraining graph type and must satisfy that graph type’s
+constraints. The final terms in the section describe type relationships
+and the fact that a schema can change over time. The schema terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Property type</span><a id="dx11-36001"></a>: a pair made of a property key and the type of values
+      allowed for that key.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Node  type</span><a id="dx11-36002"></a>:  a type  whose  nodes  have  exactly  its  label  set  and
+      property-type set.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Edge type</span><a id="dx11-36003"></a>: a type whose edges have exactly its labels and property
+      types, its directionality, and its endpoint node types.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Element type</span><a id="dx11-36004"></a>: either a node type or an edge type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Label test</span><a id="dx11-36005"></a>: a Boolean expression over the labels of a node or edge in
+      a pattern; graph element type membership instead uses an exact label
+      set.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Property signature</span><a id="dx11-36006"></a>: the finite mapping from declared property keys
+      to their property types for an element type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Static property signature</span><a id="dx11-36007"></a>: a property signature used during type
+      checking before or independently of runtime values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Node type descriptor</span><a id="dx11-36008"></a>: in the reduced book-level representation, the
+      local type name, label set, and property signature of a node type; the
+      fixed primary-base-type name and preferred-name metadata of the full
+      ISO descriptor are elided.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Relationship type</span><a id="dx11-36009"></a>: the alternative standard term for an edge type;
+      it is not an alternative term for an edge label.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Endpoint  specification</span><a id="dx11-36010"></a>:  the  ordered  source  and  destination  node
+      types of a directed edge type, or the endpoint node-type set of an
+      undirected edge type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Edge  type  descriptor</span><a id="dx11-36011"></a>:  in  the  reduced  book-level  representation,
+      the  local  type  name,  label  set,  property  signature,  directed  or
+      undirected kind, and endpoint specification of an edge type; the fixed
+      primary-base-type name and preferred-name metadata of the full ISO
+      descriptor are elided.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Structural consistency</span><a id="dx11-36012"></a>: the compatibility requirement for element
+      types that imply one another, covering their element kind, label sets,
+      property names, and compatible property value types.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Endpoint  structural  consistency</span><a id="dx11-36013"></a>:  the  corresponding  structural
+      compatibility requirement for the endpoint node types of edge types
+      that imply one another.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph type</span><a id="dx11-36014"></a>: a primary GQL-object comprising a node type set, an
+      edge type set, and a constraint set; when named and held by a schema,
+      it is a catalog object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Label vocabulary</span><a id="dx11-36015"></a>: the set of label names used in a given graph, graph
+      type, or type-test context.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key label set</span><a id="dx11-36016"></a>: a set of labels that is an element of a graph type and
+      may be associated with an element type of that graph type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Keyed element type</span><a id="dx11-36017"></a>: an element type associated with a key label
+      set.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph  type  descriptor</span><a id="dx11-36018"></a>:  the  metadata  describing  a graph  type,
+      including its primary-base-type and preferred-name metadata, node-
+      and edge-type descriptor sets, key-label-set dictionaries, and named
+      constraint set dictionary; for a cataloged graph type it is a catalog
+      object descriptor.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Subtype</span><a id="dx11-36019"></a>: a more specific type that can be used where a more general
+      type is expected.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Subtyping</span><a id="dx11-36020"></a>:  the  relation  that  says  one  type  is  more  specific  than
+      another while still satisfying the broader type’s expectations.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Inheritance</span><a id="dx11-36021"></a>: a possible future schema-language extension for reusing
+      type requirements; it is not part of the graph-type membership rules
+      modeled in this edition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Widening</span><a id="dx11-36022"></a>: a safe type change that accepts all values accepted before,
+      and possibly more.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Cast</span><a id="dx11-36023"></a>: a conversion from one type to another type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Implicit cast</span><a id="dx11-36024"></a>: a cast or conversion the system applies automatically
+      only where the GQL rules prescribe one; mere widening does not imply
+      conversion.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Absent property</span><a id="dx11-36025"></a>: a property key that is not present on a node or
+      edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph  schema</span><a id="dx11-36026"></a>:  a proposed  future  schema-language  construct  for
+      describing  allowed  node  types,  edge  types,  graph  types,  properties,
+      identity rules, and validation rules beyond the graph types modeled in
+      this edition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Schema  state</span><a id="dx11-36027"></a>:  the  current  schema  extracted  from  the  catalog  at
+      a point in execution.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Schema versioning</span><a id="dx11-36028"></a>: the modeling of schema changes as a sequence
+      of schema states.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Schema evolution</span><a id="dx11-36029"></a>: the process by which schema-changing commands
+      produce a new schema from an old one.</li></ul>
+<!-- l. 274 -->
+
+<h2 class="sectionHead" id="x11-370005.7"><span class="titlemark">5.7   </span> <a></a>Paths</h2>
+<!-- l. 276 --><p class="noindent">Once nodes and edges have identities, GQL can talk not only about individual
+elements but also about routes through them. A path is such a route, represented
+as an alternating sequence of node and edge references. At the value level, the
+vocabulary describes how paths are represented, inspected, and constructed. It
+also requires the referenced nodes and edges in a path element list to identify
+a valid route, independently of which graph is currently working. Finally, path
+modes specify whether nodes or edges may occur more than once along a path.
+The path vocabulary is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Path in a graph</span><a id="dx11-37001"></a>: an alternating sequence of graph elements where
+      each edge connects the adjacent nodes in the sequence.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path  value</span><a id="dx11-37002"></a>:  a value  representing  an  alternating  sequence  of  node
+      references and edge references.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path  value  type</span><a id="dx11-37003"></a>:  a constructed  value  type  specified  by  <span class="ec-lmtt-12">PATH</span>;
+      its  descriptor  records  the  primary  base  type  <span class="ec-lmtt-12">PATH VALUE DATA </span>and
+      whether the null value is included.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path element list</span><a id="dx11-37004"></a>: the alternating list of nodes and edges stored inside
+      a path value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path length</span><a id="dx11-37005"></a>: the number of edge steps in a path value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path accessor</span><a id="dx11-37006"></a>: an expression or operation that extracts information
+      from a path value, such as its element list, nodes, edges, head, tail, or
+      length.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Head of a path</span><a id="dx11-37007"></a>: the first node in a path.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Tail of a path</span><a id="dx11-37008"></a>: the last node in a path.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Malformed  path</span><a id="dx11-37009"></a>:  a path  representation  whose  path  element  list
+      contains null, does not alternate node and edge references, or has an
+      edge that does not connect its adjacent nodes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path value construction</span><a id="dx11-37010"></a>: the creation of a material path value from
+      a non-null graph-element-reference list that identifies a path.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Value-level path concatenation</span><a id="dx11-37011"></a>: the operation that joins two path
+      values  when  the  last  node  reference  of  the  first  and  the  first  node
+      reference of the second have the same node as their referent.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path-value realizability</span><a id="dx11-37012"></a>: the property that a path value’s references
+      identify a valid path, independently of the current working graph.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Walk</span><a id="dx11-37013"></a>: a path that may repeat nodes and edges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Trail</span><a id="dx11-37014"></a>: a path that may repeat nodes but not edges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Simple path</span><a id="dx11-37015"></a>: a path that does not repeat nodes, except that the first
+      and last node may coincide in the allowed case.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Acyclic path</span><a id="dx11-37016"></a>: a path with no repeated nodes at all.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path mode</span><a id="dx11-37017"></a>: the rule that selects whether a path is treated as a walk,
+      trail, simple path, or acyclic path.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Mode filter</span><a id="dx11-37018"></a>: the test that rejects candidate paths that do not satisfy
+      the chosen path mode.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Computed path</span><a id="dx11-37019"></a>: a path value produced during pattern evaluation
+      rather than stored as a persistent graph object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Stored path</span><a id="dx11-37020"></a>: a persistent path object outside the GQL core, distinct
+      from a computed path value.</li></ul>
+<!-- l. 307 -->
+
+<h2 class="sectionHead" id="x11-380005.8"><span class="titlemark">5.8   </span> <a></a>Path Search</h2>
+<!-- l. 309 --><p class="noindent">The preceding section described what a path is. The next question is how
+a statement asks the system to find paths that satisfy a description. Path
+patterns provide that description, and prefixes refine the search by selecting
+a mode or by choosing only certain paths for each pair of endpoints. Because
+a graph can contain many possible paths between the same two nodes, the model
+distinguishes the generation of candidates from the selective stage that keeps
+only the desired ones. The final terms in this section name the bags and
+partitions used to express that selection precisely. The search vocabulary
+is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Path pattern</span><a id="dx11-38001"></a>: a declarative description of admissible paths, optional
+      binding for the whole path, and optional path search behavior.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path variable</span><a id="dx11-38002"></a>: a variable that binds the whole path value found by
+      a path pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path  binding</span><a id="dx11-38003"></a>:  a sequence,  produced  for  one  path  pattern,  whose
+      entries  associate  variables  or  internal  pattern  markers  with  graph
+      elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Anonymous path</span><a id="dx11-38004"></a>: a path found by a pattern without exposing the
+      whole path value as a named binding.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path prefix</span><a id="dx11-38005"></a>: the part of a path pattern that may specify a path mode
+      and search behavior.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Search prefix</span><a id="dx11-38006"></a>: the part of a path pattern that chooses which paths
+      to retain for each endpoint pair.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path restrictor</span><a id="dx11-38007"></a>: a path-mode rule viewed as a filter over candidate
+      paths.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Admissibility filter</span><a id="dx11-38008"></a>: a filter that decides which candidate paths are
+      acceptable before they become results.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Selective path search prefix</span><a id="dx11-38009"></a>: a prefix that reduces candidate paths
+      endpoint-by-endpoint, for example by choosing any path or the shortest
+      paths.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Candidate set</span><a id="dx11-38010"></a>: the set of candidate path bindings produced before
+      a selective path-search prefix reduces it.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Endpoint  partition</span><a id="dx11-38011"></a>:  the  part  of  a candidate  set  containing  path
+      bindings with the same start and end nodes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Length group</span><a id="dx11-38012"></a>: the part of an endpoint partition containing paths that
+      all have the same length.</li></ul>
+<!-- l. 331 -->
+
+<h2 class="sectionHead" id="x11-390005.9"><span class="titlemark">5.9   </span> <a></a>Path Expressions</h2>
+<!-- l. 333 --><p class="noindent">Path search needs a compact way to describe which edge steps and intermediate
+elements are allowed. Regular path expressions fill that role. They are close in
+spirit to regular expressions over strings, but their units are traversal steps
+through a graph rather than characters in a word. The definitions below first
+name the expression forms and witnesses, then describe predicates and atoms used
+for single steps, and finally introduce the operators that combine, repeat, reverse,
+or guard expressions. This ordering prepares the reader for graph-pattern
+matching, where path expressions become part of larger patterns. Epsilon,
+inverse-step atoms, and general expression reversal below are auxiliary
+meta-language constructs used by the book; concrete GQL expresses traversal
+direction through its directional edge-pattern forms. The expression forms and
+supporting terms are:
+                                                                          
+
+                                                                          
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Regular  path  expression</span><a id="dx11-39001"></a>:  an  expression  that  describes  paths  by
+      combining steps, tests, choices, sequencing, and repetition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path expression</span><a id="dx11-39002"></a>: the concrete syntax form used to write a regular
+      path expression inside a path pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path witness</span><a id="dx11-39003"></a>: a concrete path that proves a regular path expression
+      matched.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Element  pattern</span><a id="dx11-39004"></a>:  a path-expression  component  that  contributes
+      a single node or edge step with optional tests and bindings.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Node/Edge predicate</span><a id="dx11-39005"></a>: a Boolean test over nodes or edges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Step predicate</span><a id="dx11-39006"></a>: a test describing one allowed traversal step, including
+      orientation, edge tests, and endpoint tests.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Step relation</span><a id="dx11-39007"></a>: the graph relation that says which source node, edge,
+      and destination node triples satisfy a step predicate.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Label  atom</span><a id="dx11-39008"></a>:  a path-expression  atom  that  matches  an  edge  with
+      a chosen label.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Predicate  atom</span><a id="dx11-39009"></a>:  a path-expression  atom  that  matches  a step  by
+      evaluating a Boolean test.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Inverse  step</span><a id="dx11-39010"></a>:  a path-expression  step  that  follows  an  edge  in  the
+      reverse direction.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Epsilon path expression</span><a id="dx11-39011"></a>: a path expression that consumes no edge
+      and stays at the same node.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Concatenation</span><a id="dx11-39012"></a>: putting path expressions or paths one after another
+      so the end of one connects to the start of the next.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Alternation</span><a id="dx11-39013"></a>: a path-expression choice between alternatives.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Set alternation</span><a id="dx11-39014"></a>: path-pattern alternation in which equivalent operand
+      results are collapsed to one occurrence.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Multiset  alternation</span><a id="dx11-39015"></a>:  path-pattern  alternation  in  which  distinct
+      operand  derivations  remain  distinguishable  and  may  contribute
+      multiple equivalent result occurrences.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Quantifier</span><a id="dx11-39016"></a>:  a path-expression  suffix  that  controls  optionality  or
+      repetition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Restrictive  path  mode</span><a id="dx11-39017"></a>:  trail,  simple,  or  acyclic  mode;  using
+      such  a mode  for  every  unbounded  quantifier  guarantees  a finite
+      path-pattern result.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path  primary</span><a id="dx11-39018"></a>:  an  element  pattern,  a parenthesized  path-pattern
+      expression,  or  a simplified  path-pattern  expression  that  forms  the
+      operand of path concatenation or quantification.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bounded  repetition</span><a id="dx11-39019"></a>:  a quantifier  that  repeats  a path  expression
+      between a lower and upper bound.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unbounded  repetition</span><a id="dx11-39020"></a>:  a quantifier  that  allows  arbitrarily  many
+      repetitions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reversal of expressions</span><a id="dx11-39021"></a>: the operation that reverses a regular path
+      expression so it matches the same paths in the opposite direction.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Guarded expression</span><a id="dx11-39022"></a>: a path expression filtered by a local Boolean
+      test over the path or its intermediate elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Well-formedness</span><a id="dx11-39023"></a>:  the  static  rule  that  an  expression,  pattern,  or
+      statement must obey before it can be evaluated.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Finiteness</span><a id="dx11-39024"></a>:  the  property  that  evaluation  produces  a finite  bag  of
+      results rather than an unbounded one.</li></ul>
+<!-- l. 370 -->
+
+<h2 class="sectionHead" id="x11-400005.10"><span class="titlemark">5.10   </span> <a></a>Matching</h2>
+<!-- l. 372 --><p class="noindent">Path expressions describe local movement, but GQL queries usually ask for larger
+shapes. A graph pattern combines element patterns and path patterns into
+a structure that can be matched against a graph. Matching produces assignments
+for variables, and those assignments must respect scoping rules: some
+variables are visible outside a component, while others remain local. This
+section therefore moves from the act of matching to exposure, reference
+degree, and the staged treatment of selective patterns. It ends with the
+distinction between matching that permits shared objects and matching
+that requires selected objects to remain distinct. The matching terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Graph pattern</span><a id="dx11-40001"></a>: a pattern that describes graph elements and paths
+      to be matched in a graph.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Pattern matching</span><a id="dx11-40002"></a>: the process of finding graph elements and paths
+      that satisfy a graph pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Node variable</span><a id="dx11-40003"></a>: a variable declared by a node pattern whose value
+      represents one or more bound nodes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Edge variable</span><a id="dx11-40004"></a>: a variable declared by an edge pattern whose value
+      represents one or more bound edges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Element variable</span><a id="dx11-40005"></a>: a node variable or an edge variable.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Subpath variable</span><a id="dx11-40006"></a>: a named pattern marker that is not bound to
+      a value and cannot be referenced; it distinguishes operand derivations
+      in path multiset alternation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph  pattern  variable</span><a id="dx11-40007"></a>:  a path  variable,  subpath  variable,  or
+      element variable.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Multi-path binding</span><a id="dx11-40008"></a>: a tuple containing one path binding from the
+      result of each path pattern in a graph pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Match</span><a id="dx11-40009"></a>: a multi-path binding that satisfies all restrictions applicable
+      to its graph pattern.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reduced match</span><a id="dx11-40010"></a>: a match after auxiliary or anonymous parts have
+      been removed or collapsed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Temporary element variable</span><a id="dx11-40011"></a>: an element variable introduced by
+      a syntactic  transformation,  scoped  to  its  innermost  path  term  and
+      removed before reduced matches are formed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Match  mode</span><a id="dx11-40012"></a>:  a graph-pattern  restriction  that  applies  to  all  path
+      patterns simply contained in the graph pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Repeatable elements match mode</span><a id="dx11-40013"></a>: the match mode that imposes
+      no filter against the same graph edge occurring in different edge-binding
+      positions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Different edges match mode</span><a id="dx11-40014"></a>: the match mode that retains only
+      multi-path bindings in which no graph edge occurs in two different
+      edge-binding positions; matched nodes remain unrestricted.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">KEEP clause</span><a id="dx11-40015"></a>: a graph-pattern clause whose path-pattern prefix is
+      distributed to every simply contained path pattern before the clause
+      itself is removed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Matching  semantics</span><a id="dx11-40016"></a>:  the  rules  that  explain  how  graph  patterns
+      produce matches and then binding tables.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Boundary variable</span><a id="dx11-40017"></a>: a variable visible at the composition boundary
+      of a pattern component and therefore available when components are
+      combined.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Interior variable</span><a id="dx11-40018"></a>: a variable local to a component of a path pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Strict  interior  variable</span><a id="dx11-40019"></a>:  an  interior  variable  that  is  not  also
+      a boundary variable.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Variable exposure</span><a id="dx11-40020"></a>: the rule that says whether a variable is visible
+      outside the component that introduced it.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unconditional  exposure</span><a id="dx11-40021"></a>:  the  case  where  every  reduced  match
+      contains the variable, as a value-bearing binding or as a non-value
+      subpath marker.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Conditional exposure</span><a id="dx11-40022"></a>: the case where some reduced matches may
+      not contain the variable.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Not-exposed variable</span><a id="dx11-40023"></a>: a variable that cannot be used outside its
+      local component.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph pattern YIELD clause</span><a id="dx11-40024"></a>: a clause that selects the exposed
+      element and path variables that become output bindings, or specifies
+      <span class="ec-lmtt-12">YIELD NO BINDINGS</span>; a subpath variable cannot be yielded.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph-pattern binding table</span><a id="dx11-40025"></a>: a syntactic construct consisting of
+      a graph pattern optionally followed by a <span class="ec-lmtt-12">YIELD </span>clause; its semantic
+      operator transforms an incoming binding table into a binding table
+      over the exposed and yielded binding variables.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Singleton variable</span><a id="dx11-40026"></a>: a variable that contributes at most one value per
+      reduced match.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Group variable</span><a id="dx11-40027"></a>: a variable that can contribute a group of values
+      rather than one value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effectively  bounded  group</span><a id="dx11-40028"></a>:  a group  variable  whose  maximum
+      number of values is bounded by the syntax.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Non-local reference</span><a id="dx11-40029"></a>: a reference from outside the local component
+      where a variable was introduced.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effectively unbounded group</span><a id="dx11-40030"></a>: a group variable whose number of
+      values can grow without a syntactic upper bound; non-local references
+      nevertheless remain restricted to singleton degree.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reference  degree</span><a id="dx11-40031"></a>:  the  classification  of  a referenceable  binding
+      variable   as   singleton,   effectively   bounded   group,   or   effectively
+      unbounded group; exposure is classified separately as unconditional,
+      conditional, or not-exposed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Path-variable  degree</span><a id="dx11-40032"></a>:  the  rule  that  a declared  path  variable  is
+      a singleton inside its declaring path pattern, even if a later optional
+      operation produces a null output value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Propagation  rule</span><a id="dx11-40033"></a>:  a rule  that  explains  how  variable  exposure
+      and  reference  degree  change  through  concatenation,  alternation,
+      optionality, and repetition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Questioned path-pattern primary</span><a id="dx11-40034"></a>: a path primary followed by <span class="ec-lmtt-12">?</span>;
+      its zero-occurrence branch makes exposed singleton-variable bindings
+      conditional, while group-variable exposure is preserved.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Selective path pattern</span><a id="dx11-40035"></a>: a path pattern using a selective path search
+      prefix.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Local generation</span><a id="dx11-40036"></a>: the first matching stage, where candidate path
+      bindings are produced with local filters but before selective search.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Selective stage</span><a id="dx11-40037"></a>: the matching stage where a selective path search
+      prefix keeps only selected paths inside each endpoint partition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Global  filtering</span><a id="dx11-40038"></a>:  the  stage  where  non-local  conditions  filter  the
+      combined bindings.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reduction</span><a id="dx11-40039"></a>: the stage that removes temporary symbols and anonymous
+      structure from raw matches.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Homomorphic matching</span><a id="dx11-40040"></a>: an informative graph-theoretic analogy in
+      which different pattern variables may map to the same graph object if
+      the structure still fits; it is not an additional GQL match mode.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Isomorphic  matching</span><a id="dx11-40041"></a>:  an  informative  graph-theoretic  analogy  in
+      which selected pattern variables map to distinct graph objects; it is not
+      an additional GQL match mode.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Injectivity guard</span><a id="dx11-40042"></a>: an explicit test that prevents selected variables
+      from being mapped to the same graph object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Explicit guard</span><a id="dx11-40043"></a>: a test added by the user or semantics to rule out
+      unwanted matches.</li></ul>
+<!-- l. 425 -->
+
+<h2 class="sectionHead" id="x11-410005.11"><span class="titlemark">5.11   </span> <a></a>Algebra</h2>
+<!-- l. 427 --><p class="noindent">Matching produces bindings, but a query still has to combine, filter, extend, and
+project them. The algebra in this section treats binding tables as the central
+intermediate objects. Because GQL follows bag-style behavior in many places,
+multiplicity is introduced before the table operators. The first terms explain how
+duplicates are counted or collapsed; the middle terms describe table headers and
+compatibility; the last terms give the main row-transforming operations, including
+joins and optional matching. This prepares the ground for full query blocks, which
+assemble these operators into complete statements. The algebraic terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Result multiplicity</span><a id="dx11-41001"></a>: the number of times the same binding appears
+      because several matches or derivations lead to it.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bag semantics</span><a id="dx11-41002"></a>: semantics where duplicates are kept and counted.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Set semantics</span><a id="dx11-41003"></a>: semantics where duplicate results are collapsed to one
+      occurrence.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bag union</span><a id="dx11-41004"></a>: an operation that combines bags by adding multiplicities.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bag difference</span><a id="dx11-41005"></a>: an operation that subtracts right-side multiplicities
+      from left-side multiplicities without going below zero.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bag intersection</span><a id="dx11-41006"></a>: an operation that keeps the minimum multiplicity
+      found on both sides.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Setification</span><a id="dx11-41007"></a>: the operation that collapses every positive multiplicity
+      to one.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Unit table</span><a id="dx11-41008"></a>: the binding table with one empty record, used as a neutral
+      starting input.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Empty binding table</span><a id="dx11-41009"></a>: a binding table of cardinality zero, distinct
+      from the unit binding table.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Header</span><a id="dx11-41010"></a>: the set of column names and their value types for a binding
+      table.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Column name-equal</span><a id="dx11-41011"></a>: a property that several binding tables have the
+      same column names.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Column-combinable</span><a id="dx11-41012"></a>: a property that corresponding columns have
+      value types that can be combined safely.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Common  type</span><a id="dx11-41013"></a>:  a combined  type  to  which  operands  are  coerced
+      before union, difference, or intersection behavior is applied.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Selection</span><a id="dx11-41014"></a>: an operator that keeps only rows whose test evaluates to
+      true.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Projection</span><a id="dx11-41015"></a>: an operator that keeps or computes selected output fields
+      and discards the rest.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Extend</span><a id="dx11-41016"></a>: an operator that adds new computed fields to each row.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Join</span><a id="dx11-41017"></a>: an operator that combines rows from two binding tables when
+      their shared fields are compatible.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Natural join</span><a id="dx11-41018"></a>: a join based on equal values in shared field names.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Natural joinability</span><a id="dx11-41019"></a>: the relation between two records whose common
+      fields  have  equal  values  under  GQL  value  equality,  including  two
+      common fields that both contain the null value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Name-compatible join</span><a id="dx11-41020"></a>: a natural join that relies on shared column
+      names agreeing.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Theta-join</span><a id="dx11-41021"></a>: a join followed by an explicit Boolean guard.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Guarded join</span><a id="dx11-41022"></a>: a join that keeps only row pairs passing an additional
+      test.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Left outer join</span><a id="dx11-41023"></a>: a join that keeps left-side rows even when the right
+      side has no match, filling right-side fields with null values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Optional  match</span><a id="dx11-41024"></a>:  matching  that  preserves  input  rows  when  the
+      optional pattern finds no extension.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Correlated    optional    expansion</span><a id="dx11-41025"></a>:    per-input-record    optional
+      evaluation that returns its compatible extensions when any exist, and
+      otherwise returns the input record padded with null values for newly
+      introduced columns.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Padding</span><a id="dx11-41026"></a>: the insertion of null values for right-side fields when an outer
+      join finds no right-side match.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">List unnesting</span><a id="dx11-41027"></a>: the <span class="ec-lmtt-12">FOR </span>operation that emits one extended record for
+      each element occurrence of an input list.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Semi-join</span><a id="dx11-41028"></a>: a join-like operation that keeps left rows having at least
+      one matching right row.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Anti-join</span><a id="dx11-41029"></a>:  a join-like  operation  that  keeps  left  rows  having  no
+      matching right row.</li></ul>
+<!-- l. 466 -->
+
+<h2 class="sectionHead" id="x11-420005.12"><span class="titlemark">5.12   </span> <a></a>Queries</h2>
+<!-- l. 468 --><p class="noindent">The previous section described the operators available for transforming binding
+tables. A query block arranges those operators into a unit with its own
+patterns, filters, and result formation. Subqueries then allow one query to be
+evaluated inside another, either independently or with access to the current
+outer row. The environment terms explain what information is available
+during such evaluation and how local names avoid accidental collisions
+with outer names. The section ends with composition rules for whole
+queries, where query parts are combined and duplicate-control choices
+determine whether repeated rows remain visible. The query-level terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Query block</span><a id="dx11-42001"></a>: a unit of query evaluation containing graph patterns,
+      algebraic operators, and a final projection.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Subquery</span><a id="dx11-42002"></a>: a query evaluated inside another query.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Uncorrelated subquery</span><a id="dx11-42003"></a>: a subquery whose result does not depend
+      on the current outer row.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Correlated subquery</span><a id="dx11-42004"></a>: a subquery that uses values from the current
+      outer row.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Relational subquery</span><a id="dx11-42005"></a>: a subquery used as a bag of rows.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Scalar subquery</span><a id="dx11-42006"></a>: a <span class="ec-lmtt-12">VALUE </span>query whose nested query has one result
+      field and is statically constrained, by <span class="ec-lmtt-12">LIMIT 1 </span>or by summarizing all
+      input records into one result without <span class="ec-lmtt-12">GROUP BY</span>, to produce at most
+      one record; an empty result yields null and a singleton result yields its
+      sole value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Row-producing subquery</span><a id="dx11-42007"></a>: a subquery that contributes rows to the
+      surrounding algebra.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Environment</span><a id="dx11-42008"></a>: the information available during evaluation, such as
+      the current graph, outer bindings, and callable registries.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Static  environment</span><a id="dx11-42009"></a>:  the  compile-time  or  checking-time  mapping
+      from names to their meanings.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Dynamic  environment</span><a id="dx11-42010"></a>:  the  runtime  information,  especially  the
+      current outer row, used during correlated evaluation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Row environment</span><a id="dx11-42011"></a>: the mapping from field names in the current row
+      to their values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Global environment</span><a id="dx11-42012"></a>: the mapping for global names such as catalog
+      objects, named graphs, types, and callable routines.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Evaluation environment</span><a id="dx11-42013"></a>: the pair of global and row environments
+      used to evaluate expressions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Variable hygiene</span><a id="dx11-42014"></a>: rules that prevent accidental capture or collision
+      of local and outer variable names.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Shadowing</span><a id="dx11-42015"></a>:  a situation  where  a local  name  would  hide  an  outer
+      name.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Pipelining</span><a id="dx11-42016"></a>: the passing of one binding table into the next statement
+      or query block.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primitive  query  statement</span><a id="dx11-42017"></a>:  a basic  query  step  such  as  pattern
+      matching, filtering, or result formation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Linear  query  statement</span><a id="dx11-42018"></a>:  a sequence  of  query  steps  evaluated
+      left-to-right over a working table.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Whole-query   denotation</span><a id="dx11-42019"></a>:   the   meaning   of   a complete   query
+      obtained by composing all its blocks and operators.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Composite query</span><a id="dx11-42020"></a>: a query built by combining operands with set-like
+      operators or fallback behavior.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Query part</span><a id="dx11-42021"></a>: one operand inside a composite query.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Set operator</span><a id="dx11-42022"></a>: an operator that combines compatible query results
+      using union, difference, or intersection behavior.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Left-associative composition</span><a id="dx11-42023"></a>: the rule that a chain of operators is
+      evaluated from the left unless parentheses say otherwise.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Fallback  query  conjunction</span><a id="dx11-42024"></a>:  the  <span class="ec-lmtt-12">OTHERWISE </span>query  conjunction,
+      which selects the first non-empty operand result in a left-associative
+      chain, or the empty combined-type result if every operand result is
+      empty;  it  is  not  a set  operator  and  does  not  provide  short-circuit
+                                                                          
+
+                                                                          
+      evaluation,  because  the  query-part  results  are  obtained  before  that
+      selection.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Duplicate control</span><a id="dx11-42025"></a>: the rule deciding whether duplicates are preserved
+      or collapsed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Set   quantifier</span><a id="dx11-42026"></a>:   a duplicate-control   rule   that   decides   whether
+      duplicates are preserved or removed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Deduplication</span><a id="dx11-42027"></a>:  the  removal  of  duplicate  rows  by  keeping  one
+      occurrence.</li></ul>
+<!-- l. 505 -->
+
+<h2 class="sectionHead" id="x11-430005.13"><span class="titlemark">5.13   </span> <a></a>Result Shaping</h2>
+<!-- l. 507 --><p class="noindent">Once a query has produced rows, the language still has to shape what the user
+actually sees. Ordering adds a presentation order without changing the
+underlying bag of rows. Exact limiting and offsetting select a contiguous
+part of that ordered sequence, while approximate limiting may select an
+implementation-dependent ordered subset, which is useful when a result is too
+large to return at once. Grouping and aggregation move in a different direction:
+they partition rows and summarize many input values into fewer output values.
+The final term ties these operations to the result-forming part of a query. The
+result-shaping terms are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Ordering</span><a id="dx11-43001"></a>: the act of adding a row order to a binding table result.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Ordering metadata</span><a id="dx11-43002"></a>: metadata recording the emission order of rows
+      without changing the underlying bag.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Sort key</span><a id="dx11-43003"></a>: an expression used to decide row order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Sort direction</span><a id="dx11-43004"></a>: the choice between ascending and descending order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Nulls policy</span><a id="dx11-43005"></a>: the rule deciding where null values appear in sorted
+      results.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Sort  specification</span><a id="dx11-43006"></a>:  a sort  key  together  with  explicit  or  implicit
+      choices for sort direction and null ordering.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Sort specification list</span><a id="dx11-43007"></a>: a non-empty list of sort specifications used
+      for ordering.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Collation</span><a id="dx11-43008"></a>: rules for comparing character strings during ordering.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Peer   ordering</span><a id="dx11-43009"></a>:   the   implementation-dependent   ordering   among
+      records that are not distinct with respect to every sort specification,
+      including its null-ordering policy.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Slicing</span><a id="dx11-43010"></a>: using <span class="ec-lmtt-12">OFFSET </span>and <span class="ec-lmtt-12">LIMIT </span>to retain selected records from an
+      ordered row sequence; the retained records form a contiguous suffix or
+      prefix only where the applicable exact operation requires it.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Exact LIMIT</span><a id="dx11-43011"></a>: limiting that retains the first requested number of
+      records of the ordered input.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Approximate LIMIT</span><a id="dx11-43012"></a>: limiting that retains at most the requested
+      number of records chosen by the implementation and need not retain
+      a prefix, while preserving the selected records’ relative input order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Pagination</span><a id="dx11-43013"></a>:  using  ordering  and  slicing  to  return  only  a page  or
+      selected portion of a larger result.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grouping</span><a id="dx11-43014"></a>: partitioning rows so each partition can be summarized.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grouping key</span><a id="dx11-43015"></a>: an expression whose value decides which group a row
+      belongs to.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grouping function</span><a id="dx11-43016"></a>: the function that maps rows to grouping keys.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grouping set</span><a id="dx11-43017"></a>: one selected set of grouping keys used to form groups.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Aggregate function</span><a id="dx11-43018"></a>: a function that summarizes many input rows
+      or values into one output value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Aggregator</span><a id="dx11-43019"></a>:  the  semantic  object  that  defines  how  an  aggregate
+      function consumes inputs and produces a result.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Global group</span><a id="dx11-43020"></a>: the single group used when aggregation is performed
+      without explicit grouping keys.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Post-aggregation  filtering</span><a id="dx11-43021"></a>:  filtering  that  happens  after  grouped
+      summaries have been computed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primitive result statement</span><a id="dx11-43022"></a>: the part of a query that forms the final
+      visible result, including return items, grouping, distinctness, ordering,
+      and pagination.</li></ul>
+<!-- l. 539 -->
+
+<h2 class="sectionHead" id="x11-440005.14"><span class="titlemark">5.14   </span> <a></a>Updates</h2>
+<!-- l. 541 --><p class="noindent">Once query results are available, GQL moves beyond retrieving graph data and
+begins modifying the graph itself. An update in GQL still depends on the earlier
+machinery: it may first use patterns and expressions to find the elements that
+should change, and only then produce write operations. For that reason, the
+section begins with data-modification statements and the graph chosen for
+modification. It then introduces insert and delete forms, followed by the abstract
+                                                                          
+
+                                                                          
+update pipeline that grounds templates into concrete operations. The final terms
+describe how writes are staged, combined, rejected when they conflict, and
+eventually represented as primitive mutations. The update vocabulary
+is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Data-modification statement</span><a id="dx11-44001"></a>: a statement that inserts, deletes, or
+      updates graph data.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Data-modification primitive</span><a id="dx11-44002"></a>: a basic write step such as insert, set,
+      remove, delete, or a data-modifying routine call.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Linear  data-modification  statement</span><a id="dx11-44003"></a>:  a pipeline  that  combines
+      graph selection, query steps, and data-modification primitives.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph-selection              header</span><a id="dx11-44004"></a>:              an              optional
+      front part of a data-modification statement that chooses the graph to
+      modify.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph expression</span><a id="dx11-44005"></a>: an expression that evaluates to a graph reference.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Read-then-update composition</span><a id="dx11-44006"></a>: an update pattern where a query
+      first finds bindings and an update then uses those bindings to change
+      data.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Insert graph pattern</span><a id="dx11-44007"></a>: the insert-specific pattern that describes the
+      nodes and edges to create.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Insert path pattern</span><a id="dx11-44008"></a>: a path-shaped insert pattern that may create
+      nodes, edges, labels, properties, and bindings together.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Insert  element  pattern</span><a id="dx11-44009"></a>:  a node  or  edge  pattern  inside  an  insert
+      graph pattern.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bound insert element pattern</span><a id="dx11-44010"></a>: an insert element pattern that refers
+      to an element already bound instead of creating a new one.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">System-generated identifier</span><a id="dx11-44011"></a>: an identifier supplied by the system
+      when the user omits a variable name, not retained as a user-visible
+      output column.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Identifier allocation</span><a id="dx11-44012"></a>: the creation of fresh global object identifiers for
+      new nodes, edges, or copies.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Incident  edge</span><a id="dx11-44013"></a>:  an  edge  connected  to  a node  as  either  source  or
+      destination.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Plain delete</span><a id="dx11-44014"></a>: deleting an edge directly, or deleting a node only when
+      every edge incident on that node is also designated for deletion by the
+      same statement.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Dependent-object error</span><a id="dx11-44015"></a>: an error raised when an operation cannot
+      proceed because another object still depends on the target.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Endpoint reattachment</span><a id="dx11-44016"></a>: changing an edge’s endpoints, modeled as
+      delete plus recreate rather than an in-place update.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Update pipeline</span><a id="dx11-44017"></a>: a read-then-update form where matched bindings
+      are used to produce updates.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Read stability</span><a id="dx11-44018"></a>: the rule that the read part of an update is evaluated
+      against a stable view before writes are applied.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Update context</span><a id="dx11-44019"></a>: the graph, bindings, stable read view, and options
+      needed to interpret an update.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Target reference</span><a id="dx11-44020"></a>: the concrete node or edge selected as the target of
+      an update.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Update atom</span><a id="dx11-44021"></a>: one small abstract update action, such as setting one
+      property or adding one label.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Update  template</span><a id="dx11-44022"></a>:  an  update  atom  pattern  before  variables  and
+      expressions have been evaluated for a particular binding.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Ground operation</span><a id="dx11-44023"></a>: an update operation whose target and value have
+      already been evaluated.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grounding</span><a id="dx11-44024"></a>:  the  step  that  turns  an  update  template  into  concrete
+      ground operations for one binding.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Write set</span><a id="dx11-44025"></a>: the collection of ground operations produced by an update
+      before they are applied.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Delta</span><a id="dx11-44026"></a>: the staged change that will transform one graph or store state
+      into another if validation succeeds.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Coalescing</span><a id="dx11-44027"></a>: combining several writes into one canonical set of changes
+      when they are compatible.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Write conflict</span><a id="dx11-44028"></a>: a situation where multiple writes cannot be combined
+      without ambiguity or rule violation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Multiple  property  assignments</span><a id="dx11-44029"></a>:  the  case  where  one  statement
+      produces two or more assignments to the same property of the same
+      element, regardless of whether the values are equal; the implementation
+      either  raises  <span class="ec-lmcsc-10x-x-120">22G0M  </span>or  chooses  one  assignment,  according  to  its
+      documented choice.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Idempotent label addition</span><a id="dx11-44030"></a>: adding a label in a way where repeated
+      additions have the same final result as one addition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primitive mutation</span><a id="dx11-44031"></a>: one elementary graph change, such as inserting
+      a node, deleting an edge, setting a property, or removing a label.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Set   property</span><a id="dx11-44032"></a>:   a primitive   mutation   that   assigns   a value   to
+      a property key.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Delete property</span><a id="dx11-44033"></a>: a primitive mutation that removes a property key
+      from an element.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Add label</span><a id="dx11-44034"></a>: a primitive mutation that attaches a label to a node or
+      edge.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Remove  label</span><a id="dx11-44035"></a>:  a primitive  mutation  that  removes  a label  from
+      a node or edge.</li></ul>
+<!-- l. 586 -->
+
+<h2 class="sectionHead" id="x11-450005.15"><span class="titlemark">5.15   </span> <a></a>Constraints</h2>
+<!-- l. 588 --><p class="noindent">Updates can create useful new facts, but they can also break assumptions that the
+schema is meant to protect. Constraints express those assumptions as rules that
+a graph must satisfy. The first terms describe the general shape of a constraint:
+what population it checks, how that population is selected, and what requirement
+must hold. The middle of the section focuses on keys and uniqueness, because
+those rules are central to identifying elements. The final terms describe how
+constraints are stored, induced from catalog declarations, checked after
+staged changes, and reported when validation fails. The constraint terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Integrity  constraint</span><a id="dx11-45001"></a>:  a constraint  used  to  prevent  invalid  graph
+      states.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Registered  subject</span><a id="dx11-45002"></a>:  a graph  whose  permitted  characteristics  or
+      contents are constrained by a particular integrity constraint.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Requirement</span><a id="dx11-45003"></a>:  the  rule  a constraint  imposes  on  every  in-scope
+      binding.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint specification</span><a id="dx11-45004"></a>: the formal description of what population
+      is checked and what requirement it must satisfy.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint  body</span><a id="dx11-45005"></a>:  the  part  of  a constraint  specification  that
+      determines its scope and requirement without its constraint name.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint normal form</span><a id="dx11-45006"></a>: an implementation-defined, deterministic,
+      idempotent representation of a constraint body; a specification normal
+      form additionally retains the constraint name.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Body-equivalence</span><a id="dx11-45007"></a>:  the  relation  between  constraint  bodies  whose
+      deterministic normal forms are equal.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint  graph  pattern</span><a id="dx11-45008"></a>:  a graph  pattern  used  to  select  the
+      elements that a constraint checks.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint scope</span><a id="dx11-45009"></a>: the set of graph elements selected for checking by
+      a constraint.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Scope predicate</span><a id="dx11-45010"></a>: a predicate that says whether a graph element is
+      in the scope of a constraint or type rule.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key  value  component</span><a id="dx11-45011"></a>:  the  main  element  variable,  an  endpoint
+      variable of an edge scope, or a property reference rooted at one of those
+      variables and selected as one component for identifying constrained
+      elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key value component specification</span><a id="dx11-45012"></a>: the ordered sequence of zero
+      or more key value components used to identify constrained elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint descriptor</span><a id="dx11-45013"></a>: a descriptor containing a constraint’s name,
+      registered  subjects,  deterministic  scope,  and  key  value  component
+      specification.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key</span><a id="dx11-45014"></a>: a sequence of zero or more key value components that identifies
+      constrained elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key specification</span><a id="dx11-45015"></a>: a deterministic constraint graph pattern together
+      with its key value component specification.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key tuple</span><a id="dx11-45016"></a>: the tuple obtained by evaluating the key value component
+      specification  for  one  in-scope  binding,  used  to  compare  in-scope
+      elements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Non-distinctness</span><a id="dx11-45017"></a>: the GQL value relation in which two null values
+      are non-distinct.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Null-containment</span><a id="dx11-45018"></a>: the recursive property of a value or composite
+      value containing the null value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key  constraint</span><a id="dx11-45019"></a>:  a constraint  requiring  in-scope  key  values  to  be
+      recursively not null-containing and requiring elements with non-distinct
+      key tuples to be identical.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Uniqueness constraint</span><a id="dx11-45020"></a>: a constraint requiring in-scope elements not
+      to share non-distinct key values.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Graph-type conformance</span><a id="dx11-45021"></a>: the requirement that every element of
+      a closed graph is of an element type in its constraining graph type and
+      that the graph satisfies that type’s constraints.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Direct  graph  constraint  set</span><a id="dx11-45022"></a>:  the  constraints  defined  directly  in
+      a graph’s own constraint dictionary.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Active  constraint  set</span><a id="dx11-45023"></a>:  the  constraints  registered  for  the  active
+      graph, considered collectively, from its own dictionary and its optional
+      constraining graph type.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Semantic constraint clause</span><a id="dx11-45024"></a>: one formal clause that a graph must
+      satisfy.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Satisfaction  relation</span><a id="dx11-45025"></a>:  the  relation  saying  that  a graph  satisfies
+      a constraint or set of constraints.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Validation predicate</span><a id="dx11-45026"></a>: the check that a graph after applying a delta
+      still satisfies all relevant constraints.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Dynamic       constraint       validation</span><a id="dx11-45027"></a>:       the       validation,
+      by a data-modifying statement’s General Rules, of the graph’s direct
+      constraints after a provisional graph has been produced.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint  enforcement</span><a id="dx11-45028"></a>:  the  separate  checks  of  direct  graph
+      constraints  and  graph-type  conformance  that  must  succeed  before
+      a data-modifying statement succeeds.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Integrity constraint violation</span><a id="dx11-45029"></a>: a reported failure raised when graph
+      data breaks an integrity constraint.</li></ul>
+<!-- l. 627 -->
+
+<h2 class="sectionHead" id="x11-460005.16"><span class="titlemark">5.16   </span> <a></a>Effects</h2>
+<!-- l. 629 --><p class="noindent">The update and constraint sections describe what can happen at runtime. An
+effect system gives a static approximation of that behavior before execution
+begins. It records what a statement may write, combines such information across
+larger statements, and checks whether different writes may interfere. This is
+necessarily conservative: it may prevent an optimizer reordering whose equivalence
+                                                                          
+
+                                                                          
+has not otherwise been established, but it does not introduce an additional
+rejection or warning rule for GQL programs. The terminology below therefore
+separates primitive effects, algebraic combination, soundness, and rules
+that prevent unsafe writes through missing bindings. The effect terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Effect</span><a id="dx11-46001"></a>: an abstract description of what a statement may change.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effect  system</span><a id="dx11-46002"></a>:  the  book’s  static  rules  that  approximate  modeled
+      graph-data writes of query and data-modifying statements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primitive  effect</span><a id="dx11-46003"></a>:  the  effect  associated  with  one  primitive  update
+      action.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effect  algebra</span><a id="dx11-46004"></a>:  the  algebra  used  to  combine  primitive  effects  and
+      compare them.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Statement effect typing</span><a id="dx11-46005"></a>: the static judgment that assigns an effect
+      to a query or data-modifying statement in the book’s limited model.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Write-purity</span><a id="dx11-46006"></a>: the property of having an empty static write effect; it
+      does not by itself imply independence from evaluation order or context,
+      or result determinism.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effect   soundness</span><a id="dx11-46007"></a>:   the   guarantee   that   static   effects   safely
+      over-approximate runtime changes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Static  conflict  approximation</span><a id="dx11-46008"></a>:  a conservative  static  check  for
+      possible conflicts between effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Optimizer  ordering  restriction</span><a id="dx11-46009"></a>:  a meta-level  restriction  that
+      prevents an unproved reordering of potentially conflicting writes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">No unbound writers</span><a id="dx11-46010"></a>: the rule that an update must not write through
+      variables that may be unbound.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint-preserving   execution</span><a id="dx11-46011"></a>:   a data-modifying   execution
+      whose post-state passes mandatory direct-constraint validation and the
+      separate graph-type-conformance check before the statement succeeds.</li></ul>
+<!-- l. 652 -->
+
+<h2 class="sectionHead" id="x11-470005.17"><span class="titlemark">5.17   </span> <a></a>Routines</h2>
+<!-- l. 654 --><p class="noindent">Expressions introduced functions that return values. GQL also has procedures
+that can be invoked by statements and may expose outputs; named procedures
+are primary catalog objects, whereas functions are not modeled as such here. The
+order follows the way such a routine is understood: first the procedure kinds, then
+their declared interface, then the catalog declaration and body, and finally
+invocation and resolution. This prepares the transition to transactions, where
+                                                                          
+
+                                                                          
+statements and calls are executed inside larger units of work. The routine
+vocabulary is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Query procedure</span><a id="dx11-47001"></a>: a procedure whose execution does not cause side
+      effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Data-modifying  procedure</span><a id="dx11-47002"></a>:  a procedure  whose  execution  may
+      cause data-modifying side effects only.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Catalog-modifying procedure</span><a id="dx11-47003"></a>: a procedure whose execution may
+      cause  catalog-modifying  side  effects,  either  alone  or  together  with
+      data-modifying side effects.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL procedure</span><a id="dx11-47004"></a>: a procedure written in GQL.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">External    procedure</span><a id="dx11-47005"></a>:    a procedure    provided    through    an
+      implementation-defined mechanism.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Inline GQL procedure</span><a id="dx11-47006"></a>: a GQL procedure specified directly at its
+      invocation site rather than as a named catalog object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Signature</span><a id="dx11-47007"></a>:  the  declared  input  and  output  types  of  a function  or
+      procedure.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Declaration</span><a id="dx11-47008"></a>: a catalog entry that introduces a named procedure or
+      primary object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Parameter</span><a id="dx11-47009"></a>:  an  input  name  and  type  expected  by  a function  or
+      procedure.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Named   procedure   descriptor</span><a id="dx11-47010"></a>:   the   mandatory   and   optional
+      parameters,  result  type,  and  side-effect  kind  of  a named  external
+      procedure.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Procedure body</span><a id="dx11-47011"></a>: the variable definitions and statement block that
+      define an inline GQL procedure.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Procedure invocation</span><a id="dx11-47012"></a>: the act of executing a procedure call.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Reference resolution</span><a id="dx11-47013"></a>: the process that follows an explicit catalog
+      parent or the implicit current-schema parent and verifies the referenced
+      object’s kind.</li></ul>
+<!-- l. 677 -->
+
+<h2 class="sectionHead" id="x11-480005.18"><span class="titlemark">5.18   </span> <a></a>Transactions</h2>
+<!-- l. 679 --><p class="noindent">Statements and routine calls do not always stand alone. A transaction groups
+work so that a sequence of reads and writes can be completed together or
+abandoned together. This section starts with commands and characteristics that
+establish the transaction’s mode, then describes successful and unsuccessful
+completion. It then introduces visibility and the standard’s serializable execution
+model, followed by snapshot and conflict-policy terminology used only for
+explicitly identified implementation extensions. The final terms distinguish the
+core isolation guarantee from those extensions. The transaction terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Transaction</span><a id="dx11-48001"></a>:  a bounded  unit  of  work  whose  changes  complete
+      together or are rolled back together.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Transaction model</span><a id="dx11-48002"></a>: the rules for starting, sequencing, committing,
+      rolling back, and isolating transactions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Transaction control command</span><a id="dx11-48003"></a>: a command that starts, commits,
+      or rolls back a transaction.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Transaction characteristic</span><a id="dx11-48004"></a>: an option such as access mode or read
+      behavior that affects a transaction.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Transaction   access   mode</span><a id="dx11-48005"></a>:   the   setting   that   says   whether
+      a transaction is read-only or read-write.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Read-only    transaction</span><a id="dx11-48006"></a>:    a transaction    mode    that    rejects
+      catalog-modifying and data-modifying statements.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Read-write transaction</span><a id="dx11-48007"></a>: a transaction mode that permits writes if
+      all other checks also pass.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Savepoint</span><a id="dx11-48008"></a>: a point inside a transaction that may support undoing
+      part of the work.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Commit</span><a id="dx11-48009"></a>: a successful transaction completion that makes all staged
+      changes part of the committed state.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Rollback</span><a id="dx11-48010"></a>:  a successful  cancellation  of  the  current  transaction’s
+      changes, leaving none of them committed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Atomicity</span><a id="dx11-48011"></a>: the recovery property ensuring that a successful commit
+      has  all  of  the  transaction’s  effects,  while  a successfully  processed
+      rollback leaves none of them committed.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Abort</span><a id="dx11-48012"></a>:  a failed  transaction  outcome  accompanied  by  a rollback
+      attempt; if transaction termination cannot be processed successfully,
+      the catalog and data state is indeterminate.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Statement sequencing</span><a id="dx11-48013"></a>: the rule that statements inside a transaction
+      run in program order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Visibility</span><a id="dx11-48014"></a>:  the  rule  that  decides  which  changes  a statement  or
+      transaction can observe.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Provisional change</span><a id="dx11-48015"></a>: a transaction change made before commit and
+      therefore not yet fully visible as committed state.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Snapshot</span><a id="dx11-48016"></a>: a fixed view of the graph or store used by a transaction or
+      statement in an implementation extension outside the serializable core
+      model.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Transaction snapshot</span><a id="dx11-48017"></a>: a snapshot fixed for a whole transaction by
+      such an implementation extension.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Statement snapshot</span><a id="dx11-48018"></a>: a snapshot fixed at a statement boundary by
+      such an implementation extension.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Isolation level</span><a id="dx11-48019"></a>: an implementation setting outside the serializable core
+      model that controls concurrent visibility and anomalies.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Serializability</span><a id="dx11-48020"></a>: the guarantee that concurrent committed transactions
+      have the same observable effect as some serial order.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Write-write conflict</span><a id="dx11-48021"></a>: a conflict caused by concurrent transactions
+      trying to write overlapping entities or fields.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">First-committer-wins</span><a id="dx11-48022"></a>:   a snapshot-isolation   policy   outside   the
+      serializable core model where the first committing transaction succeeds
+      and a conflicting later commit fails.</li></ul>
+<!-- l. 711 -->
+
+<h2 class="sectionHead" id="x11-490005.19"><span class="titlemark">5.19   </span> <a></a>Authorization</h2>
+<!-- l. 713 --><p class="noindent">Transactions determine when changes become visible, but they do not decide who
+is allowed to see or make those changes. Authorization supplies that control layer.
+The section begins with the actors that participate in access control, then
+introduces roles, privileges, and grants. The middle terms explain how direct and
+role-based grants are combined into effective privileges and how statements
+produce obligations that must be checked. The final terms describe object
+availability and authorization-identifier-indexed semantics, which connect
+authorization back to query results and update execution. The authorization
+vocabulary is:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Security</span><a id="dx11-49001"></a>: the broad concern of controlling who can see or change data
+      and catalog objects.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Authorization</span><a id="dx11-49002"></a>: the rules that determine who may reference objects
+      and perform operations.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Access  control</span><a id="dx11-49003"></a>:  authorization  applied  to  actors,  objects,  and
+      operations.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Principal</span><a id="dx11-49004"></a>: a user or other actor identified for authorization purposes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Role</span><a id="dx11-49005"></a>: a named grouping used to organize permissions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Privilege</span><a id="dx11-49006"></a>: permission to perform a kind of operation on an object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Authorization identifier</span><a id="dx11-49007"></a>: an identifier that represents a principal
+      together with the privileges under which associated requests execute;
+      one principal may have more than one such identifier.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Privilege  kind</span><a id="dx11-49008"></a>:  the  category  of  permission,  such  as  read,  write,
+      execute, or administer, as chosen by an implementation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Privilege    level</span><a id="dx11-49009"></a>:    the    strength    of    a privilege    within    the
+      implementation’s privilege ordering.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Privilege poset</span><a id="dx11-49010"></a>: the partial order saying when one privilege is strong
+      enough to imply another.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Authorization target</span><a id="dx11-49011"></a>: a complete GQL-object to which a privilege
+      applies in the core model, such as a graph, graph type, binding table,
+      or named procedure.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grant</span><a id="dx11-49012"></a>: a fact that gives a privilege on an authorization target to an
+      authorization identifier or role.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grantor</span><a id="dx11-49013"></a>: the authorization identifier that gives a privilege.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Grantee</span><a id="dx11-49014"></a>: the authorization identifier or role receiving a privilege.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Authorization  state</span><a id="dx11-49015"></a>:  the  set  of  role  and  grant  facts  governing
+      authorization.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Effective privilege</span><a id="dx11-49016"></a>: the combined privilege an authorization identifier
+      has on an authorization target after considering direct grants and the
+      grants of its roles.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Privilege obligation</span><a id="dx11-49017"></a>: a required privilege produced by type checking
+      or statement analysis.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Obligation set</span><a id="dx11-49018"></a>: the set of privilege obligations that must be satisfied
+      before a statement may run.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Obligation  judgment</span><a id="dx11-49019"></a>:  a typing-style  judgment  that  returns  both
+      a type and the privileges required by a statement.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Authorization check</span><a id="dx11-49020"></a>: the check, before statement evaluation begins,
+      that  the  effective  privileges  of  the  session  authorization  identifier
+      dominate every privilege obligation of the statement.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Object availability</span><a id="dx11-49021"></a>: the implementation-defined relation determining
+      which  complete  authorization  targets  an  execution  context  may
+      reference or resolve; availability of a graph does not mean availability
+      of an induced subgraph.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Authorization-identifier-indexed   semantics</span><a id="dx11-49022"></a>:   query   semantics
+      relative to the session authorization identifier: ordinary semantics is
+      used only when every referenced object is available and every obligation
+      is satisfied; otherwise exception <span class="ec-lmcsc-10x-x-120">42000 </span>is raised.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Write check</span><a id="dx11-49023"></a>: an authorization or transaction-mode check performed
+      before a modifying operation takes effect.</li></ul>
+<!-- l. 746 -->
+
+<h2 class="sectionHead" id="x11-500005.20"><span class="titlemark">5.20   </span> <a></a>Diagnostics</h2>
+<!-- l. 748 --><p class="noindent">The last section describes how execution outcomes are reported. Every
+preceding topic can contribute to such an outcome: expressions may fail,
+updates may violate constraints, transactions may conflict, and authorization
+checks may reject an operation. Diagnostics therefore provide a common
+vocabulary for successful outcomes, warnings, no-data cases, informational
+conditions, and failures. The section begins with status codes and conditions,
+then moves to status objects and the result forms carried by execution
+outcomes. It ends with broad error classes and the rules for choosing
+a reported status, closing the chapter with the mechanism by which the
+language communicates success or failure to the user. The diagnostic terms
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Diagnostics</span><a id="dx11-50001"></a>:  structured  reporting  of  success,  warnings,  no-data
+      outcomes, informational conditions, and failures.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Status  code</span><a id="dx11-50002"></a>:  a code  used  by  the  diagnostic  model  to  identify  an
+      execution situation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Status domain</span><a id="dx11-50003"></a>: the set of all status codes used by the diagnostic
+      model.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Condition</span><a id="dx11-50004"></a>: a situation reported by a status code.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Status class</span><a id="dx11-50005"></a>: the first part of a status code, identifying a broad family
+      of conditions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Status subclass</span><a id="dx11-50006"></a>: the more specific part of a status code.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Completion   condition</span><a id="dx11-50007"></a>:   a condition   indicating   normal   request
+      completion, a non-fatal issue, or a no-data outcome.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Exception  condition</span><a id="dx11-50008"></a>:  a reported  failure  condition  rather  than
+      normal completion.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Transaction rollback condition</span><a id="dx11-50009"></a>: a reported failure condition used
+      when a transaction cannot complete successfully.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Successful completion</span><a id="dx11-50010"></a>: a completion condition indicating that the
+      request completed without issues.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Warning</span><a id="dx11-50011"></a>:  a completion  condition  that  reports  some  issue,  but  is
+      non-fatal.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">No-data condition</span><a id="dx11-50012"></a>: a completion condition saying that no data was
+      produced where that matters.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Informational  condition</span><a id="dx11-50013"></a>:  a secondary  condition  used  for  extra
+      status information rather than the primary outcome.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Diagnostic record</span><a id="dx11-50014"></a>: structured diagnostic information associated with
+      a reported condition.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">GQL-status   object</span><a id="dx11-50015"></a>:   an   object   representing   a condition   and
+      its  diagnostic  information,  comprising  a GQLSTATUS,  a status
+      description, a diagnostic-information record when supported, and an
+      optional nested GQL-status object.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Regular  result</span><a id="dx11-50016"></a>:  a value  or  binding  table  produced  by  successful
+      execution of an operation.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Omitted  result</span><a id="dx11-50017"></a>:  a result  indicating  successful  execution  of  an
+      operation that produced no value.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Execution  outcome</span><a id="dx11-50018"></a>:  the  execution-context  component  comprising
+      a primary  GQL-status  object,  a possibly  empty  list  of  additional
+      GQL-status objects, and an optional regular or omitted result.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Successful outcome</span><a id="dx11-50019"></a>: an execution outcome that records a result and
+      no exception condition.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Failed  outcome</span><a id="dx11-50020"></a>:  an  execution  outcome  that  records  an  exception
+      condition and no result.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Primary  status  code</span><a id="dx11-50021"></a>:  the  GQLSTATUS  field  of  the  primary
+      GQL-status object attached to an execution outcome.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Additional  status  code</span><a id="dx11-50022"></a>:  the  GQLSTATUS  field  of  an  additional
+      GQL-status object carrying secondary diagnostic information.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Result  sum  type</span><a id="dx11-50023"></a>:  the  book’s  meta-level  result  domain  that
+      distinguishes successful results from failures.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Short-circuit failure propagation</span><a id="dx11-50024"></a>: the rule that the first failure
+      in  a compound  statement  stops  later  evaluation  and  is  propagated
+      upward.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Standard-defined code</span><a id="dx11-50025"></a>: a status code assigned by the standard.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Implementation-defined code</span><a id="dx11-50026"></a>: a status code or subclass chosen by
+      an implementation within allowed ranges.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Status precedence</span><a id="dx11-50027"></a>: the rules that decide which condition becomes
+      primary when several conditions could be reported.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Error  class</span><a id="dx11-50028"></a>:  a broad  category  of  errors,  such  as  static,  dynamic,
+      concurrency, constraint, or resource errors.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Static error</span><a id="dx11-50029"></a>: an error detected before execution, such as an unbound
+      variable or schema mismatch.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Dynamic error</span><a id="dx11-50030"></a>: an error detected during execution, such as numeric
+      overflow, access through an invalidated reference, or a malformed path.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Concurrency  error</span><a id="dx11-50031"></a>:  an  error  caused  by  isolation,  conflicts,  or
+      concurrent execution.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Constraint  error</span><a id="dx11-50032"></a>:  an  error  caused  by  violating  an  integrity  or
+      graph-type constraint.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Resource error</span><a id="dx11-50033"></a>: a standard-defined or implementation-defined error
+      caused   by   a resource   limitation,   such   as   timeout   or   memory
+      exhaustion.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Diagnostic choice</span><a id="dx11-50034"></a>: when several raised exception conditions have the
+      same highest priority, the implementation-dependent choice of which
+      one becomes the status of the current request outcome.</li></ul>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 5 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Established  the  shared  vocabulary  used  by  the  semantic
+      chapters before the formal development begins.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:  </span>Core  terms  for  foundations,  graphs,  context,  values,
+      expressions,  schemas,  paths,  patterns,  query  composition,  updates,
+      constraints, transactions, authorization, and diagnostics.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Conceptual definitions versus full formal treatment;
+      values versus GQL-objects; stored structures versus computed results;
+      static checks versus runtime outcomes.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Reduced forward references in later chapters and gave
+      readers a compact map of how the model’s components fit together.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Prepared the transition from the introductory example to the
+      abstract data model and pattern semantics.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch5.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-02-core-model-and-patterns.html"><small>← Previous</small>Core Model and Patterns</a><a rel="next" href="06-data-model.html"><small>Next →</small>Data Model</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x11-310005.1">5.1 Foundations</a><a href="#x11-320005.2">5.2 Graphs</a><a href="#x11-330005.3">5.3 Context</a><a href="#x11-340005.4">5.4 Values</a><a href="#x11-350005.5">5.5 Expressions</a><a href="#x11-360005.6">5.6 Schemas</a><a href="#x11-370005.7">5.7 Paths</a><a href="#x11-380005.8">5.8 Path Search</a><a href="#x11-390005.9">5.9 Path Expressions</a><a href="#x11-400005.10">5.10 Matching</a><a href="#x11-410005.11">5.11 Algebra</a><a href="#x11-420005.12">5.12 Queries</a><a href="#x11-430005.13">5.13 Result Shaping</a><a href="#x11-440005.14">5.14 Updates</a><a href="#x11-450005.15">5.15 Constraints</a><a href="#x11-460005.16">5.16 Effects</a><a href="#x11-470005.17">5.17 Routines</a><a href="#x11-480005.18">5.18 Transactions</a><a href="#x11-490005.19">5.19 Authorization</a><a href="#x11-500005.20">5.20 Diagnostics</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

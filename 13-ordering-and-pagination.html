@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Ordering and Pagination — GQL Essentials, by Dominik Tomaszuk.">
+<title>Ordering and Pagination · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part" open><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html" aria-current="page"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Ordering and Pagination</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Aggregation and Ordering</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x23-21300013"><span class="chapter-number">Chapter 13</span><a></a>Ordering and Pagination</h1>
+<!-- l. 4 --><p class="noindent">This chapter formalizes how GQL turns unordered bags of bindings into ordered
+result sequences and how it supports pagination over such sequences. We treat
+<span class="ec-lmtt-12">ORDER BY</span><a id="dx23-213001"></a> as an ordering operation parameterized by direction, nulls policy, and
+collation, and <span class="ec-lmtt-12">LIMIT</span><a id="dx23-213002"></a>/<span class="ec-lmtt-12">OFFSET</span><a id="dx23-213003"></a> as slicing operators that produce ordered binding
+tables.
+</p>
+<!-- l. 6 --><p class="noindent"><span class="paragraphHead"><a id="x23-21400013"></a><span class="ec-lmbx-12">Concrete syntax for ordering</span><a id="dx23-214001"></a> <span class="ec-lmbx-12">and pagination</span><a id="dx23-214002"></a><span class="ec-lmbx-12">.</span></span>
+   In linear query and data-modifying statements, ordering and paging are
+collected in the <span class="ec-lmri-12">order by and page statement </span>that follows the primitive result body
+(cf. <a href="12-grouping-and-aggregation.html#x22-19900012">Chapter 12</a>). The following simplified BNF summarizes the relevant concrete
+syntax; it is aligned with the corresponding productions in ISO/IEC 39075 but
+omits catalog- and feature-related details:
+</p>
+<!-- l. 11 --><div class="code-wrap"><span id="x23-214018r16"></span><span id="x23-214017r15"></span><span id="x23-214016r14"></span><span id="x23-214015r13"></span><span id="x23-214014r12"></span><span id="x23-214013r11"></span><span id="x23-214012r10"></span><span id="x23-214011r9"></span><span id="x23-214010r8"></span><span id="x23-214009r7"></span><span id="x23-214008r6"></span><span id="x23-214007r5"></span><span id="x23-214006r4"></span><span id="x23-214005r3"></span><span id="x23-214004r2"></span><span id="x23-214003r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>order-by-and-page-stmt ::=
+    order-by-clause
+    [ offset-clause ]
+    [ limit-clause ]
+  | offset-clause [ limit-clause ]
+  | limit-clause
+order-by-clause ::= "ORDER" "BY" sort-spec-list
+sort-spec-list ::= sort-spec { "," sort-spec }
+sort-spec      ::= value-expr [ "ASC" | "DESC" ]
+                   [ null-ordering ]
+null-ordering  ::= "NULLS" ( "FIRST" | "LAST" )
+offset-clause  ::= ( "OFFSET" | "SKIP" ) non-negative-int
+limit-clause   ::= "LIMIT" [ "EXACT" | "APPROX" | "APPROXIMATE" ]
+                   non-negative-int
+value-expr ::= ...  
+</code></pre></div>
+<!-- l. 28 --><p class="noindent">When present, <span class="ec-lmtt-12">ORDER BY </span>orders on one or more <span class="ec-lmtt-12">value-expr </span>sort keys (each with
+optional direction and nulls policy). It may be followed by <span class="ec-lmtt-12">OFFSET </span>(or its standard
+synonym <span class="ec-lmtt-12">SKIP</span>) and <span class="ec-lmtt-12">LIMIT</span>; an <span class="ec-lmtt-12">OFFSET </span>with optional <span class="ec-lmtt-12">LIMIT</span>, or a <span class="ec-lmtt-12">LIMIT </span>alone,
+is also permitted without <span class="ec-lmtt-12">ORDER BY</span>. The semantics of these operators,
+                                                                          
+
+                                                                          
+including peer ordering and approximation options, are given in the sections
+below.
+</p><!-- l. 36 -->
+
+<h2 class="sectionHead" id="x23-21500013.1"><span class="titlemark">13.1   </span> <a></a><span class="ec-lmtt-12">ORDER BY </span>and Ordered Tables</h2>
+<!-- l. 38 --><p class="noindent"><span class="paragraphHead"><a id="x23-21600013.1"></a><span class="ec-lmbx-12">Sort specification list and defaults.</span></span>
+<a id="dx23-216001"></a>
+<a id="dx23-216002"></a>
+<a id="dx23-216003"></a>
+<a id="dx23-216004"></a>
+<a id="dx23-216005"></a>
+   An <span class="ec-lmtt-12">ORDER BY </span>clause applies a <span class="ec-lmri-12">sort specification list </span>to the current working
+table. Each sort specification consists of a sort key (an aggregating value
+expression), an optional ordering direction (<span class="ec-lmtt-12">ASC</span>/<span class="ec-lmtt-12">DESC</span>), and an optional nulls
+policy (<span class="ec-lmtt-12">NULLS FIRST</span>/<span class="ec-lmtt-12">NULLS LAST</span>). If the direction is omitted, ascending order is
+implied. If the nulls policy is omitted, an implementation-defined default is
+implied that must not depend on context outside the sort list. The result is an
+<span class="ec-lmri-12">ordered </span>binding table. Ordering by a due date and by an aggregate result is
+illustrated in <a href="04-gql-by-example.html#x9-240004.4">Section 4.4</a>.
+</p>
+<!-- l. 48 --><p class="noindent"><span class="paragraphHead"><a id="x23-21700013.1"></a><span class="ec-lmbx-12">Comparison semantics, nulls, and peers.</span></span>
+<a id="dx23-217001"></a>
+   Let <!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi><mo class="MathClass-punc">,</mo><mi>Q</mi></mrow></math> be records and
+<!-- l. 49 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>K</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>K</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></math> the sort keys. The
+relative position of <!-- l. 50 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+and <!-- l. 50 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Q</mi></mrow></math>
+is determined lexicographically by comparing
+<!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>K</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> and
+<!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>K</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>Q</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> using
+<!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">&lt;</mo></mrow></math> for ascending or
+<!-- l. 51 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">&gt;</mo></mrow></math> for descending, with
+                                                                          
+
+                                                                          
+special treatment of <!-- l. 52 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+per the chosen nulls policy. If both compared values are
+<!-- l. 53 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>, they are considered
+equal. If one side is <!-- l. 54 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>,
+the comparison outcome is fixed by <span class="ec-lmtt-12">NULLS FIRST</span>/<span class="ec-lmtt-12">NULLS LAST</span>. If neither side is
+<!-- l. 56 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> and the
+comparison yields <!-- l. 56 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>,
+the relative ordering is implementation-dependent. Records that are not distinct
+with respect to all sort specifications are <span class="ec-lmri-12">peers</span>; the ordering among peers is
+implementation-dependent.
+</p>
+<!-- l. 61 --><p class="noindent"><span class="paragraphHead"><a id="x23-21800013.1"></a><span class="ec-lmbx-12">Collation for character strings.</span></span>
+<a id="dx23-218001"></a>
+   Ordering of character strings uses a determined collation. The implementation
+defines exactly one default collation (UCS_BASIC, UNICODE per UTS#10 (<a id="x23-218002"></a><a href="bibliography.html#cite.0@unicode-uts10:2025">The
+Unicode Consortium 2025</a>), or an implementation-defined custom collation). This
+collation is used when comparing strings in ordering operations.
+</p>
+<!-- l. 67 --><p class="noindent"><span class="paragraphHead"><a id="x23-21900013.1"></a><span class="ec-lmbx-12">Type comparability of sort keys.</span></span>
+   Without the optional feature <span class="ec-lmri-12">Universal comparison </span>(GA04), the declared types
+of operands used in ordering operations (including sort keys) shall be comparable
+value types; otherwise, the program is non-conforming.
+</p><!-- l. 72 -->
+
+<h2 class="sectionHead" id="x23-22000013.2"><span class="titlemark">13.2   </span> <a></a>Determinism and Peer Ordering</h2>
+<!-- l. 74 --><p class="noindent">An <span class="ec-lmtt-12">ORDER BY </span>yields an ordered binding table, but the ordering of peers and of comparisons
+that evaluate to <!-- l. 75 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>
+is implementation-dependent. Full cross-implementation determinism requires
+(i) sort-key tuples that distinguish all output records and yield known
+comparisons, (ii) the same null ordering, and (iii) the same determined
+collation. An explicit nulls policy is the portable way to establish (ii), and
+                                                                          
+
+                                                                          
+relying on different implementations’ default collations does not establish
+cross-implementation determinism. (Without <span class="ec-lmtt-12">ORDER BY</span>, only bag semantics apply,
+see below.)
+</p><!-- l. 84 -->
+
+<h2 class="sectionHead" id="x23-22100013.3"><span class="titlemark">13.3   </span> <a></a><span class="ec-lmtt-12">LIMIT</span>/<span class="ec-lmtt-12">OFFSET </span>(Slice)</h2>
+<!-- l. 86 --><p class="noindent"><span class="paragraphHead"><a id="x23-22200013.3"></a><span class="ec-lmtk-10x-x-120">LIMIT </span><span class="ec-lmbx-12">clause</span><a id="dx23-222001"></a> <span class="ec-lmbx-12">(</span><span class="ec-lmtk-10x-x-120">EXACT </span><span class="ec-lmbx-12">vs. </span><span class="ec-lmtk-10x-x-120">APPROXIMATE</span><span class="ec-lmbx-12">).</span></span>
+<a id="dx23-222002"></a>
+<a id="dx23-222003"></a>
+<span class="ec-lmtt-12">LIMIT </span>retains only a limited number of records from the current working table
+and produces an <span class="ec-lmri-12">ordered </span>binding table. If the input is unordered, the system first
+imposes an implementation-dependent order and then limits the records.
+A concrete <span class="ec-lmtt-12">ORDER BY</span>–<span class="ec-lmtt-12">LIMIT </span>composition appears in <a href="04-gql-by-example.html#x9-240004.4">Section 4.4</a>. <span class="ec-lmtt-12">LIMIT </span>may be
+<span class="ec-lmtt-12">EXACT </span>or <span class="ec-lmtt-12">APPROX</span>/<span class="ec-lmtt-12">APPROXIMATE </span>(optional feature GQ28). If the approximation
+keyword is omitted, then <span class="ec-lmtt-12">EXACT </span>is implicit, except in the special case where
+a linear query statement that directly contains the <span class="ec-lmtt-12">LIMIT </span>clause also directly
+contains a value expression whose declared type is a vector type; in that case it is
+implementation-defined whether <span class="ec-lmtt-12">EXACT </span>or an approximation synonym is implicit. Let
+<!-- l. 98 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow></msub></mrow></math> be
+the non-negative integer value computed for the <span class="ec-lmtt-12">LIMIT </span>clause. For <span class="ec-lmtt-12">EXACT</span>, the first
+<!-- l. 99 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow></msub></mrow></math> records are
+returned. For <span class="ec-lmtt-12">APPROXIMATE</span>, the implementation first chooses an actual result cardinality
+<!-- l. 101 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-rel">≤</mo> <msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow>
+<mi>lim</mi></mrow></mstyle></mrow></msub></mrow></math>, and then
+selects <!-- l. 102 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>
+records from the ordered input in an implementation-dependent manner.
+The selected records retain their relative input order, but they need not
+form a prefix of the input; in particular, they need not be the first
+<!-- l. 105 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></math>
+records.
+</p>
+<!-- l. 107 --><p class="noindent"><span class="paragraphHead"><a id="x23-22300013.3"></a><span class="ec-lmtk-10x-x-120">OFFSET </span><span class="ec-lmbx-12">clause.</span></span>
+                                                                          
+
+                                                                          
+   Let <!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>off</mi></mrow></mstyle></mrow></msub></mrow></math>
+be the non-negative integer value computed for the <span class="ec-lmtt-12">OFFSET </span>clause. It discards the
+first <!-- l. 109 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>off</mi></mrow></mstyle></mrow></msub></mrow></math>
+records and returns the remainder as an <span class="ec-lmri-12">ordered </span>binding table. If the input is
+unordered, an implementation-dependent order is imposed prior to discarding.
+The clause requires optional Feature <span class="ec-lmtt-12">GQ12</span>.
+</p>
+<!-- l. 114 --><p class="noindent"><span class="paragraphHead"><a id="x23-22400013.3"></a><span class="ec-lmbx-12">Example (</span><span class="ec-lmtk-10x-x-120">OFFSET </span><span class="ec-lmbx-12">on a determined order).</span></span>
+</p>
+<!-- l. 116 --><div class="code-wrap"><span id="x23-224006r6"></span><span id="x23-224005r5"></span><span id="x23-224004r4"></span><span id="x23-224003r3"></span><span id="x23-224002r2"></span><span id="x23-224001r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>USE libraryGraph
+MATCH (l:Loan)-[i:INCLUDES]-&gt;(b:Book)
+RETURN b.title AS title, i.due_date AS due_date
+ORDER BY due_date
+OFFSET 1
+</code></pre></div>
+The ordered input contains <p><span class="ec-lmtt-12">Graph DB 101 </span></p>first and <p><span class="ec-lmtt-12">Graph Theory </span></p>second, so the
+result contains only the latter record.
+<!-- l. 126 --><p class="noindent"><span class="paragraphHead"><a id="x23-22500013.3"></a><span class="ec-lmbx-12">Composition and evaluation order.</span></span>
+<a id="dx23-225001"></a>
+   When <span class="ec-lmtt-12">ORDER BY</span>, <span class="ec-lmtt-12">OFFSET</span>, and <span class="ec-lmtt-12">LIMIT </span>appear together, evaluation proceeds <span class="ec-lmri-12">in
+</span><span class="ec-lmri-12">this order</span>: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 129 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">ORDER BY</mtext></mstyle><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">→</mo><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">OFFSET</mtext></mstyle><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">→</mo><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">LIMIT</mtext></mstyle><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 132 --><p class="indent">   This composition is specified by the <span class="ec-lmri-12">order by and page
+</span><span class="ec-lmri-12">statement</span>, which applies the sort first, then discards the initial
+<!-- l. 133 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>off</mi></mrow></mstyle></mrow></msub></mrow></math> rows, and finally
+retains at most <!-- l. 134 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow></msub></mrow></math>
+rows, where <!-- l. 134 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>off</mi></mrow></mstyle></mrow></msub></mrow></math>
+and <!-- l. 134 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>V</mi> </mrow><mrow><mstyle mathvariant="normal"><mrow><mi>lim</mi></mrow></mstyle></mrow></msub></mrow></math>
+are the values specified by the <span class="ec-lmtt-12">OFFSET </span>and <span class="ec-lmtt-12">LIMIT </span>clauses, respectively.
+</p>
+<!-- l. 137 --><p class="noindent"><span class="paragraphHead"><a id="x23-22600013.3"></a><span class="ec-lmbx-12">Interaction with result formation.</span></span>
+   The <span class="ec-lmtt-12">ORDER BY </span>and page statement is evaluated after its associated <span class="ec-lmtt-12">RETURN</span>
+body. The standard’s syntax transformations can introduce hidden aliases needed
+to evaluate admissible sort keys and remove them from the final output. Without
+Feature GA07, <span class="ec-lmri-12">Ordering by discarded binding variables</span>, a sort key cannot
+directly reference a binding variable discarded by that projection, except
+through the alias cases admitted by the applicable <span class="ec-lmtt-12">RETURN </span>or <span class="ec-lmtt-12">SELECT </span>syntax
+rules.
+</p><!-- l. 146 -->
+
+<h2 class="sectionHead" id="x23-22700013.4"><span class="titlemark">13.4   </span> <a></a>Determinism Guarantees</h2>
+<!-- l. 148 --><p class="noindent"><span class="paragraphHead"><a id="x23-22800013.4"></a><span class="ec-lmbx-12">Totality of </span><span class="ec-lmtk-10x-x-120">GROUP BY</span><span class="ec-lmbx-12">.</span></span>
+   For any finite bag <!-- l. 149 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math> and
+finite expression vectors <!-- l. 149 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover><mo class="MathClass-punc">,</mo><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>
+whose aggregators are defined on each group bag
+<!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math> induced
+                                                                          
+
+                                                                          
+by <!-- l. 150 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>
+(with expected null-handling), </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 152 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>GROUP</mi><mspace class="nbsp" width="0.33em"></mspace><mi>BY</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>YIELD</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 155 --><p class="indent">   is a finite bag.
+</p>
+<!-- l. 157 --><p class="noindent"><span class="paragraphHead"><a id="x23-22900013.4"></a><span class="ec-lmbx-12">Optionals do not invent non-null data.</span></span>
+   Let <!-- l. 158 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>A</mi></mrow></math>
+and <!-- l. 158 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>
+be binding tables, and consider the left outer join
+<!-- l. 159 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>A</mi><mo class="MathClass-bin"> <msub><mrow>⊲</mrow><mrow>𝜃</mrow></msub></mo> <mi>B</mi></mrow></math> defined in <a href="09-algebra-of-binding-tables.html#x16-1320009.2">Section 9.2</a>.
+For a binding table <!-- l. 160 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>T</mi></mrow></math>
+with record type <!-- l. 160 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>T</mi> </mrow></msub></mrow></math>,
+write <!-- l. 161 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>T</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mstyle mathvariant="normal"><mrow><mi>dom</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>T</mi> </mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+For any output record, every attribute whose name occurs only in the schema of
+<!-- l. 162 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math> (is in
+<!-- l. 163 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">∖</mo><mstyle mathvariant="normal"><mrow><mi>hdr</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>A</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>)
+is either material (copied from a matching record in
+<!-- l. 164 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>, if such a match
+exists) or <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+(if no match exists). No other values for these attributes are introduced.
+</p>
+<!-- l. 168 --><p class="noindent"><span class="paragraphHead"><a id="x23-23000013.4"></a><span class="ec-lmbx-12">Determinism of </span><span class="ec-lmtk-10x-x-120">ORDER BY</span><span class="ec-lmbx-12">.</span></span>
+                                                                          
+
+                                                                          
+   Given the applicable fixed weak orders
+<!-- l. 169 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">≼</mo></mrow></math> from <a href="08-expressions-and-evaluation.html#x15-1190008.3">Section 8.3</a>, their
+strict parts <!-- l. 170 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">≺</mo></mrow></math>, a collation,
+and a <!-- l. 171 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math> policy, and
+a sort-specification list <!-- l. 171 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>o</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>,
+<!-- l. 172 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>ORDER</mi><mspace class="nbsp" width="0.33em"></mspace><mi>BY</mi></mrow></mstyle></mrow><mrow><mover accent="true"><mrow><mrow><mi>o</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+determines the order between non-peer records whose key comparisons are known.
+The relative order of peers, and of non-null key values whose comparison is
+<!-- l. 174 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mi>U</mi></mstyle></mrow></math>,
+remains implementation-dependent; full determinism therefore additionally
+requires sort keys that distinguish every output record and yield known
+comparisons. Without <span class="ec-lmtt-12">ORDER BY</span>, only bag semantics are defined.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 13 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Formalized how unordered query results were converted into
+      ordered sequences and how pagination operated over those sequences.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>Ordering driven by sort keys with explicit null placement
+      and collation; tie behavior and peer ordering; pagination as slicing with
+      offset and limit.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key  distinctions:  </span>Ordered  results  versus  unordered  bag  results;
+      deterministic versus implementation-dependent pagination when peers
+      or unknown comparisons remain.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Explained when users could rely on repeatable page
+      boundaries;  clarified  the  semantics  of  null  placement  in  ordering;
+      integrated ordering and pagination into the overall clause pipeline.
+                                                                          
+
+                                                                          
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Transitioned from read-only semantics to data modification
+      and graph updates.</li></ul>
+</aside>
+<!-- l. 289 -->
+<!-- l. 289 --> <a id="tailtestch13.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="12-grouping-and-aggregation.html"><small>← Previous</small>Grouping and Aggregation</a><a rel="next" href="part-06-data-modification.html"><small>Next →</small>Data Modification</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x23-21500013.1">13.1 ORDER BY and Ordered Tables</a><a href="#x23-22000013.2">13.2 Determinism and Peer Ordering</a><a href="#x23-22100013.3">13.3 LIMIT / OFFSET (Slice)</a><a href="#x23-22700013.4">13.4 Determinism Guarantees</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

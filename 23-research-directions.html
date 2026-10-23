@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Research Directions — GQL Essentials, by Dominik Tomaszuk.">
+<title>Research Directions · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part" open><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html" aria-current="page"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Research Directions</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Future Directions</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x39-42000023"><span class="chapter-number">Chapter 23</span><a></a>Research Directions</h1>
+<!-- l. 3 --><p class="noindent">This chapter outlines research directions that can shape the next generation of
+GQL systems and standards, with an emphasis on topics where formal
+foundations and engineering practice still diverge. We organize the discussion
+around core themes—expressiveness vs. complexity, query processing, updates
+and transactions, graph-to-graph compositionality, interoperability, and schema
+management—that repeatedly emerge in recent surveys and theoretical analyses
+of property-graph querying. Rather than prescribing a single roadmap, the
+chapter highlights open problems and promising alternatives that can be studied
+independently yet ultimately fit together into a coherent, implementable, and
+optimizable language design.
+</p>
+<h2 class="sectionHead" id="x39-42100023.1"><span class="titlemark">23.1   </span> <a></a>Expressiveness and Complexity</h2>
+<a id="dx39-421001"></a>
+<a id="dx39-421002"></a>
+<!-- l. 7 --><p class="noindent">Understanding the trade-offs between the expressiveness and complexity
+of GQL queries is crucial (<a id="x39-421003"></a><a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a id="x39-421004"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>).
+Similar to the rich landscape of fragments and extensions in relational
+query languages, GQL requires a theoretical foundation to evaluate its
+expressiveness and computational complexity (<a id="x39-421005"></a><a href="bibliography.html#cite.0@rogova2024design">Rogova 2024</a>; <a id="x39-421006"></a><a href="bibliography.html#cite.0@figueira2025complexityevaluatinggqlqueries">Figueira
+et al. 2025</a>). Researchers should focus on developing specific fragments
+of GQL, such as conjunctive regular path queries (CRPQs), and their
+extensions with counting, aggregation, and recursion (<a id="x39-421007"></a><a href="bibliography.html#cite.0@Barcelo2013">Barceló 2013</a>;
+<a id="x39-421008"></a><a href="bibliography.html#cite.0@Gheerbrant2025B">Gheerbrant et al. 2025a</a>). They should also study the expressiveness of GQL’s
+complex label expressions and path modes, including how they can be
+leveraged to solve real-world problems efficiently (<a id="x39-421009"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>;
+<a id="x39-421010"></a><a href="bibliography.html#cite.0@Francis2023">Francis et al. 2023a</a>). Analyzing the computational complexity of various
+GQL operations, particularly in pattern matching and aggregation, is also
+essential.
+</p><!-- l. 9 --><p class="indent">   Recent theoretical work on GQL and related graph querying formalisms has
+begun to provide abstract models for these languages, clarifying their expressive
+power and limitations as primarily graph-to-relation query systems (<a href="bibliography.html#cite.0@Francis2023">Francis et al.
+2023a</a>; <a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>). A natural research direction is to refine such
+models so that they also capture genuinely graph-to-graph constructs,
+                                                                          
+
+                                                                          
+compositional query algebras, and the interaction between path modes, label
+expressions, and schema constraints (<a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a id="x39-421011"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>).
+This would enable a systematic comparison of GQL fragments with existing
+formalisms, such as CRPQs and their extensions, and support formal frameworks
+for query rewriting and optimization.
+</p><!-- l. 11 -->
+
+<h2 class="sectionHead" id="x39-42200023.2"><span class="titlemark">23.2   </span> <a></a>Query Processing and Optimization</h2>
+<a id="dx39-422001"></a>
+<a id="dx39-422002"></a>
+<!-- l. 13 --><p class="noindent">Efficient query processing and optimization are central to the practical use of
+GQL. There is a need for advanced algorithms and data structures that can
+handle complex graph queries, both in native graph engines and in relational
+implementations of SQL/PGQ (<a id="x39-422003"></a><a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a id="x39-422004"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>). Research
+in this area should focus on developing theories and algorithms for query
+equivalence and containment, which are essential for optimizing GQL queries
+(<a id="x39-422005"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>). Designing and implementing efficient algorithms for
+GQL query processing, particularly for native graph database systems and
+relational implementations, is crucial. Additionally, exploring innovative indexing
+and storage techniques that can enhance the performance of GQL queries,
+especially in large-scale graph datasets, is important (<a id="x39-422006"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 15 --><p class="indent">   Schema-aware containment provides a concrete basis for
+semantic optimization, because inclusion and equivalence need only
+hold over graphs conforming to the schema. Recent results prove
+<!-- l. 18 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mn>2</mn><mi>EXPTIME</mi></mrow></mstyle></mrow></math>-completeness
+for unions of conjunctive regular path queries (UCRPQs) under
+<!-- l. 20 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">A</mi><mi mathvariant="bold-script">L</mi><mi mathvariant="bold-script">C</mi><mi mathvariant="bold-script">I</mi></mrow></math> or
+<!-- l. 20 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">A</mi><mi mathvariant="bold-script">L</mi><mi mathvariant="bold-script">C</mi><mi mathvariant="bold-script">Q</mi></mrow></math> schemas
+and for simple unions of conjunctive two-way regular path queries (UC2RPQs) under
+<!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">A</mi><mi mathvariant="bold-script">L</mi><mi mathvariant="bold-script">C</mi><mi mathvariant="bold-script">Q</mi></mrow></math>; they also give
+a <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mn>2</mn><mi>EXPTIME</mi></mrow></mstyle></mrow></math> upper bound for
+UC2RPQs under <!-- l. 23 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">A</mi><mi mathvariant="bold-script">L</mi><mi mathvariant="bold-script">C</mi><mi mathvariant="bold-script">Q</mi><mi mathvariant="bold-script">I</mi></mrow></math>
+schemas without participation constraints (<a id="x39-422007"></a><a href="bibliography.html#cite.0@GutierrezBasulto2024">Gutiérrez-Basulto et al. 2024</a>).
+</p><!-- l. 26 --><p class="indent">   Beyond traditional batch workloads, scalable processing of continuous
+                                                                          
+
+                                                                          
+and streaming graph queries remains an open challenge.<a id="dx39-422008"></a><a id="dx39-422009"></a> Recent work on
+window-based continuous queries and stream processing for property graphs
+indicates that even relatively simple patterns can be difficult to evaluate
+efficiently under high update rates (<a id="x39-422010"></a><a href="bibliography.html#cite.0@Rost2024">Rost et al. 2024</a>). Future research
+should therefore investigate cost models, indexing schemes, and execution
+architectures tailored to continuous GQL queries, including hybrid engines that
+jointly optimize over static and streaming graph data (<a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 28 -->
+
+<h2 class="sectionHead" id="x39-42300023.3"><span class="titlemark">23.3   </span> <a></a>Design Decisions and Alternatives</h2>
+<!-- l. 30 --><p class="noindent">The current design of GQL includes specific decisions that might benefit from
+further exploration and validation. Academics should investigate alternative
+approaches and their implications, informed by emerging formal models of
+GQL and SQL/PGQ (<a id="x39-423001"></a><a href="bibliography.html#cite.0@Francis2023">Francis et al. 2023a</a>; <a id="x39-423002"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>). This
+includes examining the implications of allowing concatenation of patterns
+containing different kinds of variables, which could enable more complex
+and flexible queries. Another area of interest is developing automaton
+models that incorporate group variables, enabling classical evaluation
+techniques and automata-theoretic constructions, such as product and
+determinization, in the spirit of existing work on graph pattern matching and
+regular path queries (<a id="x39-423003"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>; <a id="x39-423004"></a><a href="bibliography.html#cite.0@Gheerbrant2025B">Gheerbrant et al. 2025a</a>). It is also
+important to conduct empirical studies to validate current design decisions
+in GQL and propose alternatives that could enhance its usability and
+functionality.
+</p><!-- l. 32 -->
+
+<h2 class="sectionHead" id="x39-42400023.4"><span class="titlemark">23.4   </span> <a></a>Updates and Transaction Processing</h2>
+<a id="dx39-424001"></a>
+<!-- l. 34 --><p class="noindent">The update and transaction processing capabilities of GQL are critical for
+maintaining data integrity and supporting dynamic graph modifications. Research
+should investigate the design of robust update languages that can efficiently
+                                                                          
+
+                                                                          
+handle complex graph updates, similar to SQL’s transaction processing facilities,
+but adapted to property graph workloads. Exploring mechanisms for ensuring
+consistency and concurrency control in graph updates and preventing
+issues such as inconsistent changes and non-determinism is also necessary.
+Understanding how isolation levels, transactional semantics, and failure handling
+should be adapted or extended for graph workloads is another promising
+direction, complementing the current focus of the standards and surveys on
+query and schema aspects (<a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>; <a id="x39-424002"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 36 -->
+
+<h2 class="sectionHead" id="x39-42500023.5"><span class="titlemark">23.5   </span> <a></a>Graph-to-Graph Queries</h2>
+<a id="dx39-425001"></a>
+<!-- l. 38 --><p class="noindent">One of the significant challenges in graph databases is designing a language that
+supports graph-to-graph queries, enabling composability and advanced query
+capabilities. Researchers should focus on designing languages that allow queries to
+produce graphs as output, supporting concepts like views and subqueries at the
+graph level rather than solely at the table level (<a id="x39-425002"></a><a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a id="x39-425003"></a><a href="bibliography.html#cite.0@francis2023gpc">Francis et al.
+2023b</a>; <a id="x39-425004"></a><a href="bibliography.html#cite.0@bonifati2025versatile">Bonifati 2025</a>). Ensuring that the language supports the composability of
+queries, and allowing the output of one query to be used as the input for
+another, is also crucial. Investigating the algebraic properties of such
+graph-to-graph operators and their relationship to existing GQL constructs,
+path expressions, and prospective graph builders and graph views is an
+important aspect of this line of work (<a id="x39-425005"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>; <a id="x39-425006"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al.
+2025b</a>). Connections to work on graph-to-graph transformations between
+property graphs and RDF further motivate this direction (<a id="x39-425007"></a><a href="bibliography.html#cite.0@Bruyat2024">Bruyat et al.
+2024</a>).
+</p><!-- l. 40 -->
+
+<h2 class="sectionHead" id="x39-42600023.6"><span class="titlemark">23.6   </span> <a></a>Interoperability and Data Integration</h2>
+<a id="dx39-426001"></a>
+<a id="dx39-426002"></a>
+<!-- l. 42 --><p class="noindent">Interoperability between property graphs and other data models, particularly
+RDF and relational data, is a central challenge for the broader adoption of graph
+technologies. One research direction is the design of meta-models that can
+faithfully capture both RDF and property graphs, enabling uniform reasoning and
+transformation across models (<a id="x39-426003"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a id="x39-426004"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>).
+Complementary to this, semantics-preserving transformation frameworks are
+needed to translate RDF graphs into property graphs and back, while
+respecting schema information, constraints, and inference rules (<a href="bibliography.html#cite.0@Bruyat2024">Bruyat
+et al. 2024</a>). Such frameworks should account for the different typing,
+labeling, and identity mechanisms in the underlying models, and be closely
+aligned with the evolving property graph standards (<a id="x39-426005"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 44 --><p class="indent">   Three direct mappings have been formalized: a simple mapping for schema-less
+RDF data, a schema-independent mapping to a generic property graph schema,
+and a schema-dependent mapping of complete RDF schema–instance pairs. The
+latter two preserve both semantics and information; under their formalization,
+this provides a basis for lossless RDF-to-property-graph translation and shows
+that the property-graph model subsumes the information capacity of RDF
+(<a id="x39-426006"></a><a href="bibliography.html#cite.0@Angles2020">Angles et al. 2020</a>).
+</p><!-- l. 52 --><p class="indent">   The S3PG approach extends this line by using SHACL and PG-Schema to
+coordinate schema and data transformations. It preserves RDF instance data and
+supported SHACL integrity constraints and is monotonic under source changes; it
+achieved <!-- l. 55 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>100</mn><mi>%</mi></mrow></math>
+query-result accuracy on the evaluated workloads, while open problems
+include RDF-star, ontological definitions and inference, automated query
+translation, and optimization of generated property graphs (<a id="x39-426007"></a><a href="bibliography.html#cite.0@Rabbani2024">Rabbani et al.
+2024</a>).
+</p><!-- l. 60 --><p class="indent">   A closely related topic is maintaining graph views across heterogeneous
+systems. As applications increasingly combine RDF knowledge graphs,
+property graphs, and relational data, there is a need for incremental,
+low-overhead mechanisms that maintain the consistency of derived or materialized
+graph views as the underlying sources evolve. Understanding how GQL
+graph-to-graph queries and transformation rules can serve as a unifying
+abstraction for such integration tasks, and how they can interoperate
+with schema languages such as PG-Schema and PG-Keys, is a promising
+research direction (<a id="x39-426008"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a id="x39-426009"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>; <a id="x39-426010"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+                                                                          
+
+                                                                          
+2025</a>).
+</p><!-- l. 62 -->
+
+<h2 class="sectionHead" id="x39-42700023.7"><span class="titlemark">23.7   </span> <a></a>Schema and Metadata Management</h2>
+<a id="dx39-427001"></a>
+<!-- l. 64 --><p class="noindent">Effective schema and metadata management are essential for maintaining data
+integrity and facilitating advanced query optimization. Research in this area
+should include developing a more comprehensive schema language for GQL, with
+richer constraints and validations beyond the current key and unique
+constraints, as advocated by PG-Schema and PG-Keys (<a id="x39-427002"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al.
+2021</a>; <a id="x39-427003"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>). Investigating techniques for semantic query
+optimization based on schema information and enhancing the efficiency and
+accuracy of query processing are important (<a id="x39-427004"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>).
+Exploring methods for incremental validation of schemas and constraints and
+ensuring that changes to the graph data are validated efficiently is also
+essential.
+</p><!-- l. 66 --><p class="indent">   Validation complexity is an important boundary for extensions to GQL’s schema
+facilities. For PG-Schema graph types without integrity constraints, combined complexity is
+<!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>NP</mi></mrow></mstyle></mrow></math>-complete and data
+complexity is in <!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PTIME</mi></mrow></mstyle></mrow></math>; combined
+complexity drops to <!-- l. 70 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PTIME</mi></mrow></mstyle></mrow></math>
+when alternation between type combinations and unions is suitably restricted
+(<a id="x39-427005"></a><a href="bibliography.html#cite.0@Ciszewski2026">Ciszewski et al. 2026</a>).
+</p><!-- l. 73 --><p class="indent">   A broader comparison of PG-Schema, ShEx, and SHACL shows that graph
+schemas should be studied not only for validation but also as inputs to
+optimization, data exchange, interoperability, and schema discovery. The
+comparison identifies central design questions relevant to GQL: whether
+constraints should be expressed in a controlled language or backed by an injected
+query language, and how expressive power should be divided between types and
+constraints (<a id="x39-427006"></a><a href="bibliography.html#cite.0@Hidders2026">Hidders and Murlak 2026</a>).
+</p><!-- l. 81 --><p class="indent">   A complementary line of work is also important, focusing on the automatic
+discovery of schemas for property graphs. Existing approaches combine
+label-based and property-based heuristics, as well as probabilistic clustering, to
+infer hierarchical schemas that summarize large, heterogeneous graphs (<a id="x39-427007"></a><a href="bibliography.html#cite.0@Lbath2021">Lbath
+et al. 2021</a>; <a id="x39-427008"></a><a href="bibliography.html#cite.0@Bonifati2022">Bonifati et al. 2022</a>). More recent work applies formal concept analysis
+                                                                          
+
+                                                                          
+to schema discovery and merging, yielding methods that can cope with multiple
+and evolving graphs while remaining interpretable for human designers. A key
+research problem is to design hybrid symbolic–statistical methods that remain
+robust under schema drift and graph evolution, and that can propose candidate
+GQL schemas or constraints that are both expressive and understandable to
+human designers.
+</p><!-- l. 83 --><p class="indent">   Closely related is the largely unexplored topic of normalization for property
+graphs. While normalization theory is well-developed for relational schemas, only
+initial proposals exist for defining normal forms in the property graph setting.
+Future work should investigate how key constraints, cardinalities, and higher-arity
+relationships interact with redundancy, and how normalization procedures can be
+formulated to respect the graph structure and be expressed using GQL DDL and
+graph-to-graph transformations (<a id="x39-427009"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a id="x39-427010"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>; <a id="x39-427011"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis
+et al. 2025</a>).
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 23 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose:  </span>Outlined  research  problems  likely  to  shape  the  next
+      generation of GQL systems and standards.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>An agenda spanning expressiveness versus complexity,
+      query processing and optimization, update and concurrency processing,
+      interoperability, and schema/metadata management.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key   distinctions:   </span>Expressiveness   versus   tractability;   logical
+      equivalence and rewriting versus physical optimization and execution
+      strategy.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Identified  where  stronger  formal  foundations  could
+      enable                                                                            better
+                                                                          
+
+                                                                          
+      optimizers and more predictable behavior; highlighted design choices
+      that remained underdetermined and required comparative evaluation;
+      framed interoperability and metadata as central research drivers.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Closed the book by turning the completed formalization into
+      a roadmap of concrete, evaluable open problems.</li></ul>
+</aside>
+<!-- l. 322 -->
+<!-- l. 322 --> <a id="tailtestch23.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="22-future-enhancements.html"><small>← Previous</small>Future Enhancements</a><a rel="next" href="bibliography.html"><small>Next →</small>Bibliography</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x39-42100023.1">23.1 Expressiveness and Complexity</a><a href="#x39-42200023.2">23.2 Query Processing and Optimization</a><a href="#x39-42300023.3">23.3 Design Decisions and Alternatives</a><a href="#x39-42400023.4">23.4 Updates and Transaction Processing</a><a href="#x39-42500023.5">23.5 Graph-to-Graph Queries</a><a href="#x39-42600023.6">23.6 Interoperability and Data Integration</a><a href="#x39-42700023.7">23.7 Schema and Metadata Management</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

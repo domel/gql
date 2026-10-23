@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Grouping and Aggregation — GQL Essentials, by Dominik Tomaszuk.">
+<title>Grouping and Aggregation · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part" open><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html" aria-current="page"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Grouping and Aggregation</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Aggregation and Ordering</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x22-19900012"><span class="chapter-number">Chapter 12</span><a></a>Grouping and Aggregation</h1>
+<!-- l. 4 --><p class="noindent">This chapter explains how GQL transforms bags of bindings into grouped
+summaries using the <span class="ec-lmtt-12">GROUP BY </span>clause and aggregate functions. We formalize
+grouping as a partitioning of binding tables by key expressions, specify the
+behavior of standard and collection-valued aggregates (including their treatment
+of <!-- l. 4 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+and empty inputs), and describe the evaluation pipeline that combines
+<span class="ec-lmtt-12">WHERE</span>, <span class="ec-lmtt-12">GROUP BY</span>, <span class="ec-lmtt-12">HAVING</span>, <span class="ec-lmtt-12">DISTINCT</span>, and ordering into a single coherent
+semantics.
+</p>
+<h2 class="sectionHead" id="x22-20000012.1"><span class="titlemark">12.1   </span> <a></a><span class="ec-lmtt-12">GROUP BY </span>and Aggregates</h2>
+<a id="dx22-200001"></a>
+<a id="dx22-200002"></a>
+<!-- l. 7 --><p class="noindent">A concrete use of <span class="ec-lmtt-12">GROUP BY </span>and <span class="ec-lmtt-12">SUM </span>appears in <a href="04-gql-by-example.html#x9-240004.4">Section 4.4</a>.
+</p>
+<!-- l. 8 --><p class="noindent"><span class="paragraphHead"><a id="x22-20100012.1"></a><span class="ec-lmbx-12">Grouping function</span><a id="dx22-201001"></a><span class="ec-lmbx-12">.</span></span>
+   Let <!-- l. 9 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>T</mi> <mo class="MathClass-rel">∈</mo><mstyle mathvariant="sans-serif"><mrow><mi>BT</mi></mrow></mstyle></mrow></math> be an input
+binding table with <!-- l. 10 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>T</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>τ</mi><mo class="MathClass-punc">,</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>,
+and <!-- l. 11 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>K</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>k</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+be an ordered sequence of grouping keys (names or expressions). We define the
+key extractor </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 14 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>κ</mi></mrow><mrow><mi>K</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mo class="MathClass-open" stretchy="false">⟨</mo><mi>⟦</mi><msub><mrow><mi>k</mi></mrow><mrow><mn>1</mn></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mi>⟦</mi><msub><mrow><mi>k</mi></mrow><mrow><mi>s</mi></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 19 --><p class="indent">   Write <!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi><mo class="MathClass-rel"> <msub><mrow>≈</mrow><mrow><mstyle mathvariant="normal">nd</mstyle></mrow></msub></mo> <mi>v</mi></mrow></math>
+when <!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math> and
+<!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>v</mi></mrow></math> are not
+distinct under GQL’s recursive distinctness rules. The grouping induces a finite index set
+<!-- l. 21 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>I</mi></mrow></math> (one index per distinctness
+class of <!-- l. 21 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>κ</mi></mrow><mrow><mi>K</mi></mrow></msub></mrow></math>-values) and a family
+of pairwise disjoint sub-bags <!-- l. 23 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow><mrow><mi>i</mi><mo class="MathClass-rel">∈</mo><mi>I</mi></mrow></msub></mrow></math>
+with <!-- l. 23 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub> <msub><mrow><mo class="MathClass-rel">⊑</mo></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>bag</mi></mrow></mstyle></mrow></msub><mi>B</mi></mrow></math>
+such that </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 24 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>B</mi><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><munder class="msub"><mrow><mo> ⊎</mo>
+</mrow><mrow><mi>i</mi><mo class="MathClass-rel">∈</mo><mi>I</mi></mrow></munder><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="quad" width="1em"></mspace><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>i</mi> <mo class="MathClass-rel">∈</mo> <mi>I</mi><mspace class="thinspace" width="0.17em"></mspace><mi class="MathClass-op">∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>r</mi><mo class="MathClass-punc">,</mo><mi>s</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>κ</mi></mrow><mrow><mi>K</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel"> <msub><mrow>≈</mrow><mrow><mstyle mathvariant="normal">nd</mstyle></mrow></msub></mo> <msub><mrow><mi>κ</mi></mrow><mrow><mi>K</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>s</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 30 --><p class="indent">   Here <!-- l. 30 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub> <msub><mrow><mo class="MathClass-rel">⊑</mo></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>bag</mi></mrow></mstyle></mrow></msub><mi>B</mi></mrow></math>
+means <!-- l. 31 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">≤</mo> <mi>B</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for
+every record <!-- l. 31 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi></mrow></math>.
+If distinctness cannot be determined because two values are not comparable,
+grouping raises data exception <span class="ec-lmcsc-10x-x-120">22G04</span>. For the empty grouping sequence
+<!-- l. 34 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>K</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>, take
+<!-- l. 34 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>I</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mo class="MathClass-bin">∗</mo><mo class="MathClass-close" stretchy="false">}</mo></mrow></math> and
+<!-- l. 35 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mo class="MathClass-bin">∗</mo></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>B</mi></mrow></math>, including
+when <!-- l. 35 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>
+is empty. Thus global aggregation<a id="dx22-201002"></a> has one group and, on empty input, evaluates
+aggregates over the empty multiset.
+</p>
+<!-- l. 38 --><p class="noindent"><span class="paragraphHead"><a id="x22-20200012.1"></a><span class="ec-lmbx-12">Aggregators</span><a id="dx22-202001"></a><span class="ec-lmbx-12">.</span></span>
+   An <span class="ec-lmri-12">aggregator </span>is a partial function </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 40 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi>F</mi> <mo class="MathClass-punc">:</mo> <msub><mrow><mi mathvariant="bold-script">M</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>fin</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>𝕍</mi><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">⇀</mo> <mi>𝕍</mi> <mo class="MathClass-bin">∪</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">}</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 45 --><p class="indent">   equipped with a null-handling policy and an input-type requirement
+appropriate to the particular aggregate operation. For a value expression
+<!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>, the notation
+<!-- l. 47 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>F</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> denotes the
+application of <!-- l. 48 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>F</mi></mrow></math>
+to the multiset </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 49 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mo class="MathClass-open" stretchy="false">{</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mspace class="thinspace" width="0.17em"></mspace><mi mathvariant="italic">⟦E⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mi>r</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 52 --><p class="indent">   obtained by evaluating <!-- l. 52 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>
+for every record of a group <!-- l. 52 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>.
+</p><!-- l. 54 --><p class="indent">   Except for <!-- l. 54 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">∗</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, aggregate
+functions eliminate <!-- l. 55 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+inputs before computing their result. If no set quantifier is specified,
+<!-- l. 56 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ALL</mi></mrow></mstyle></mrow></math> is
+implicit, so duplicate values and their multiplicities are preserved. With
+<!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle></mrow></math>, duplicate
+non-<!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+values are eliminated before the aggregate operation is applied.
+                                                                          
+
+                                                                          
+</p><!-- l. 61 --><p class="indent">   The principal aggregators and their default empty-input behavior are as
+follows: </p>
+<ul class="itemize1">
+<li class="itemize"><!-- l. 63 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+      returns the number of records in the group for which <!-- l. 65 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="italic">⟦E⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">≠</mo><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+      Under <!-- l. 66 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ALL</mi></mrow></mstyle></mrow></math>,
+      repeated values are counted repeatedly; under <!-- l. 67 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle></mrow></math>,
+      each distinct non-<!-- l. 67 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value is counted once. If no non-<!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value remains, the result is <!-- l. 69 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>0</mn></mrow></math>.
+      <a id="dx22-202002"></a>
+</li>
+<li class="itemize"><!-- l. 72 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle></mrow><mrow><mo class="MathClass-bin">∗</mo></mrow></msup> <mo class="MathClass-rel">≡</mo><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">∗</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+      returns the number of records in the group, independently of the values
+      contained in those records. In particular, records containing only <!-- l. 75 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      values are still counted. On an empty group, the result is <!-- l. 77 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>0</mn></mrow></math>.
+      </li>
+<li class="itemize"><!-- l. 79 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>SUM</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+      returns the arithmetic sum of the non-<!-- l. 80 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      numeric values of <!-- l. 81 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>,
+      with multiplicities preserved under <!-- l. 82 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ALL</mi></mrow></mstyle></mrow></math>.
+      If no non-<!-- l. 83 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value remains, the default result is <!-- l. 84 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+      <a id="dx22-202003"></a>
+</li>
+<li class="itemize"><!-- l. 87 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>AVG</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+      if at least one non-<!-- l. 88 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      numeric value of <!-- l. 88 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>
+      remains, returns their arithmetic mean, that is, their sum divided by
+      their number. If no non-<!-- l. 90 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+                                                                          
+
+                                                                          
+      value remains, the result is <!-- l. 91 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+      <a id="dx22-202004"></a>
+</li>
+<li class="itemize"><!-- l. 94 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>MIN</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+      returns the least non-<!-- l. 95 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value of <!-- l. 95 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>,
+      according to the applicable GQL ordering rules. If no non-<!-- l. 97 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value remains, the result is <!-- l. 98 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+      <a id="dx22-202005"></a>
+</li>
+<li class="itemize"><!-- l. 101 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>MAX</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>:
+      returns the greatest non-<!-- l. 102 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value of <!-- l. 102 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>,
+      according to the applicable GQL ordering rules. If no non-<!-- l. 104 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value remains, the result is <!-- l. 105 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+      <a id="dx22-202006"></a>
+</li>
+<li class="itemize"><!-- l. 108 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>PRODUCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+      if supported: returns the arithmetic product of the non-<!-- l. 109 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      numeric values of <!-- l. 110 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>,
+      with multiplicities preserved under <!-- l. 111 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ALL</mi></mrow></mstyle></mrow></math>.
+      If no non-<!-- l. 112 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value remains, the default result is <!-- l. 113 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>.
+      <a id="dx22-202007"></a>
+</li>
+<li class="itemize"><!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>COLLECT</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LIST</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>,
+      when optional Feature <!-- l. 117 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GF</mi><mn>10</mn></mrow></mstyle></mrow></math>
+      is supported: returns a list containing the non-<!-- l. 118 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      values of <!-- l. 118 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>E</mi></mrow></math>.
+      Under <!-- l. 119 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>ALL</mi></mrow></mstyle></mrow></math>,
+                                                                          
+
+                                                                          
+      multiplicities are preserved; under <!-- l. 120 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle></mrow></math>,
+      each distinct value occurs once. The list follows the order induced by the
+      input group when such an order is defined; no application-independent
+      order is assumed for an unordered group. If no non-<!-- l. 124 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+      value remains, the result is the empty list. <a id="dx22-202008"></a></li></ul>
+<!-- l. 129 --><p class="indent">   When the corresponding optional feature is supported,
+GQL permits an explicit empty-aggregate behavior for
+<!-- l. 130 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>SUM</mi></mrow></mstyle></mrow></math> and
+<!-- l. 130 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>PRODUCT</mi></mrow></mstyle></mrow></math>. For
+example, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 132 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>SUM</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-punc">,</mo> <mn>0</mn><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>ON</mi><mspace class="nbsp" width="0.33em"></mspace><mi>EMPTY</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mstyle class="text"><mtext> returns </mtext></mstyle><mn>0</mn><mo class="MathClass-punc">,</mo><mspace class="thickpace" width="0.28em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="thickpace" width="0.28em"></mspace><mstyle mathvariant="normal"><mrow><mi>PRODUCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-punc">,</mo> <mn>1</mn><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>ON</mi><mspace class="nbsp" width="0.33em"></mspace><mi>EMPTY</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mstyle class="text"><mtext> returns </mtext></mstyle><mn>1</mn><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 137 --><p class="indent">   when no non-<!-- l. 137 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+input value remains.
+</p><!-- l. 139 --><p class="indent"> <span class="ec-lmri-12">Empty-aggregate behavior. </span>By default, aggregates over an empty input multiset
+yield <!-- l. 140 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>,
+except that <!-- l. 141 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">∗</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+and <!-- l. 141 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+yield <!-- l. 141 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>0</mn></mrow></math>,
+and <!-- l. 142 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>COLLECT</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LIST</mi></mrow></mstyle></mrow></math>
+yields the empty list. When the optional feature
+<!-- l. 143 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>F</mi><mn>443</mn></mrow></mstyle></mrow></math>
+(empty aggregate behavior) is supported, the aggregate functions
+<!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>SUM</mi></mrow></mstyle></mrow></math> and
+<!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>PRODUCT</mi></mrow></mstyle></mrow></math>
+admit an <span class="ec-lmtt-12">ON EMPTY </span>clause: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 146 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>SUM</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-punc">,</mo> <mn>0</mn><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ON EMPTY</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>and</mtext></mstyle><mspace class="quad" width="1em"></mspace><mstyle mathvariant="normal"><mrow><mi>PRODUCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>E</mi><mo class="MathClass-punc">,</mo> <mn>1</mn><mspace class="nbsp" width="0.33em"></mspace><mstyle class="text"><mtext class="texttt" mathvariant="monospace">ON EMPTY</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 151 --><p class="indent">   which override the default <!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+result on empty input (as specified in GQL). Using <span class="ec-lmtt-12">NULL ON EMPTY </span>is permitted
+but semantically redundant with the default behavior.
+</p>
+<!-- l. 156 --><p class="noindent"><span class="paragraphHead"><a id="x22-20300012.1"></a><span class="ec-lmbx-12">Grouped extend.</span></span>
+   For expressions <!-- l. 157 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>E</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math>
+used inside aggregators and a per-group bag projection </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 158 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msubsup><mrow><mi>π</mi></mrow><mrow><msub><mrow><mi>E</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow><mrow><mo class="MathClass-bin">∗</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow>
+<mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mi>⟦</mi><msub><mrow><mi>E</mi></mrow><mrow><mi>j</mi></mrow></msub><mi>⟧</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>r</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">∣</mo><mi>r</mi> <mo class="MathClass-rel">∈</mo> <msub><mrow><mi>B</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">}</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mspace class="quad" width="1em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi> <mo class="MathClass-rel">∈</mo> <mi>I</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 164 --><p class="indent">   (a multiset, possibly containing <!-- l. 164 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>null</mi></mrow></mstyle></mrow></math>
+values), let <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+be the record consisting of the key fields determined by partition
+<!-- l. 166 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>i</mi></mrow></math> and the
+aggregated fields <!-- l. 167 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>n</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class="MathClass-punc">:</mo><mo class="MathClass-rel">=</mo> <msub><mrow><mi>F</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msubsup><mrow><mi>π</mi></mrow><mrow><msub><mrow><mi>E</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow><mrow><mo class="MathClass-bin">∗</mo></mrow></msubsup><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow>
+<mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+Let <!-- l. 167 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>K</mi></mrow></msub></mrow></math>
+be the record type contributed by the grouping keys and
+<!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>τ</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math> the result
+                                                                          
+
+                                                                          
+type of the <!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi></mrow></math>-th
+aggregate. The grouped result of applying <span class="ec-lmtt-12">GROUP BY </span>with aggregation is
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 170 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>bag</mi></mrow></mstyle><mspace class="negthinspace" width="-0.17em"></mspace> <mrow><mo fence="true" form="prefix"> (</mo><mrow><mstyle mathvariant="normal"><mrow><mi>GROUP</mi><mspace class="nbsp" width="0.33em"></mspace><mi>BY</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mi>K</mi><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>AGG</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mo class="MathClass-open" stretchy="false">{</mo><msub><mrow><mi>F</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>E</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">↦</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">}</mo></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>T</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow><mo fence="true" form="postfix">)</mo></mrow> <mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> ⟨</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>τ</mi></mrow><mrow><mi>K</mi></mrow></msub> <mo class="MathClass-bin">∪</mo><msub><mrow><mo class="MathClass-open" stretchy="false">{</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-rel">↦</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-close" stretchy="false">}</mo></mrow><mrow><mi>j</mi></mrow></msub><mo class="MathClass-punc">,</mo><mspace class="thickpace" width="0.28em"></mspace><mspace class="nbsp" width="0.33em"></mspace><munder class="msub"><mrow><mo>⊎</mo>
+</mrow><mrow><mi>i</mi><mo class="MathClass-rel">∈</mo><mi>I</mi></mrow></munder><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mspace class="thinspace" width="0.17em"></mspace><msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub><mspace class="thinspace" width="0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathsize="1.19em"><mrow><mo fence="true" form="prefix"> ⟩</mo><mrow></mrow><mo fence="true" form="postfix"></mo></mrow></mstyle><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 177 --><p class="indent">   with the complete output descriptor carrying the ordering and preferred-column
+metadata prescribed for the result statement.
+</p>
+<!-- l. 180 --><p class="noindent"><span class="paragraphHead"><a id="x22-20400012.1"></a><span class="ec-lmtk-10x-x-120">HAVING</span><a id="dx22-204001"></a> <span class="ec-lmbx-12">and post-aggregation filtering.</span></span>
+   In a <span class="ec-lmtt-12">SELECT </span>statement, the <span class="ec-lmtt-12">HAVING </span>clause filters groups after
+grouping and aggregate evaluation. In contrast to <span class="ec-lmtt-12">WHERE</span>, which filters
+individual input records before grouping, <span class="ec-lmtt-12">HAVING </span>retains only those
+grouped result records for which its search condition evaluates to
+<!-- l. 184 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>.
+</p><!-- l. 186 --><p class="indent">   Formally, a <span class="ec-lmtt-12">HAVING </span>clause is modeled as a selection
+<!-- l. 187 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>σ</mi></mrow><mrow><mi>φ</mi></mrow></msub></mrow></math> applied <span class="ec-lmri-12">after </span>grouping,
+where the predicate <!-- l. 188 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi></mrow></math>
+may refer to grouping keys and aggregate outputs. If no <span class="ec-lmtt-12">HAVING </span>clause is present,
+the corresponding selection is the identity, equivalently with predicate
+<!-- l. 191 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi> <mo class="MathClass-rel">≡</mo><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>.
+</p>
+<!-- l. 193 --><p class="noindent"><span class="paragraphHead"><a id="x22-20500012.1"></a><span class="ec-lmbx-12">Concrete syntax for </span><span class="ec-lmtk-10x-x-120">GROUP BY</span><a id="dx22-205001"></a> <span class="ec-lmbx-12">and </span><span class="ec-lmtk-10x-x-120">HAVING</span><span class="ec-lmbx-12">.</span></span>
+   At the concrete-syntax level, grouping and post-aggregation filtering are
+available in a <span class="ec-lmtt-12">SELECT </span>statement as an optional <span class="ec-lmtt-12">GROUP BY </span>clause followed by an
+                                                                          
+
+                                                                          
+optional <span class="ec-lmtt-12">HAVING </span>clause. A <span class="ec-lmtt-12">RETURN </span>statement may contain <span class="ec-lmtt-12">GROUP BY</span>,
+but not <span class="ec-lmtt-12">HAVING</span>. The following simplified BNF summarizes the relevant
+fragments, leaving the surrounding statement productions to the GQL
+standard:
+</p>
+<!-- l. 201 --><div class="code-wrap"><span id="x22-205014r13"></span><span id="x22-205013r12"></span><span id="x22-205012r11"></span><span id="x22-205011r10"></span><span id="x22-205010r9"></span><span id="x22-205009r8"></span><span id="x22-205008r7"></span><span id="x22-205007r6"></span><span id="x22-205006r5"></span><span id="x22-205005r4"></span><span id="x22-205004r3"></span><span id="x22-205003r2"></span><span id="x22-205002r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>group-by-clause ::= "GROUP" "BY"
+                    grouping-element-list
+
+grouping-element-list ::= grouping-element
+                          { "," grouping-element }
+                        | "()"  /* empty grouping set */
+
+grouping-element ::= binding-variable-reference
+
+having-clause ::= "HAVING" search-condition
+
+search-condition ::= ...  /* boolean expression */
+</code></pre></div>
+<!-- l. 215 --><p class="noindent">Intuitively, each <span class="ec-lmtt-12">binding-variable-reference </span>identifies one grouping key,
+while <span class="ec-lmtt-12">"()" </span>denotes the empty grouping-element list (global aggregation).
+The <span class="ec-lmtt-12">having-clause </span>attaches a <span class="ec-lmtt-12">search-condition </span>that is evaluated
+per group over the grouping keys and aggregate outputs, matching the
+post-aggregation filtering semantics described above. The non-terminal
+<span class="ec-lmtt-12">search-condition </span>ranges over boolean expressions in the three-valued
+logic.
+</p>
+<!-- l. 226 --><p class="noindent"><span class="paragraphHead"><a id="x22-20600012.1"></a><span class="ec-lmbx-12">Example (aggregate results and </span><span class="ec-lmtk-10x-x-120">HAVING</span><span class="ec-lmbx-12">).</span></span>
+   For the two <span class="ec-lmtt-12">INCLUDES </span>edges associated with Alice in the library instance, the
+multiset of late fees is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 230 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi>M</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Alice</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-open" stretchy="false">{</mo><mn>0</mn><mo class="MathClass-punc">.</mo><mn>0</mn><mo class="MathClass-punc">,</mo> <mn>2</mn><mo class="MathClass-punc">.</mo><mn>5</mn><mo class="MathClass-close" stretchy="false">}</mo><mspace class="negthinspace" width="-0.17em"></mspace><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 233 --><p class="indent">   Consequently, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 234 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="gathered" columnalign="center"><mtr>
+<mtd><mrow><mstyle mathvariant="normal"><mrow><mi>COUNT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">∗</mo><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mn>2</mn><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="normal"><mrow><mi>AVG</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mn>1</mn><mo class="MathClass-punc">.</mo><mn>25</mn><mo class="MathClass-punc">,</mo></mrow></mtd>
+</mtr><mtr>
+<mtd><mrow><mstyle mathvariant="normal"><mrow><mi>MIN</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mn>0</mn><mo class="MathClass-punc">.</mo><mn>0</mn><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="normal"><mrow><mi>MAX</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mn>2</mn><mo class="MathClass-punc">.</mo><mn>5</mn><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 242 --><p class="indent">   When optional Feature <!-- l. 242 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>GF</mi><mn>10</mn></mrow></mstyle></mrow></math>
+is supported, one possible value is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 243 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="normal"><mrow><mi>COLLECT</mi><mstyle class="text"><mtext>_</mtext></mstyle><mi>LIST</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">i.late_fee</mtext></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">[</mo><mn>0</mn><mo class="MathClass-punc">.</mo><mn>0</mn><mo class="MathClass-punc">,</mo> <mn>2</mn><mo class="MathClass-punc">.</mo><mn>5</mn><mo class="MathClass-close" stretchy="false">]</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 246 --><p class="indent">   but the reverse order is also permitted because the input group is
+unordered. In a <span class="ec-lmtt-12">SELECT </span>statement, the group is retained by the condition
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 248 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle class="text"><mtext class="texttt" mathvariant="monospace">HAVING AVG(i.late_fee) &gt; 1.0</mtext></mstyle><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 251 --><p class="indent">   because its average is <!-- l. 251 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>1</mn><mo class="MathClass-punc">.</mo><mn>25</mn></mrow></math>.
+</p><!-- l. 253 -->
+
+<h2 class="sectionHead" id="x22-20700012.2"><span class="titlemark">12.2   </span> <a></a><span class="ec-lmtt-12">HAVING </span>and <span class="ec-lmtt-12">DISTINCT</span></h2>
+<!-- l. 256 --><p class="noindent"><span class="paragraphHead"><a id="x22-20800012.2"></a><span class="ec-lmbx-12">Grouped projection and pagination.</span></span>
+   For a bag <!-- l. 257 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>,
+we write <!-- l. 258 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>γ</mi></mrow><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover><mo class="MathClass-punc">;</mo><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for
+the combined grouping and aggregate-projection operator. It partitions the records of
+<!-- l. 259 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math> according to the
+grouping expressions <!-- l. 260 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>
+and produces one output record for each group by evaluating the expressions
+<!-- l. 262 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>,
+which may include grouping expressions and aggregate expressions, over
+that group. This is a meta-level algebraic operator, not concrete GQL
+syntax.
+</p><!-- l. 266 --><p class="indent">   For a sequence <!-- l. 266 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>s</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>s</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>,
+let <!-- l. 267 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>OFFSET</mi></mrow></mstyle></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>S</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+denote the sequence obtained by discarding its first
+<!-- l. 268 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi></mrow></math> elements, or the
+empty sequence if <!-- l. 268 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi> <mo class="MathClass-rel">≥</mo> <mi>n</mi></mrow></math>.
+Similarly, <!-- l. 269 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>LIMIT</mi></mrow></mstyle></mrow><mrow><mi>ℓ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>S</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+denotes the sequence containing at most the first
+<!-- l. 270 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℓ</mi></mrow></math> elements of
+                                                                          
+
+                                                                          
+<!-- l. 270 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>S</mi></mrow></math>. When the
+corresponding clause is absent, the respective operation is the identity. For an unordered
+bag <!-- l. 272 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>,
+let <!-- l. 272 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>Enum</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>impl</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+denote an implementation-dependent enumeration of its record occurrences.
+</p><!-- l. 275 --><p class="indent">   Let <!-- l. 275 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi></mrow></math> and
+<!-- l. 275 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>𝜃</mi></mrow></math> be the <span class="ec-lmtt-12">WHERE </span>and
+<span class="ec-lmtt-12">HAVING </span>predicates, <!-- l. 276 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>
+and <!-- l. 276 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>
+the grouping and output-expression vectors,
+<!-- l. 277 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>o</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math> the sort-specification
+list, and <!-- l. 277 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>o</mi><mo class="MathClass-punc">,</mo><mi>ℓ</mi></mrow></math>
+non-negative integer offset and limit values, respectively. Given an input bag
+<!-- l. 279 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>0</mn></mrow></msub></mrow></math> (from
+a pattern match or subquery), we define the following canonical <span class="ec-lmtt-12">SELECT</span>
+evaluation pipeline: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 281 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="normal"><mrow><mi>filter</mi></mrow></mstyle></mrow><mrow><mi>φ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>(three-valued filter: keep only </mtext></mstyle><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mstyle class="text"><mtext>)</mtext></mstyle></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>γ</mi></mrow><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover><mo class="MathClass-punc">;</mo><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>if a GROUP BY or implicit global grouping</mtext></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mspace class="quad" width="1em"></mspace><mstyle class="text"><mtext>is present</mtext></mstyle> </mrow></mtd>
+</mtr> <mtr class="vspace" style="font-size:3.52498pt"><mtd></mtd><mtd></mtd></mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>B</mi></mrow><mrow><mn>3</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>σ</mi></mrow><mrow><mi>𝜃</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>if a HAVING clause is present</mtext></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>2</mn></mrow></msub> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>B</mi></mrow><mrow><mn>4</mn></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><mstyle mathvariant="normal"><mrow><mi>DISTINCT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>3</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>if DISTINCT is requested</mtext></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>3</mn></mrow></msub> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>S</mi></mrow><mrow><mn>0</mn></mrow></msub></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>ORDER</mi><mspace class="nbsp" width="0.33em"></mspace><mi>BY</mi></mrow></mstyle></mrow><mrow><mover accent="true"><mrow><mrow><mi>o</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>4</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>if an ORDER BY clause is present</mtext></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>Enum</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>impl</mi></mrow></mstyle></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>B</mi></mrow><mrow><mn>4</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>S</mi></mrow><mrow><mn>1</mn></mrow></msub></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>OFFSET</mi></mrow></mstyle></mrow><mrow><mi>o</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>S</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>if an OFFSET clause is present</mtext></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mn>0</mn></mrow></msub> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>otherwise</mtext></mstyle> </mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow> </mrow></mrow></mtd>
+</mtr><mtr><mtd columnalign="right"><msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mrow class="cases"> <mrow><mo fence="true" form="prefix"> {</mo><mrow> <mtable align="axis" class="array" columnlines="none" equalcolumns="false" equalrows="false" style=""> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mstyle mathvariant="normal"><mrow><mi>LIMIT</mi></mrow></mstyle></mrow><mrow><mi>ℓ</mi></mrow></msub><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>S</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mstyle class="text"><mtext>if a LIMIT clause is present</mtext></mstyle></mtd>
+</mtr> <mtr><mtd class="array" columnalign="left"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mn>1</mn></mrow></msub> <mspace class="quad" width="1em"></mspace></mrow></mtd><mtd class="array" columnalign="left"><mrow><mstyle class="text"><mtext>otherwise</mtext></mstyle><mo class="MathClass-punc">.</mo> </mrow></mtd></mtr> <!-- @{}l@{\quad }l@{} --></mtable> </mrow><mo fence="true" form="postfix"></mo></mrow></mrow></mrow></mtd></mtr></mtable>
+</math></td></tr></table></div>
+<!-- l. 326 --><p class="indent">   Consequently, the particular records retained by <span class="ec-lmtt-12">OFFSET </span>or <span class="ec-lmtt-12">LIMIT </span>are not
+determined unless an explicit <span class="ec-lmtt-12">ORDER BY </span>clause establishes the relevant
+order.
+</p><!-- l. 330 --><p class="indent">   The final result is <!-- l. 330 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>S</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>,
+represented here as a sequence. In the absence of a <span class="ec-lmtt-12">WHERE </span>clause, we take
+<!-- l. 332 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>φ</mi> <mo class="MathClass-rel">≡</mo><mi class="MathClass-op">⊤</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo></mrow></math>, so
+that <!-- l. 332 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>B</mi></mrow><mrow><mn>0</mn></mrow></msub></mrow></math>.
+In the common case of aggregates without an explicit <span class="ec-lmtt-12">GROUP BY</span>,
+<!-- l. 334 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>g</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math> is empty
+and <!-- l. 334 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mrow><mi>h</mi></mrow><mo accent="true">→</mo></mrow></mover></mrow></math>
+contains aggregate expressions. All input records then form
+a single global group, which may contain no records when
+<!-- l. 336 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></math> is
+empty.
+</p><!-- l. 338 --><p class="indent">   If an update or side-effecting clause is present, it consumes
+<!-- l. 338 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>B</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></math> or
+a later stage explicitly specified by the statement and executes according to the
+transactional semantics of <a href="19-transaction-model.html#x33-36500019">Chapter 19</a>. Ordering affects the selection performed
+by <span class="ec-lmtt-12">OFFSET </span>and <span class="ec-lmtt-12">LIMIT</span>; otherwise, it affects only the presentation of the query
+result unless the semantics of a particular statement explicitly depend on
+                                                                          
+
+                                                                          
+order.
+</p><!-- l. 345 -->
+
+<h2 class="sectionHead" id="x22-20900012.3"><span class="titlemark">12.3   </span> <a></a>Primitive Result Statements</h2>
+<a id="dx22-209001"></a>
+<a id="dx22-209002"></a>
+<!-- l. 348 --><p class="noindent"><span class="paragraphHead"><a id="x22-21000012.3"></a><span class="ec-lmbx-12">Position in the language.</span></span>
+   In a linear query or data-modifying statement, the tail of the statement is
+a <span class="ec-lmri-12">primitive result statement </span>that turns the working binding table produced by the
+preceding clauses into the final result sequence. Concretely, this is the part of the
+statement that contains the <span class="ec-lmtt-12">RETURN </span>clause, an optional set quantifier and
+grouping, and optional ordering and pagination, corresponding to the <span class="ec-lmri-12">primitive
+</span><span class="ec-lmri-12">result statement</span>, <span class="ec-lmri-12">return statement</span>, and <span class="ec-lmri-12">order by and page statement </span>of the GQL
+standard. Concrete primitive result statements, including aggregation and
+pagination, are shown in <a href="04-gql-by-example.html#x9-240004.4">Section 4.4</a>.
+</p>
+<!-- l. 358 --><p class="noindent"><span class="paragraphHead"><a id="x22-21100012.3"></a><span class="ec-lmbx-12">Link to the canonical pipeline.</span></span>
+   The primitive result pipeline is the <span class="ec-lmtt-12">RETURN </span>portion of the account in
+<a href="#x22-20700012.2">Section 12.2</a>: projection and optional <span class="ec-lmtt-12">GROUP BY</span>, followed by <span class="ec-lmtt-12">DISTINCT </span>when
+requested, and then <span class="ec-lmtt-12">ORDER BY</span>, <span class="ec-lmtt-12">OFFSET</span>, and <span class="ec-lmtt-12">LIMIT</span>. Unlike <span class="ec-lmtt-12">SELECT</span>, a <span class="ec-lmtt-12">RETURN</span>
+statement has no <span class="ec-lmtt-12">HAVING </span>clause. For reference, we collect here a condensed,
+<span class="ec-lmri-12">informative </span>BNF for the concrete syntax that drives this pipeline. The normative
+concrete grammar remains that of ISO/IEC 39075.
+</p>
+<!-- l. 368 --><p class="noindent"><span class="paragraphHead"><a id="x22-21200012.3"></a><span class="ec-lmbx-12">Simplified BNF.</span></span>
+   Using the bracket conventions of this book (<span class="ec-lmtt-12">[ … ] </span>for optionality and <span class="ec-lmtt-12">{ … }</span>
+for repetition), we write:
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 371 --><div class="code-wrap"><span id="x22-212018r18"></span><span id="x22-212017r17"></span><span id="x22-212016r16"></span><span id="x22-212015r15"></span><span id="x22-212014r14"></span><span id="x22-212013r13"></span><span id="x22-212012r12"></span><span id="x22-212011r11"></span><span id="x22-212010r10"></span><span id="x22-212009r9"></span><span id="x22-212008r8"></span><span id="x22-212007r7"></span><span id="x22-212006r6"></span><span id="x22-212005r5"></span><span id="x22-212004r4"></span><span id="x22-212003r3"></span><span id="x22-212002r2"></span><span id="x22-212001r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>primitive-result-stmt ::= return-stmt [ order-by-and-page-stmt ]
+                        | "FINISH"
+
+return-stmt ::= "RETURN" return-body
+
+return-body ::= [ set-quant ]
+                ( "*" | return-item-list )
+                [ group-by-clause ]
+
+return-item-list ::= return-item { "," return-item }
+
+return-item ::= expr [ "AS" alias ]
+
+set-quant   ::= "DISTINCT" | "ALL"
+
+expr   ::= ...   /* value or aggregating expression */
+alias  ::= identifier
+</code></pre></div>
+<!-- l. 391 --><p class="indent">   This summary follows the productions for <span class="ec-lmri-12">primitive result statement</span>, <span class="ec-lmri-12">return
+</span><span class="ec-lmri-12">statement</span>, and <span class="ec-lmri-12">return statement body </span>in the GQL standard. All alternatives and
+non-terminals used here are either directly taken from that grammar, or are
+compact names for groups of its productions. The main points of note
+are:
+</p>
+<ul class="itemize1">
+<li class="itemize">If  the  <span class="ec-lmtt-12">set-quant </span>is  omitted,  the  default  is  <span class="ec-lmtt-12">ALL</span>,  that  is,  multiset
+      semantics apply and duplicate rows in the result are preserved.
+      </li>
+<li class="itemize">The <span class="ec-lmtt-12">"*" </span>alternative abbreviates “all visible bindings” in the current
+      working table, that is, one projected column for each visible name,
+      as  prescribed  by  the  standard  and  by  our  projection  operators  in
+                                                                          
+
+                                                                          
+      <a href="09-algebra-of-binding-tables.html#x16-1300009">Chapter 9</a>.
+      </li>
+<li class="itemize">The non-terminal <span class="ec-lmtt-12">group-by-clause </span>stands for an optional <span class="ec-lmtt-12">GROUP BY</span>
+      with its grouping keys. <span class="ec-lmtt-12">HAVING </span>is available in a <span class="ec-lmtt-12">SELECT </span>statement, not
+      in this <span class="ec-lmtt-12">RETURN </span>production.
+      </li>
+<li class="itemize">The     non-terminal     <span class="ec-lmtt-12">order-by-and-page-stmt   </span>is     expanded
+      in <a href="13-ordering-and-pagination.html#x23-21300013">Chapter 13</a>; it permits <span class="ec-lmtt-12">ORDER BY </span>with optional pagination, <span class="ec-lmtt-12">OFFSET</span>
+      with optional <span class="ec-lmtt-12">LIMIT</span>, or <span class="ec-lmtt-12">LIMIT </span>alone. Its denotation is the composition
+      of ordering and slicing operators described there.
+      </li>
+<li class="itemize">The metavariable <span class="ec-lmtt-12">expr </span>ranges over value and aggregating expressions
+      as defined in <a href="part-03-expressions-and-algebra.html#x14-112000III">Part III</a> (including aggregate function calls and scalar
+      expressions); in the standard, this corresponds to the use of aggregating
+      value expressions in the return statement body.
+      </li>
+<li class="itemize">The alternative <span class="ec-lmtt-12">"FINISH" </span>reflects the optional <span class="ec-lmtt-12">FINISH </span>statement in
+      the standard; it is present only when the corresponding conformance
+      feature is supported. In linear data-modifying statements, it is used for
+      “update-only” programs whose observable effect is confined to changes
+      of the graph state.
+      </li>
+<li class="itemize">The form <span class="ec-lmtt-12">RETURN NO BINDINGS </span>is an internal specification device rather
+      than syntax available to GQL users. It is equivalent to <span class="ec-lmtt-12">RETURN ALL </span>with
+      an empty return-item list and without a <span class="ec-lmtt-12">GROUP BY </span>clause. Consequently,
+      it produces one unit record <!-- l. 428 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-open" stretchy="false">⟨</mo><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+      for each input record, preserving input multiplicities while exporting no
+      binding columns. The standard uses this form in syntactic transformations,
+                                                                          
+
+                                                                          
+      notably when an <span class="ec-lmtt-12">OPTIONAL MATCH </span>supplies no new output bindings.
+      Since the simplified grammar above describes user-visible syntax, this
+      internal form is intentionally omitted from its productions.</li></ul>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 12 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Defined how GQL transforms bags of bindings into grouped
+      summaries using grouping keys and aggregate functions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>Grouping as partitioning of bindings by key; aggregate
+      evaluation over each group; post-group filtering via <span class="ec-lmtt-12">HAVING</span>; duplicate
+      control via <span class="ec-lmtt-12">DISTINCT </span>at the appropriate scope.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key distinctions: </span>Pre-aggregation filtering versus post-aggregation
+      filtering;  bag-preserving  aggregation  versus  duplicate  elimination  in
+      aggregate inputs.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences:  </span>Fixed  how  unknown  values  and  empty  groups
+      affected  aggregates;  made  grouped  outputs  compositional  within
+      the  binding-table  algebra;  enabled  predictable  analytic  patterns  on
+      graph-shaped data.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge:  </span>Prepared   the   final   result-shaping   layer:   ordering   and
+      pagination of (possibly aggregated) results.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch12.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-05-aggregation-and-ordering.html"><small>← Previous</small>Aggregation and Ordering</a><a rel="next" href="13-ordering-and-pagination.html"><small>Next →</small>Ordering and Pagination</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x22-20000012.1">12.1 GROUP BY and Aggregates</a><a href="#x22-20700012.2">12.2 HAVING and DISTINCT</a><a href="#x22-20900012.3">12.3 Primitive Result Statements</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

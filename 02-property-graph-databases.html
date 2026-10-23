@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Property Graph Databases — GQL Essentials, by Dominik Tomaszuk.">
+<title>Property Graph Databases · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part" open><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html" aria-current="page"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Property Graph Databases</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Introduction</p><article class="book-content">
+<!-- l. 33 -->
+<h1 class="chapterHead" id="x7-60002"><span class="chapter-number">Chapter 02</span><a></a>Property Graph Databases</h1>
+<!-- l. 36 --><p class="noindent">Property graph databases are commonly situated within the broader NoSQL
+landscape, although NoSQL denotes a diverse family of systems rather than
+a single formal data model (<a id="x7-6001"></a><a href="bibliography.html#cite.0@SadalageFowler2012">Sadalage and Fowler 2012</a>). They are designed for
+situations in which connections between data items are just as important
+as the items themselves. Instead of thinking in terms of tables, rows,
+and foreign keys, they invite us to view data as a graph: a network of
+entities and the relationships that link them. In contrast to traditional
+relational databases, which are table-oriented, and document stores, which are
+collection-oriented, property graph databases are relationship-oriented. Their
+central idea can be summarized as follows: if the problem you are solving is
+fundamentally about connections, then your database model should reflect that
+fact.
+</p><!-- l. 38 --><p class="indent">   The core abstraction of a property graph database is a labeled, attributed
+multigraph that may contain directed and undirected edges. In practical
+terms, this means that the database is built around nodes and edges that
+are both richly described and explicitly connected. Nodes, sometimes
+called vertices, represent entities in the domain: a person, a company,
+a product, a city, a bank account, a research paper, a device, or any other
+identifiable object. Each node can carry zero or more labels that classify it,
+such as <span class="ec-lmtt-12">Person</span>, <span class="ec-lmtt-12">Customer</span>, <span class="ec-lmtt-12">Company</span>, <span class="ec-lmtt-12">Movie</span>, <span class="ec-lmtt-12">Paper</span>, or <span class="ec-lmtt-12">Device</span>. Labels
+group nodes into sets and are used heavily in queries and indexing. It is
+common, for example, for a single node to have both Person and Customer
+labels, which captures polymorphism in the domain in a very natural
+way.
+</p><!-- l. 40 --><p class="indent">   Edges, often referred to as relationships, connect pairs of nodes and may be
+directed or undirected. They express facts such as that one person is friends with
+another, that a customer has purchased a product, that an author has written
+a paper, or that a server relies on a particular service. Every edge has two
+endpoints and a directionality; a directed edge additionally distinguishes its
+source from its destination. Each edge has an edge label set; its labels classify the
+edge, for example, <span class="ec-lmtt-12">FRIENDS_WITH</span>, <span class="ec-lmtt-12">PURCHASED</span>, <span class="ec-lmtt-12">LIVES_IN</span>, <span class="ec-lmtt-12">WORKS_FOR</span>, <span class="ec-lmtt-12">WROTE</span>,
+or <span class="ec-lmtt-12">CITES</span>. An edge label does not by itself constitute an edge type. In
+GQL, the minimum and maximum cardinalities of an edge label set are
+implementation-defined, so an implementation may limit such a set to at most
+one label. Property graph databases are multigraphs, so multiple edges with
+                                                                          
+
+                                                                          
+possibly different label sets can connect the same pair of nodes. One person might
+both <span class="ec-lmtt-12">WORKS_FOR </span>and <span class="ec-lmtt-12">INVESTED_IN </span>the same company, or two papers might both
+<span class="ec-lmtt-12">CITES </span>and <span class="ec-lmtt-12">EXTEND </span>each other through different relationships that are
+relevant for different analyses. Crucially, edges are first-class citizens: they
+are stored natively, have their own identity, and can bear data just like
+nodes.
+</p><!-- l. 42 --><p class="indent">   The term “property graph” refers to the fact that both nodes and edges carry
+properties, which are key-value pairs that describe the attributes of those
+elements. A <span class="ec-lmtt-12">Person </span>node might have properties such as <span class="ec-lmtt-12">name</span>, <span class="ec-lmtt-12">age</span>, and <span class="ec-lmtt-12">email</span>,
+while a <span class="ec-lmtt-12">Product </span>node might have properties such as <span class="ec-lmtt-12">name</span>, <span class="ec-lmtt-12">category</span>, and <span class="ec-lmtt-12">price</span>.
+Property values are typically typed: strings, numbers, booleans, temporal
+values, and often also collections such as lists and maps. A list property
+might store several tags, and a map property might capture structured
+metadata. A key differentiator from many other models is that edges can
+also possess properties. For instance, a <span class="ec-lmtt-12">PURCHASED </span>relationship might
+record the timestamp of the transaction, the quantity, and the price paid;
+a <span class="ec-lmtt-12">FRIENDS_WITH </span>relationship might store the date the friendship started or
+a measure of connection strength; a <span class="ec-lmtt-12">WROTE </span>edge could record the contribution
+percentage of a particular coauthor. This ability to attach rich metadata
+directly to relationships allows the graph to capture not only that two
+entities are connected, but also how, when, and to what degree they are
+connected.
+</p><!-- l. 44 --><p class="indent">   Node and edge labels play a central role in how property graphs are queried
+and optimized. Node labels, such as <span class="ec-lmtt-12">Person </span>or <span class="ec-lmtt-12">Movie</span>, and edge labels, such as
+<span class="ec-lmtt-12">ACTED_IN </span>or <span class="ec-lmtt-12">DIRECTED</span>, allow the system to index and constrain subsets of the
+graph efficiently. Queries can start from all nodes labeled <span class="ec-lmtt-12">Customer</span>, or follow only
+edges carrying the label <span class="ec-lmtt-12">LIVES_IN</span>, or enforce constraints so that every node
+with label <span class="ec-lmtt-12">Account </span>has an <span class="ec-lmtt-12">accountNumber </span>property and appropriate
+indexes on it. Multi-label nodes enable the modeling of heterogeneous or
+overlapping categories without requiring schema modifications. Similarly, labeled
+edges make the domain’s structure clear and expressive at the database
+level.
+</p><!-- l. 46 --><p class="indent">   Sometimes, beyond individual nodes and edges, property graph databases
+treat paths as first-class concepts. A path is a sequence of alternating nodes and
+edges that represents a traversable route through the graph. Many queries are
+really questions about such paths: whether any path exists between two entities,
+what the shortest path is, whether there is a path whose labels match a certain
+pattern, or how many distinct paths of a particular shape can be found. Property
+                                                                          
+
+                                                                          
+graph systems typically offer built-in support for reachability queries, shortest
+path computations, and regular path queries that constrain the allowed
+sequence of edge-label tests. In some systems, entire paths, not just their
+endpoints, can be returned and manipulated as query results, which is vital for
+tasks such as explaining recommendations or tracing the provenance of
+data.
+</p><!-- l. 48 --><p class="indent">   Interacting with a property graph database typically involves specialized
+graph query languages designed for pattern matching and path navigation.
+Cypher is the most widely known example, originally created for Neo4j and one of
+the principal precursors of the standardized GQL (<a id="x7-6002"></a><a href="bibliography.html#cite.0@ISO39075">International Organization for
+Standardization 2024</a>) that is the subject of this book. Cypher uses an
+ASCII-art-inspired syntax, in which nodes appear in parentheses and relationships in
+brackets, with arrows, so that queries visually resemble the structures they match.
+For instance, a pattern resembling <span class="ec-lmtt-12">(p:Person)-[:PURCHASED]-&gt;(pr:Product)</span>
+expresses a person purchasing a product. Queries specify not only which patterns
+to match, but also which properties to filter on and how to shape the returned
+results as nodes, edges, paths, or aggregates. Other systems offer similar
+capabilities, but the common theme is that the primary unit of querying is not
+a table but a graph pattern. Many property graph databases offer ACID
+transactions, allowing graph updates and queries to participate in familiar
+transactional workflows with guarantees of atomicity, consistency, isolation, and
+durability.
+</p><!-- l. 50 --><p class="indent">   From a performance perspective, property graph databases are engineered
+to excel at graph-shaped workloads. They commonly maintain indexes
+over nodes to provide fast entry points for traversals, and sometimes over
+relationships as well. Once a set of starting nodes has been found, queries
+typically proceed by following adjacency lists, that is, by exploring the edges
+attached to those nodes. Storage layouts are optimized so that related nodes
+and edges are stored physically close together, which reduces the cost of
+following relationships. The result is that the cost of a query tends to
+be proportional to the amount of the graph that is actually traversed,
+rather than to the total size of the database. Deep traversals, which might
+require several joins in an RDBMS (Relational Database Management
+System), become straightforward pattern matches that remain efficient as the
+graph grows. Many systems also integrate or expose graph algorithms
+such as centrality measures, community detection, and various forms of
+path finding, making complex analytics on connectivity a routine part of
+querying.
+                                                                          
+
+                                                                          
+</p><!-- l. 52 --><p class="indent">   Often, flexibility in schema is another hallmark of property graph
+databases. The model is schema-optional: although constraints and indexes
+can and often should be defined, the system does not require a rigid,
+global schema in the same way that a relational database does. New node
+and edge labels and properties can be introduced incrementally without
+disrupting existing data; where a constraining graph type is used, its node and
+edge types must be changed accordingly. This makes property graphs
+particularly attractive in evolving domains where data structures are not fully
+known in advance or where they change rapidly under business pressure.
+Developers can start with a simple model and refine it over time, adjusting
+new relationships and attributes as their understanding of the system
+deepens.
+</p>
+<h2 class="sectionHead" id="x7-70002.1"><span class="titlemark">2.1   </span> <a></a>Use Cases and Real-World Applications</h2>
+<!-- l. 55 --><p class="noindent">The expressive power and performance characteristics of property graph databases
+make them especially well-suited to a range of application domains where
+connected data is central. Social networks are perhaps the most intuitive example,
+with users linked by friendships, follows, group memberships, likes, and content
+interactions. Features such as “people you may know” or “mutual friends” become
+simple graph traversals that look for certain patterns among paths of length two
+or three. Recommendation engines in e-commerce and media services utilize paths
+that connect users, products, ratings, and categories to suggest items that are
+similar or complementary. Fraud detection in banking and financial services
+benefits significantly from viewing accounts, devices, transactions, and
+merchants as a graph and identifying suspicious substructures, such as rings of
+accounts, unusual transaction paths, or clusters that match known fraud
+patterns.
+</p><!-- l. 57 --><p class="indent">   Knowledge graphs form another major category of applications. Large
+technology companies use massive property graphs to connect facts about
+people, organizations, places, events, and abstract concepts, providing the
+backbone for search engines and digital assistants. In an enterprise context,
+knowledge graphs integrate data from multiple systems, enabling analysts to
+navigate from a customer to contracts, interactions, products, support
+tickets, and payments within a single, coherent structure. Master data
+management similarly utilizes property graphs to link and reconcile multiple
+representations of the same real-world entity across different systems, thereby
+                                                                          
+
+                                                                          
+building a unified view of customers, products, or locations. Network and IT
+operations benefit from modeling infrastructure as a graph of devices,
+services, dependencies, and communication flows, enabling impact analysis
+when a component fails and supporting change planning. Identity and
+access management can be expressed as a graph of users, groups, roles,
+resources, and permissions, which makes it much easier to answer questions
+such as who effectively has access to which system through what chain of
+assignments.
+</p><!-- l. 59 --><p class="indent">   Beyond these now classical domains, there are many specialized areas where
+property graphs have proven effective. Supply chain management uses graphs to
+represent suppliers, parts, products, logistics routes, and dependencies,
+allowing organizations to assess risk and analyze the impact of disruptions.
+Biomedical and bioinformatics applications build graphs of genes, proteins,
+interactions, pathways, and phenotypes to support discovery and hypothesis
+generation. Healthcare providers can model patients, diagnoses, treatments,
+and outcomes as a graph that helps to identify treatment patterns or
+adverse interactions. Cybersecurity teams maintain cyber threat graphs
+that link assets, vulnerabilities, exploits, and attackers to support threat
+hunting and incident response. Dependency and impact analysis in software
+engineering and manufacturing can utilize property graphs to represent
+components and their relationships within a bill of materials, enabling the
+tracing of consequences of a defect or vulnerability across a complex
+system.
+</p><!-- l. 61 --><p class="indent">   Although each of these applications can be implemented with a relational
+database, a conventional relational schema represents connections through
+foreign-key values and association tables rather than stored, identity-bearing
+edges. Multi-hop, variable-length, or topology-driven questions therefore require
+chains of joins or recursive queries that reconstruct those connections, making
+such queries less direct as the traversed shape grows or varies. Property graphs do
+not displace relational systems for tabular workloads; they make relationships and
+traversal first-class, which aligns more closely with the connectivity-centered uses
+above (<a id="x7-7001"></a><a href="bibliography.html#cite.0@SadalageFowler2012">Sadalage and Fowler 2012</a>).
+</p><!-- l. 63 -->
+
+<h2 class="sectionHead" id="x7-80002.2"><span class="titlemark">2.2   </span> <a></a>Limitations of Property Graph Databases</h2>
+<!-- l. 64 --><p class="noindent">Despite their strengths, property graph databases are not a universal solution and
+come with their own trade-offs. For workloads that consist primarily of simple, flat
+data with few relationships, a traditional relational database or a document
+store may be more straightforward and resource-efficient. Analytics that
+require scanning very large proportions of the data for aggregation, rather
+than traversing specific paths, can often be executed more effectively in
+columnar or data warehouse systems that are optimized for such scans. The
+explicit storage of edges, together with rich properties on both nodes and
+edges, can introduce storage overhead compared to a highly normalized
+relational design. Distributing a graph across multiple machines is also
+challenging because the natural structure of a graph does not always align with
+clean partitions, and traversals may need to cross physical boundaries,
+raising the cost of some queries and complicating the design of sharding
+strategies.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 2 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose:  </span>Characterized   property   graph   databases   as   systems
+      optimized for connected data and traversal-heavy workloads.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>Property graphs with identity-bearing nodes and edges;
+      labels and key–value properties as built-in modeling primitives; pattern
+      matching and path navigation as native query mechanisms.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key   distinctions:   </span>Relationships   as   first-class   objects   versus
+      join-reconstructed   relationships;   schema-optional   practice   versus
+      schema-governed expectations.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Framed why pattern matching and path semantics
+      had to be standardized precisely; highlighted practical portability issues
+                                                                          
+
+                                                                          
+      caused by vendor divergence; motivated a separation between the data
+      model, query semantics, and updates.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Prepared  the  conceptual  baseline  needed  to  position  GQL
+      against other data models and query paradigms.</li></ul>
+</aside>
+<!-- l. 76 -->
+<!-- l. 76 --> <a id="tailtestch2.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="01-history.html"><small>← Previous</small>History</a><a rel="next" href="03-positioning.html"><small>Next →</small>Positioning</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x7-70002.1">2.1 Use Cases and Real-World Applications</a><a href="#x7-80002.2">2.2 Limitations of Property Graph Databases</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

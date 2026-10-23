@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Procedures — GQL Essentials, by Dominik Tomaszuk.">
+<title>Procedures · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part" open><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html" aria-current="page"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Procedures</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Catalogs, Sessions, and Procedures</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x31-35300018"><span class="chapter-number">Chapter 18</span><a></a>Procedures</h1>
+<!-- l. 3 --><p class="noindent">This chapter treats procedures as callable abstractions and formalizes
+named procedure descriptors, inline GQL procedure bodies, resolution, and
+calls. Functions are value-expression operators covered by the expression
+semantics; they are not primary catalog objects in the core catalog modeled
+here.
+</p>
+<h2 class="sectionHead" id="x31-35400018.1"><span class="titlemark">18.1   </span> <a></a>Procedure Signatures and Body Typing</h2>
+<a id="dx31-354001"></a>
+<a id="dx31-354002"></a>
+<!-- l. 10 --><p class="noindent"><span class="paragraphHead"><a id="x31-35500018.1"></a><span class="ec-lmbx-12">Named procedure descriptors.</span></span>
+<a id="dx31-355001"></a>
+   For the lookup-oriented model used in this chapter, we use the following compact,
+lookup-augmented representation of a named procedure<a id="dx31-355002"></a> catalog entry. It adds the catalog
+object name <!-- l. 13 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi></mrow></math>
+to the standard descriptor components and retains the components needed below:
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 15 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>p</mi><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>τ</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mover accent="false" class="mml-overline"><mrow><mrow><msubsup><mrow><mi>x</mi></mrow><mrow><mi>m</mi></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-punc">:</mo> <msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi>m</mi></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>d</mi></mrow><mrow>
+<mi>m</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>res</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>kind</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 22 --><p class="indent">   where <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math> is its
+catalog object name, <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>τ</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover></math>
+is the ordered list of mandatory parameters,
+<!-- l. 23 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mover accent="false" class="mml-overline"><mrow><mrow><msubsup><mrow><mi>x</mi></mrow><mrow><mi>m</mi></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-punc">:</mo> <msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi>m</mi></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>d</mi></mrow><mrow>
+<mi>m</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover></math>
+                                                                          
+
+                                                                          
+is the trailing list of optional parameters with default values,
+<!-- l. 24 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>res</mi></mrow></mstyle></mrow></msub></math> is the procedure
+result type, and <!-- l. 26 --><span class="inline-math-scroll"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>kind</mi></mrow></mstyle> <mo class="MathClass-rel">∈</mo><mo class="MathClass-open" stretchy="false">{</mo><mstyle mathvariant="sans-serif"><mrow><mi>catalog</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>data</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>query</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">}</mo></mrow></math></span>
+records the permitted kind of side effects. Parameter names are unique. Optional
+parameters form only a suffix; supplying one requires supplying every optional
+parameter before it.
+</p><!-- l. 31 --><p class="indent">   The <span class="ec-lmri-12">core signature </span>of the declaration is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 32 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>sig</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo><mspace class="thickpace" width="0.28em"></mspace> <mo class="MathClass-rel">=</mo> <mspace class="thickpace" width="0.28em"></mspace><mi>p</mi><mo class="MathClass-open" stretchy="false">(</mo><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>τ</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-punc">,</mo><mover accent="false" class="mml-overline"><mrow><mrow><msubsup><mrow><mi>x</mi></mrow><mrow><mi>m</mi></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-punc">:</mo> <msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi>m</mi></mrow><mrow><mi>′</mi></mrow></msubsup> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>d</mi></mrow><mrow>
+<mi>m</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">→</mo><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>res</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 39 --><p class="indent">   If <!-- l. 39 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>τ</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>res</mi></mrow></mstyle></mrow></msub></math> is
+a binding-table type, its record type supplies the names and types available to a <span class="ec-lmtt-12">YIELD</span>
+clause. Write <!-- l. 41 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>z</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>υ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>
+for the material binding-table type whose record has the named fields
+<!-- l. 43 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>z</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>υ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover></mrow></math>. In
+a <span class="ec-lmtt-12">CALL</span>-statement, the declared type of the procedure call is required to be either
+a material binding-table type or the empty type. The effect abstraction used later is
+obtained from <!-- l. 46 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="sans-serif"><mrow><mi>kind</mi></mrow></mstyle></math>:
+a query procedure has no side effects, a data procedure may have data-modifying
+effects only, and a catalog procedure may have catalog-modifying effects, possibly
+together with data- modifying effects.
+</p><!-- l. 51 --><p class="indent">   In the catalog, procedure names are unique and procedure overloading is not
+modeled: the <span class="ec-lmtt-12">Procs </span>component maps each qualified procedure identifier to at
+most one declaration, </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 54 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>Procs</mi></mrow></mstyle> <mo class="MathClass-punc">:</mo> <mi>ℚ</mi> <mo class="MathClass-rel">⇀</mo> <mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 60 --><p class="indent">   Consequently, a qualified procedure name uniquely determines its core
+signature whenever it is present in the catalog.
+</p>
+<!-- l. 63 --><p class="noindent"><span class="paragraphHead"><a id="x31-35600018.1"></a><span class="ec-lmbx-12">Procedure bodies and their scope.</span></span>
+   In this edition, a named procedure is an external procedure; the standard does
+not specify a GQL statement that defines its implementation. Accordingly,
+<!-- l. 66 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle></math>
+contains no GQL body. An <span class="ec-lmri-12">inline </span>procedure is instead a nested procedure
+specification with a GQL procedure body. Its statements determine whether it is
+catalog-modifying, data-modifying, or a query procedure, and its declared result
+type is computed from that body. Body typing uses the incoming working
+record/table types and the statement-block rules; it is not an undeclared
+<!-- l. 71 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>B</mi></mrow><mrow><mi>p</mi></mrow></msub></math>
+attached to a named catalog descriptor.
+</p><!-- l. 73 -->
+
+<h2 class="sectionHead" id="x31-35700018.2"><span class="titlemark">18.2   </span> <a></a>Calls and Scoping</h2>
+<a id="dx31-357001"></a>
+<!-- l. 75 --><p class="noindent"><span class="paragraphHead"><a id="x31-35800018.2"></a><span class="ec-lmbx-12">Static environment.</span></span>
+   Typing judgments use a resolution environment
+<!-- l. 77 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℜ</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="bold-script">X</mi><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>Loc</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>, where
+<!-- l. 78 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="bold-script">X</mi> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi mathvariant="bold-script">C</mi><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>WSR</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>WG</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math> is
+the active context (catalog, working schema, working graph site) and
+<!-- l. 80 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Loc</mi></mrow></mstyle></mrow></math>
+                                                                          
+
+                                                                          
+is a finite map of parameters and binding variables used when typing
+argument expressions. A catalog procedure reference is resolved by its
+own grammar and is not shadowed by a binding variable of the same
+spelling.
+</p>
+<!-- l. 84 --><p class="noindent"><span class="paragraphHead"><a id="x31-35900018.2"></a><span class="ec-lmbx-12">Resolution order.</span></span>
+   For a named procedure call, the procedure reference identifies its explicit
+catalog parent or uses the implicit parent <span class="ec-lmtt-12">./ </span>(the current working schema),
+then identifies a named procedure in that parent. Absolute and relative
+catalog paths follow <a href="17-catalog-names-and-session-state.html#x30-33900017">Chapter 17</a>. Alternatively, a procedure reference
+may be supplied by a substituted reference parameter; its substitution is
+resolved as the corresponding catalog procedure parent and name. This is
+reference resolution, not an ordered search through local variables and catalog
+names.
+</p>
+<!-- l. 94 --><p class="noindent"><span class="paragraphHead"><a id="x31-36000018.2"></a><span class="ec-lmbx-12">Syntactic form of procedure calls.</span></span>
+<a id="dx31-360001"></a>
+<a id="dx31-360002"></a>
+   At statement level, a procedure call may be optional and may invoke either an
+inline or a named procedure. The named form is:
+</p>
+<!-- l. 97 --><div class="code-wrap"><span id="x31-360015r13"></span><span id="x31-360014r12"></span><span id="x31-360013r11"></span><span id="x31-360012r10"></span><span id="x31-360011r9"></span><span id="x31-360010r8"></span><span id="x31-360009r7"></span><span id="x31-360008r6"></span><span id="x31-360007r5"></span><span id="x31-360006r4"></span><span id="x31-360005r3"></span><span id="x31-360004r2"></span><span id="x31-360003r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>call-proc-stmt ::= [ "OPTIONAL" ] "CALL" procedure-call
+procedure-call ::= inline-procedure-call | named-procedure-call
+named-procedure-call ::= procedure-reference "(" [ arg-list ] ")"
+                         [ "YIELD" yield-list ]
+
+arg-list   ::= expr { "," expr }
+
+yield-list ::= yield-item { "," yield-item }
+
+yield-item ::= field-name [ "AS" binding-variable ]
+
+expr      ::= ...  /* value expression */
+</code></pre></div>
+<!-- l. 111 --><p class="noindent">Here <span class="ec-lmtt-12">procedure-reference </span>identifies a cataloged procedure, <span class="ec-lmtt-12">arg-list </span>supplies
+actual arguments as value expressions in call-position order, and <span class="ec-lmtt-12">yield-list</span>
+specifies which output columns of the procedure are made visible to the enclosing
+statement, with <span class="ec-lmtt-12">AS </span>providing an explicit alias for the corresponding column name
+when required by the context. The named form requires optional Feature GP04,
+<span class="ec-lmri-12">Named procedure calls</span>. A graph argument additionally requires GP15, and
+a binding-table argument additionally requires GP14.
+</p><!-- l. 120 --> <a id="likesection.12"></a><a id="x31-360016x12"></a>
+
+<!-- l. 121 --><p class="noindent"><span class="paragraphHead"><a id="x31-36100012"></a><span class="ec-lmbx-12">Example: a named library procedure.</span></span>
+   Let <!-- l. 122 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>p</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mstyle class="text"><mtext class="texttt" mathvariant="monospace">recomputeFees</mtext></mstyle></mrow></math> be a procedure
+object name and let <!-- l. 123 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>q</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">∈</mo> <mi>ℚ</mi></mrow></math>
+be its globally resolved reference in the current working schema. In the descriptor
+abstraction used here, an illustrative external data procedure may be represented
+by </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 126 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><msub><mrow><mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> </mrow></mtd><mtd columnalign="left"> <mrow><mo fence="true" form="prefix"> ⟨</mo><mrow><msub><mrow><mi>p</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">asOf</mtext></mstyle> <mo class="MathClass-punc">:</mo> <mstyle mathvariant="sans-serif"><mrow><mi>DATE</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mo class="MathClass-open" stretchy="false">⟨</mo><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo></mrow><mo fence="true" form="postfix"></mo></mrow></mtd> <mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"></mtd> <mtd columnalign="left"><mrow> <mrow><mo fence="true" form="prefix"> </mo><mrow><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="bold"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">updatedCount</mtext></mstyle> <mo class="MathClass-punc">:</mo> <mstyle mathvariant="sans-serif"><mrow><mi>INTEGER</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>data</mi></mrow></mstyle></mrow><mo fence="true" form="postfix">⟩</mo></mrow> <mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 139 --><p class="indent">   If it is registered through an implementation-defined mechanism, the derived
+catalog projection satisfies </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 141 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>Procs</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>q</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo><msub><mrow> <mstyle mathvariant="bold"><mrow><mi>PDesc</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 144 --><p class="indent">   The relative name in the following call resolves to
+<!-- l. 144 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>q</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub></mrow></math>:
+</p>
+<!-- l. 145 --><div class="code-wrap"><span id="x31-361003r3"></span><span id="x31-361002r2"></span><span id="x31-361001r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>CALL recomputeFees(DATE '2025-12-31')
+YIELD updatedCount AS cnt
+</code></pre></div>
+<!-- l. 149 --><p class="noindent">The procedure name and implementation are illustrative; the library DDL in
+<a href="04-gql-by-example.html#x9-190004.2">Section 4.2</a> does not declare this external procedure.
+</p><!-- l. 152 --> <a id="likesection.13"></a><a id="x31-361004x13"></a>
+
+<!-- l. 153 --><p class="noindent"><span class="paragraphHead"><a id="x31-36200013"></a><span class="ec-lmbx-12">Example: procedure-call resolution environment.</span></span>
+   In the static-resolution abstraction used here, one possible environment for
+a call typed inside the library context is </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 156 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Loc</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mtd><mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">{</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">loanVar</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle mathvariant="sans-serif"><mrow><mi>NodeRef</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">feeVar</mtext></mstyle><mo class="MathClass-rel">↦</mo><mstyle mathvariant="sans-serif"><mrow><mi>FLOAT</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">}</mo><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><msub><mrow><mi>ℜ</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mtd> <mtd columnalign="left"><mrow> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi mathvariant="bold-script">X</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Loc</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 166 --><p class="indent">   The local map records types used to type argument
+expressions; the reference <span class="ec-lmtt-12">recomputeFees </span>is resolved through
+<!-- l. 167 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="bold-script">X</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>lib</mi></mrow></mstyle></mrow></msub></mrow></math>.
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 169 --><p class="noindent"><span class="paragraphHead"><a id="x31-36300013"></a><span class="ec-lmbx-12">Procedure call in statements.</span></span>
+   A <span class="ec-lmtt-12">CALL</span>-statement that invokes a named procedure and yields selected columns has
+the form <!-- l. 172 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>CALL</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mi>p</mi><mo class="MathClass-open" stretchy="false">(</mo><mover accent="false" class="mml-overline"><mrow><mrow><mi>e</mi></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">)</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>YIELD</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>z</mi></mrow><mrow><mi>k</mi></mrow></msub><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="bold"><mrow><mi>AS</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><msub><mrow><mi>y</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover></mrow></math>. Let
+<!-- l. 173 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ξ</mi></mrow></math> be the applicable static
+type context and let <!-- l. 174 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Θ</mi></mrow></math>
+be the incoming binding-name-to-type environment;
+<!-- l. 175 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mrow><mi>Θ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math>
+is its extension by yielded columns. For a descriptor with
+<!-- l. 176 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi></mrow></math> mandatory and
+<!-- l. 176 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>m</mi></mrow></math> optional parameters,
+define <!-- l. 177 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>n</mi></mrow><mrow><mi class="qopname">min</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>j</mi></mrow></math> and
+<!-- l. 177 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>n</mi></mrow><mrow><mi class="qopname">max</mi><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub> <mo class="MathClass-rel">=</mo> <mi>j</mi> <mo class="MathClass-bin">+</mo> <mi>m</mi></mrow></math>. For a binding-table
+result <!-- l. 178 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>BT</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">⟨</mo><mover accent="false" class="mml-overline"><mrow><mrow><msub><mrow><mi>z</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class="MathClass-punc">:</mo> <msub><mrow><mi>υ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>,
+let <!-- l. 179 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>υ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>z</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <msub><mrow><mi>υ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>.
+Finally, <!-- l. 180 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>kind</mi></mrow></mstyle></mrow></msub></mrow></math>
+is empty for a query procedure and is the applicable abstract data- or
+catalog-modifying effect for the other procedure kinds. The yielding form below
+therefore assumes a material binding-table result. If the procedure result type is the
+empty type, <span class="ec-lmtt-12">YIELD </span>is not permitted and the call statement uses the material unit
+record type for its output contribution. For a permitted number of actual arguments,
+write <!-- l. 186 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="false" class="mml-overline"><mrow><mrow><mi>e</mi></mrow><mo accent="true">¯</mo></mrow></mover><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>assignableTo</mi></mrow></mstyle><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mover accent="false" class="mml-overline"><mrow><mrow><mi>τ</mi></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-punc">,</mo><mover accent="false" class="mml-overline"><mrow><mrow><msup><mrow><mi>τ</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+when the statically derived type of each supplied argument passes the GQL
+store-assignment check against the corresponding mandatory or optional
+parameter type; omitted optional arguments use their descriptor defaults.
+A schematic typing rule is: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 193 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<img alt="                     -------′----′------
+resolveProc(X,p) = ⟨p,xj : τj,xm : τm = dm,
+            BT  ⟨zi-: υi⟩,kind⟩
+         -          -             ---′
+  nmin ≤ |e| ≤ nmax e assignableTo (τ,τ )
+---{zk}k ⊆-{zi}i-Θ-′ =-Θ-∪-{yk :-υ(zk)}k--
+  ;Θ; ℜ ⊢ CALL   p(e) YIELD   z-AS--y--  CallProc
+               ′              k      k
+          ⇒  Θ ;𝜀kind" loading="lazy" src="assets/test-24ca38e345395d87531dad1ab82fb992.svg"/>
+</math></td></tr></table></div>
+<!-- l. 224 --><p class="indent">   Here <!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>resolve</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="bold"><mrow><mi>Proc</mi></mrow></mstyle></mrow></msub></mrow></math>
+is the procedure-specific instance of the catalog resolution function from
+<a href="17-catalog-names-and-session-state.html#x30-33900017">Chapter 17</a>. A <span class="ec-lmtt-12">YIELD </span>clause is permitted only for a binding-table procedure
+result, selects existing result columns, and produces the aliases shown in
+<!-- l. 227 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mi>Θ</mi></mrow><mrow><mi>′</mi></mrow></msup></math>. The
+incoming and yielded record types must be field-name-disjoint. The effect
+<!-- l. 229 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi>𝜀</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>kind</mi></mrow></mstyle></mrow></msub></math> is
+determined by the descriptor’s procedure kind, and is empty exactly for a query
+procedure.
+</p><!-- l. 232 --><p class="indent">   Operationally, the procedure is called once for each incoming working-table
+record in a child execution context containing its argument record. If its
+execution result is a binding table, each result record is combined with that
+incoming record. If its result is omitted (the empty-type case), the call statement
+uses a unit binding table containing one unit record, so the incoming record is
+preserved once. For <span class="ec-lmtt-12">OPTIONAL CALL</span>, an empty binding-table result instead
+contributes one record whose yielded fields are null; a non-optional empty
+binding-table result contributes no record.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title"><a href="#x31-35300018">Chapter 18</a> — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Defined  procedures  as  cataloged  abstractions  with  typed
+      interfaces and well-scoped execution behavior.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced: </span>Procedure signatures with typed parameters and typed
+      output columns; call and yield mechanics; scoping rules that controlled
+      variable visibility across calls.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key  distinctions: </span>Expression  functions  versus  procedures;  named
+      external procedures versus inline GQL procedures; argument evaluation
+      versus output shaping through explicit yield clauses.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Made modular query/update pipelines semantically
+      well-defined; allowed static typing of calls and their outputs; clarified
+      how working-graph context and local variables interacted with invoked
+      code.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge:  </span>Required  transactional  semantics  to  define  how  effects
+      composed and how failures interacted with atomicity.</li></ul>
+</aside>
+<!-- l. 304 -->
+<!-- l. 304 --> <a id="tailtestch18.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="17-catalog-names-and-session-state.html"><small>← Previous</small>Catalog, Names and Session State</a><a rel="next" href="part-09-transactions-and-concurrency.html"><small>Next →</small>Transactions and Concurrency</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x31-35400018.1">18.1 Procedure Signatures and Body Typing</a><a href="#x31-35700018.2">18.2 Calls and Scoping</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

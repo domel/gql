@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Future Enhancements — GQL Essentials, by Dominik Tomaszuk.">
+<title>Future Enhancements · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part"><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part" open><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html" aria-current="page"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Future Enhancements</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Future Directions</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x38-41600022"><span class="chapter-number">Chapter 22</span><a></a>Future Enhancements</h1>
+<!-- l. 3 --><p class="noindent">This chapter sketches plausible directions for the evolution of GQL beyond
+the current standardization snapshot, focusing on features that improve
+compositionality, interoperability, and practical deployability. We highlight
+enhancement themes that recur across vendor roadmaps and the research
+literature—graph-to-graph query composition, richer schema and constraint
+support, and extensions of the underlying data model. Finally, we outline how
+these directions connect to emerging needs around streaming graphs and
+AI-enabled workloads, while preserving the declarative and analyzable character
+of the language.
+</p>
+<h2 class="sectionHead" id="x38-41700022.1"><span class="titlemark">22.1   </span> <a></a>Compositional Enhancements</h2>
+<a id="dx38-417001"></a>
+<!-- l. 7 --><p class="noindent">The ongoing development of GQL presents numerous opportunities to enhance its
+capabilities, particularly by introducing compositional features such as
+graph-returning subqueries and views defined using new operators for graph
+projection and combination (<a id="x38-417002"></a><a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al. 2022</a>; <a id="x38-417003"></a><a href="bibliography.html#cite.0@Francis2023">Francis et al. 2023a</a>;
+<a id="x38-417004"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>; <a id="x38-417005"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>). These enhancements
+enable more complex, efficient, and secure data interactions. This section
+explores potential advancements in these areas and their implications for
+GQL.
+</p><!-- l. 9 --><p class="indent">   GQL already supports nested query specifications, including correlated uses
+that can refer to bindings from an enclosing query. The principal compositional
+gap is therefore not ordinary table-producing subqueries but graph-returning
+subqueries whose results can serve as graph inputs to later query parts. Potential
+advancements include recursive graph-returning subqueries, which could support
+reusable fixpoint-style graph computations, and explicit subquery materialization
+for results that are reused within a larger query (<a id="x38-417006"></a><a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al.
+2022</a>).<a id="dx38-417007"></a>
+</p><!-- l. 11 --><p class="indent">   Views<a id="dx38-417008"></a> in GQL can provide a powerful mechanism for abstracting and reusing
+query logic, enhancing developer productivity and query performance. From
+a systems perspective, implementing property-graph views forces explicit choices
+between virtual evaluation and materialized storage, and it raises the need for
+view-aware query rewriting and indexing strategies. Recent work has developed
+                                                                          
+
+                                                                          
+and experimentally compared such implementation strategies across both native
+property-graph engines and relational backends, clarifying the performance
+trade-offs that arise when views become first-class and reusable program units
+(<a id="x38-417009"></a><a href="bibliography.html#cite.0@Han2024">Han and Ives 2024</a>; <a id="x38-417010"></a><a href="bibliography.html#cite.0@Han2025">Han and Ives 2025</a>). Moreover, when views are materialized
+(or partially materialized), incremental view maintenance becomes central;
+certified maintenance frameworks based on Regular Datalog demonstrate how to
+derive delta-style maintenance programs with formal soundness guarantees, which
+is directly relevant when view results must remain trustworthy under frequent
+graph updates (<a id="x38-417011"></a><a href="bibliography.html#cite.0@Bonifati2018">Bonifati et al. 2018</a>). Potential enhancements in this area include
+parameterized views, which enable views to accept input parameters, allowing for
+dynamic query construction and reusability across different contexts.
+Updatable views could permit modifications to the underlying graph data
+through views, simplifying data manipulation tasks. View composition
+would enable the creation of complex views by combining existing views,
+promoting modularity and code reuse (<a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a href="bibliography.html#cite.0@Deutsch2022">Deutsch et al.
+2022</a>).
+</p><!-- l. 13 --><p class="indent">   Recent theoretical analyses of GQL<a id="dx38-417012"></a> and related graph querying facilities
+have also highlighted that current property graph query languages are, in
+practice, mostly graph-to-relation formalisms and therefore fall short of full
+compositionality at the graph level (<a id="x38-417013"></a><a href="bibliography.html#cite.0@Francis2023">Francis et al. 2023a</a>; <a id="x38-417014"></a><a href="bibliography.html#cite.0@bonifati2025versatile">Bonifati 2025</a>;
+<a id="x38-417015"></a><a href="bibliography.html#cite.0@Gheerbrant2025A">Gheerbrant et al. 2025b</a>). Future extensions of GQL could address this
+gap by providing a closed algebra of graph-to-graph operators whose
+results are again graphs and can be fed as inputs to subsequent queries
+(<a id="x38-417016"></a><a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>; <a id="x38-417017"></a><a href="bibliography.html#cite.0@Gheerbrant2025B">Gheerbrant et al. 2025a</a>). Such an algebra would enable
+principled reasoning about query equivalence, rewriting, and optimization
+in a way that mirrors the role of relational algebra for SQL, while still
+respecting the semantics of path expressions, graph constraints, and schema
+conformance.
+</p><!-- l. 15 --><p class="indent">   Recent work sharpens this limitation by showing that GQL and SQL/PGQ, despite
+being able to express reachability and all first-order queries, do not capture all queries
+in <!-- l. 17 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>NLOGSPACE</mi></mrow></mstyle></mrow></math>. The
+proposed language couples regular path queries with variables and data-value comparisons
+to <!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>#</mi><mstyle mathvariant="sans-serif"><mrow><mi>Datalog</mi></mrow></mstyle></mrow></math>,
+a fully compositional graph-to-graph language that can construct nodes, edges,
+lists, and paths, and provides a concrete extension of both standards (<a id="x38-417018"></a><a href="bibliography.html#cite.0@Arenas2026">Arenas
+et al. 2026</a>).
+</p><!-- l. 23 --><p class="indent">   A future graph-builder construct could offer graph-valued construction and
+transformation capabilities beyond the current standard. Such an extension would
+                                                                          
+
+                                                                          
+enable users to perform more sophisticated operations on graph data, facilitating
+tasks such as data integration, data warehousing, and graph-based machine
+learning applications. Potential features include conditional node and edge
+creation, which allows the creation of nodes and edges based on specific
+conditions, enabling dynamic graph construction. Batch operations could provide
+mechanisms for creating multiple nodes and edges in a single operation,
+improving efficiency for large-scale graph construction. Graph transformations
+would introduce functions for modifying existing graph structures, such as
+merging nodes, splitting edges, or applying graph algorithms (<a id="x38-417019"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>;
+<a id="x38-417020"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>).
+</p><!-- l. 25 --><p class="indent">   A concrete design point for such a facility uses GPC-based rules to construct output
+property graphs while accounting for property values rather than topology alone; for
+transformations using only simple and trail path restrictors, consistency checking is
+<!-- l. 29 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>PSPACE</mi></mrow></mstyle></mrow></math>-complete.
+A proof-of-concept implementation in openCypher shows that declarative
+transformation rules can be translated into executable scripts with practical
+advantages over ad hoc transformation scripts, suggesting that a GQL graph
+builder should combine explicit constructors with run-time conflict detection and
+implementation-aware optimization (<a id="x38-417021"></a><a href="bibliography.html#cite.0@Bonifati2024">Bonifati et al. 2024</a>).
+</p><!-- l. 36 -->
+
+<h2 class="sectionHead" id="x38-41800022.2"><span class="titlemark">22.2   </span> <a></a>Schemas in GQL</h2>
+<!-- l. 38 --><p class="noindent">The ongoing development of GQL aims to bridge the gap between the current
+graph types and the complex schema requirements necessary for practical
+data graphs. This section outlines potential enhancements to the schema<a id="dx38-418001"></a>
+capabilities of GQL, drawing on the experiences and expertise of users, vendors,
+and researchers (<a id="x38-418002"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a id="x38-418003"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>; <a id="x38-418004"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 40 --><p class="indent">   The current GQL standard includes optional graph types that encompass sets
+of node types and edge types, together with key and unique constraints. However,
+the experience of enterprise graph deployments indicates that additional schema
+features are necessary to describe and prescribe the structure and values of
+practical data graphs, akin to the complexity found in SQL schema (<a href="bibliography.html#cite.0@Angles2023">Angles et al.
+2023</a>). Essential conceptual modeling and schema definition features include
+domains for user-defined refinements of data types (such as ranges and patterns),
+                                                                          
+
+                                                                          
+the ability to specify nested record types for graph element attribution, and the
+capacity to define subtyping relations for attribution types. Additionally, features
+like default and computed values, richer key modes, referential, cardinality, and
+participation constraints for entities and relationships, and support for
+<!-- l. 40 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>N</mi></math>-ary
+relationships are desirable (<a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>).
+</p><!-- l. 42 --><p class="indent">   Community proposals for property graph schema systems already demonstrate
+that such rich schema facilities are both feasible and practically useful in
+real-world deployments (<a id="x38-418005"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a id="x38-418006"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>; <a id="x38-418007"></a><a href="bibliography.html#cite.0@manouvrier2024pg">Manouvrier and
+Belhajjame 2024</a>). They combine flexible typing with multi-inheritance,
+a spectrum of key modes for nodes, edges, and properties, and a unifying
+treatment of integrity constraints. Future revisions of GQL could explicitly align
+the schema language with these developments, for instance by standardizing key
+modes, reusable constraint templates, and mechanisms to relate graph types and
+schemas in a single DDL framework.
+</p><!-- l. 44 --><p class="indent">   Schema evolution should also support controlled movement along the spectrum
+between descriptive and prescriptive schemas. One proposed framework models
+conformance by a homomorphism from an instance graph to a schema graph and
+models evolution by graph-rewriting operations propagated between the two
+levels, suggesting high-level GQL schema-manipulation operations for both
+data-driven schema adaptation and schema-driven data migration (<a id="x38-418008"></a><a href="bibliography.html#cite.0@Bonifati2019">Bonifati et al.
+2019</a>).
+</p><!-- l. 52 --><p class="indent">   These prospective constraint templates can be grounded in the theory of graph
+dependencies, which provides reusable constraint schemata ranging from key- and
+equality-style constraints to generating dependencies that can prescribe the
+existence of additional graph structure when certain patterns are present (<a id="x38-418009"></a><a href="bibliography.html#cite.0@Fan2019">Fan and
+Lu 2019</a>; <a id="x38-418010"></a><a href="bibliography.html#cite.0@Shimomura2020">Shimomura et al. 2020</a>).
+</p><!-- l. 54 --><p class="indent">   There are also graph-specific schema requirements that need to be
+addressed. These include the ability to specify sub-graphs as integral units for
+insertion or maintenance of data graphs, for access control purposes, or as
+the target of constraints. Another critical feature is schema inclusion
+or “schema unions”, allowing the definition of nodes in a schema graph
+that can be the same or forcibly different from nodes of the same type in
+another schema graph. This capability facilitates the composition of schema
+graphs into larger, modular schemas and supports the creation of “simple
+sub-graph views” or “composite graphs” (<a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>; <a id="x38-418011"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 56 --><p class="indent">   The goal of extending the GQL schema language is to support a more
+                                                                          
+
+                                                                          
+restrictive set of constraints on the permissible values of GQL property graphs
+than currently allowed by graph types. The proposed schema definition language
+should be expressed as GQL DDL statements that either supplement or replicate
+the meaning of the existing DDL statements for graph-type definition and
+maintenance. This language will allow the creation, alteration, and deletion of
+graph schemas in a GQL catalog, including managing the relationship of an
+instance (data) graph to a graph schema throughout its lifecycle (<a href="bibliography.html#cite.0@Angles2021">Angles et al.
+2021</a>; <a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>).
+</p><!-- l. 58 --><p class="indent">   A comprehensive schema language for GQL should address the definition of
+schema conformance and the efficient maintenance of conformance during
+transactional updates. For instance, DML statements can explicitly reference
+schema sub-graphs to reduce the validation scope when executing mutations. The
+schema language should also support partial (extensible) schemas, allowing
+a “sliding scale of schema” that ranges from minimal constraints to schemas as or
+more restrictive than SQL schemas (<a id="x38-418012"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al. 2023</a>; <a id="x38-418013"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>).
+An extended GQL schema, possibly in conjunction with extensions to the
+data model (see below), has the opportunity to close the gap between
+graph schemas and attributed entity-relationship models, which permit
+<!-- l. 58 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mi>N</mi></math>-ary
+relationships. This would more precisely align existing record-oriented conceptual
+data modeling techniques, such as Extended Entity Relationship Modeling or
+UML class diagrams, with graph schemas. These mechanisms could further
+interact with automated schema discovery and exploration tools for property
+graphs (<a id="x38-418014"></a><a href="bibliography.html#cite.0@Lbath2021">Lbath et al. 2021</a>; <a id="x38-418015"></a><a href="bibliography.html#cite.0@Bonifati2022">Bonifati et al. 2022</a>).
+</p><!-- l. 60 -->
+
+<h2 class="sectionHead" id="x38-41900022.3"><span class="titlemark">22.3   </span> <a></a>Extending the Data Model and Integrating AI</h2>
+<!-- l. 62 --><p class="noindent">The future of GQL holds great promise for advancements in data models and AI,
+enabling the development of sophisticated applications that leverage the full
+potential of graph databases. This section outlines potential directions for future
+versions of GQL, focusing on extending data models and integrating AI to
+enhance the language’s capabilities and applicability (<a id="x38-419001"></a><a href="bibliography.html#cite.0@Angles2017">Angles et al. 2017</a>;
+<a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>).
+</p><!-- l. 64 --><p class="indent">   It is essential to explore extending the property graph data model in GQL
+to include features such as graph properties<a id="dx38-419002"></a>, stored paths<a id="dx38-419003"></a>, hyperedges<a id="dx38-419004"></a>,
+                                                                          
+
+                                                                          
+multiproperties, and support for first-class (multi)properties and property values
+(<a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>). Graph properties enable annotating and organizing
+graphs in the catalog with additional rich metadata. Stored paths enable
+the storage and querying of frequently accessed routes within the graph,
+which is particularly useful in applications like social network analysis and
+recommendation systems. Hyperedges allow connections between more than two
+graph elements, providing a more expressive data model for representing
+complex relationships. Multiproperties enable multiple properties with the
+same name on a single node or edge, offering greater flexibility in data
+modeling. Support for first-class (multi)properties ensures that every
+multiproperty as well as every individual property value can be treated as
+a node, to allow their occurrence as the endpoints of edges in the graph
+topology and further (recursive) annotation with additional meta-properties.
+Finally, there are other relevant directions toward further development of
+the property graph data model landscape in extensions for temporal,
+geospatial, and probabilistic graph data, as well as the integration of
+property graph data management and stream processing (<a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al.
+2025</a>).
+</p><!-- l. 66 --><p class="indent">   In particular, integrating streaming capabilities directly into GQL<a id="dx38-419005"></a><a id="dx38-419006"></a> raises the
+prospect of a unified model for querying both static and continuously evolving
+property graphs. Future versions of the language could standardize windowing
+constructs, continuous query semantics, and incremental maintenance of graph
+views, so that streaming and at-rest graph data can be queried and optimized
+within a single conceptual framework rather than through ad hoc extensions
+(<a id="x38-419007"></a><a href="bibliography.html#cite.0@Rost2024">Rost et al. 2024</a>; <a id="x38-419008"></a><a href="bibliography.html#cite.0@Kondylakis2025">Kondylakis et al. 2025</a>).
+</p><!-- l. 68 --><p class="indent">   Standardizing concrete privilege-management and role-based access control<a id="dx38-419009"></a>
+(RBAC<a id="dx38-419010"></a>) statements in GQL can also enhance security and make user-permission
+management portable. RBAC allows for fine-grained control over access to graph
+data, ensuring that only authorized users can view or modify sensitive
+information. This is crucial for maintaining data integrity and confidentiality,
+especially in collaborative or multi-tenant environments.
+</p><!-- l. 70 --><p class="indent">   Future versions of GQL should consider proposing statements for dynamically
+altering graph types, ensuring flexibility in adapting to evolving data
+requirements. This feature would enable users to modify the graph schema
+without recreating the entire graph, facilitating seamless schema evolution and
+minimizing disruptions to existing applications. Dynamic graph-type alteration
+can support a broader range of applications by allowing more adaptable and
+responsive data management practices (<a id="x38-419011"></a><a href="bibliography.html#cite.0@Angles2021">Angles et al. 2021</a>; <a id="x38-419012"></a><a href="bibliography.html#cite.0@Angles2023">Angles et al.
+                                                                          
+
+                                                                          
+2023</a>).
+</p><!-- l. 72 --><p class="indent">   Integrating vector search<a id="dx38-419013"></a>, knowledge graphs, and data science within the GQL
+framework can pave the way for building breakthrough Generative AI<a id="dx38-419014"></a> (GenAI<a id="dx38-419015"></a>)
+applications. These applications can deliver highly accurate responses,
+rich context, and deep explainability by leveraging the power of graph
+representations and AI models. Graphs can effectively represent hidden patterns
+and relationships within data, enabling GenAI models to make sense of
+the world and understand a specific company’s data and view of the
+world.
+</p><!-- l. 74 --><p class="indent">   GQL already provides optional vector types and vector operations,
+including <span class="ec-lmtt-12">VECTOR_DISTANCE </span>and <span class="ec-lmtt-12">VECTOR_NORM</span>. The remaining opportunity is
+to integrate these values and operations with portable vector indexes,
+nearest-neighbor search, ranking, and query optimization. Such integration can
+improve the accuracy of search results and enable more effective information
+discovery, particularly in applications involving large and complex datasets,
+while complementing traditional graph querying with semantic relevance
+ranking.
+</p><!-- l. 82 --><p class="indent">   A further opportunity lies in making AI techniques, such as graph embeddings
+and large language models, schema-aware. Current work on embeddings and
+generative models for graphs suggests that incorporating structural constraints
+and schema information remains challenging, yet essential for accuracy and
+interpretability (<a id="x38-419016"></a><a href="bibliography.html#cite.0@Hamilton2017">Hamilton et al. 2017</a>). Tight integration of GQL with a rich
+schema language and constraint system could enable embeddings and
+GenAI components that respect keys, cardinalities, and type hierarchies by
+construction, and that can be explained back in terms of the underlying graph
+schema.
+</p><!-- l. 84 --><p class="indent">   Incorporating data science techniques into GQL can enable advanced analytics
+and predictive modeling on graph data. By leveraging machine learning
+algorithms and statistical methods, GQL can uncover deep insights from the data,
+identify trends and patterns, and provide more informed decision-making. This
+integration can also enhance the capability of GenAI applications by combining
+structured graph data with powerful analytical tools (<a href="bibliography.html#cite.0@Hamilton2017">Hamilton et al.
+2017</a>).
+</p><!-- l. 86 --><p class="indent">   The synergy of vector search, knowledge graphs, and data science can lead to
+the development of breakthrough GenAI applications that offer highly accurate
+responses, rich context, and deep explainability. These applications can leverage
+the interconnected nature of graph data to provide more meaningful and relevant
+insights, enhance user experiences, and drive innovation in various domains. For
+                                                                          
+
+                                                                          
+example, GenAI can utilize graph data in personalized recommendation systems
+to comprehend user preferences and relationships, resulting in more precise and
+tailored suggestions.
+</p><!-- l. 88 --><p class="indent">   By incorporating these advancements, future versions of GQL can empower
+developers and data scientists to build more sophisticated, secure, and flexible
+applications that leverage the power of graph data models and AI. This will
+enhance the functionality and usability of GQL, enabling the development of
+next-generation intelligent systems that provide deeper insights and more effective
+solutions across various domains.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 22 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose: </span>Sketched  plausible  evolution  paths  for  GQL  beyond  the
+      current snapshot, emphasizing compositionality and interoperability.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:  </span>Candidate  feature  clusters  such  as  stronger  schema
+      integration, data-model extensions, and AI-oriented capabilities framed
+      as principled extensions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key       distinctions:      </span>Standardized       language       evolution
+      versus implementation extensions; conservative, backward-compatible
+      extensions versus features requiring new semantic commitments.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Identified which additions would require new value
+      domains,  typing  rules,  or  catalog  objects;  highlighted  compatibility
+      constraints that shaped practical adoption; clarified how new features
+      would interact with the existing semantic pipeline.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Motivated a broader research agenda by separating near-term
+      extensions from foundational open problems.</li></ul>
+</aside>
+<!-- l. 1 -->
+<!-- l. 1 --> <a id="tailtestch22.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-11-future-directions.html"><small>← Previous</small>Future Directions</a><a rel="next" href="23-research-directions.html"><small>Next →</small>Research Directions</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x38-41700022.1">22.1 Compositional Enhancements</a><a href="#x38-41800022.2">22.2 Schemas in GQL</a><a href="#x38-41900022.3">22.3 Extending the Data Model and Integrating AI</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

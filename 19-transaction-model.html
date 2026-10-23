@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Transaction Model — GQL Essentials, by Dominik Tomaszuk.">
+<title>Transaction Model · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part" open><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html" aria-current="page"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
+<header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Transaction Model</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
+<div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Transactions and Concurrency</p><article class="book-content">
+<!-- l. 1 -->
+<h1 class="chapterHead" id="x33-36500019"><span class="chapter-number">Chapter 19</span><a></a>Transaction Model</h1>
+<!-- l. 4 --><p class="noindent">This chapter specifies how GQL groups procedure executions into transactions
+and how their combined effects are applied to the shared store state. We formalize
+commit and rollback behavior and the visibility of intermediate updates. The
+GQL core assumes serializable transactional behavior; less restrictive isolation
+levels and their snapshot rules are implementation-defined extensions.
+The treatment of errors and aborts is integrated with this model so that
+transactional guarantees are preserved during constraint enforcement and update
+execution.
+</p>
+<h2 class="sectionHead" id="x33-36600019.1"><span class="titlemark">19.1   </span> <a></a>Demarcation and Visibility</h2>
+<a id="dx33-366001"></a>
+<!-- l. 8 --><p class="noindent"><span class="paragraphHead"><a id="x33-36700019.1"></a><span class="ec-lmbx-12">Transaction model</span><a id="dx33-367001"></a><span class="ec-lmbx-12">.</span></span>
+   A transaction<a id="dx33-367002"></a> <!-- l. 9 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow></math>
+is a tuple </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 10 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="normal"><mrow><mi>iso</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mover accent="false" class="mml-overline"><mrow><mrow><mi>P</mi></mrow><mo accent="true">¯</mo></mrow></mover><mo class="MathClass-punc">,</mo><mspace class="nbsp" width="0.33em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>SP</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 14 --><p class="indent">   where <!-- l. 14 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>u</mi></mrow></math>
+is the session authorization identifier under which the transaction is executed,
+<!-- l. 16 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="normal"><mrow><mi>iso</mi></mrow></mstyle></mrow></math> is
+<span class="ec-lmss-12">SERIALIZABLE </span>in the core model or an implementation-defined isolation extension,
+<!-- l. 18 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="false" class="mml-overline"><mrow><mrow><mi>P</mi></mrow><mo accent="true">¯</mo></mrow></mover> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>P</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>P</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math> is
+a finite sequence of procedure executions performed in order, and
+                                                                          
+
+                                                                          
+<!-- l. 19 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>SP</mi></mrow></mstyle></mrow></math>
+is an optional meta-model component for savepoints. Savepoints
+are not part of the GQL core; an implementation extension that
+supplies them must also define their syntax and semantics. Let
+<!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">,</mo><msup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> be abstract
+store states and <!-- l. 22 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>κ</mi></mrow></math>
+an exception GQLSTATUS code as described in <a href="21-diagnostics.html#x36-40300021">Chapter 21</a>. Let the
+abstract transaction-outcome carrier contain the distinct constructors
+</p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 26 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>Committed</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><msup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>RolledBack</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><mstyle mathvariant="sans-serif"><mrow><mi>Aborted</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>κ</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 31 --><p class="indent">   They denote, respectively, successful commitment, successful rollback, and
+a failed outcome accompanied by a rollback attempt. These constructors are
+distinct from the state-transition functions defined below.
+</p>
+<!-- l. 35 --><p class="noindent"><span class="paragraphHead"><a id="x33-36800019.1"></a><span class="ec-lmbx-12">Transactions and atomicity.</span></span>
+<a id="dx33-368001"></a>
+   A transaction is a delimited unit of work. A successful commit takes effect
+atomically with respect to recovery, while a successfully processed rollback has no
+lasting effect on GQL-data or the GQL-catalog. For a well-typed program
+<!-- l. 39 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math> within
+a transaction, let <!-- l. 40 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+denote the finite update sequence (delta) that its execution produces over
+<!-- l. 41 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>. More generally, for any
+procedure execution <!-- l. 42 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi></mrow></math>
+within <!-- l. 42 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi></mrow></math>,
+                                                                          
+
+                                                                          
+<!-- l. 42 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>P</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+denotes the delta produced by that execution. For deltas,
+<!-- l. 44 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-bin"> ◇</mo><msub><mrow> <mi mathvariant="normal">Δ</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></math>
+denotes their ordered composition, characterized whenever the applications are
+defined by </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 46 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="normal">Ω</mi> <mo class="MathClass-bin">⊕</mo> <mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-bin"> ◇</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi> <mo class="MathClass-bin">⊕</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">⊕</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 50 --><p class="indent">   Thus <!-- l. 50 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">◇</mo></mrow></math> composes
+deltas, whereas <!-- l. 50 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-bin">⊕</mo></mrow></math>
+applies a delta to a store state. </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 52 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable class="aligned"><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>commit</mi></mrow></mstyle> <mo class="MathClass-punc">:</mo></mrow></mtd><mtd columnalign="left"><mrow><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">↦</mo><mi mathvariant="normal">Ω</mi> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo></mrow></mtd><mtd columnalign="right"></mtd>
+</mtr><mtr><mtd columnalign="right"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>rollback</mi></mrow></mstyle> <mo class="MathClass-punc">:</mo></mrow></mtd><mtd columnalign="left"><mrow><mspace class="nbsp" width="0.33em"></mspace><mo class="MathClass-open" stretchy="false">(</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">↦</mo><mi mathvariant="normal">Ω</mi><mo class="MathClass-punc">.</mo></mrow></mtd>
+</mtr> </mtable>
+</math></td></tr></table></div>
+<!-- l. 58 --><p class="indent">   These equations describe successfully processed termination requests. At the
+committed-state boundary, all changes of a committing transaction take effect
+together and no changes of a successfully rolled-back transaction remain. If
+a transaction-termination request cannot be processed successfully, the state of
+the GQL-catalog and GQL-data becomes indeterminate; how the success or
+failure status is made available is implementation-defined. This recovery atomicity
+                                                                          
+
+                                                                          
+is distinct from isolation: an implementation-defined relaxation of serializable
+behavior may permit some provisional changes to be perceived by a concurrent
+transaction.
+</p>
+<!-- l. 67 --><p class="noindent"><span class="paragraphHead"><a id="x33-36900019.1"></a><span class="ec-lmbx-12">Statement sequencing.</span></span>
+<a id="dx33-369001"></a>
+   Within a transaction, statements execute in program order; effects of each
+completed statement are visible to subsequent statements of the same transaction
+prior to commit.
+</p>
+<!-- l. 70 --><p class="noindent"><span class="paragraphHead"><a id="x33-37000019.1"></a><span class="ec-lmbx-12">Procedure-kind and working-graph restrictions.</span></span>
+   Without optional Feature GP18, mixing a catalog-modifying procedure and
+a data-modifying procedure in one transaction raises <span class="ec-lmcsc-10x-x-120">25G02</span>. Without optional
+Feature GT03, accessing a graph different from one already accessed in the
+transaction raises <span class="ec-lmcsc-10x-x-120">25G04</span>.
+</p>
+<!-- l. 76 --><p class="noindent"><span class="paragraphHead"><a id="x33-37100019.1"></a><span class="ec-lmbx-12">Commands.</span></span>
+<a id="dx33-371001"></a>
+   A command is an operation not specified by a procedure written in
+GQL.
+</p>
+<!-- l. 79 --><p class="noindent"><span class="paragraphHead"><a id="x33-37200019.1"></a><span class="ec-lmbx-12">Syntactic form of transaction control commands.</span></span>
+<a id="dx33-372001"></a>
+<a id="dx33-372002"></a>
+   At the concrete-syntax level, GQL provides dedicated commands to start,
+commit, and roll back transactions, with a standardized access mode and optional
+implementation-defined transaction modes. In a simplified BNF these commands
+are written as:
+                                                                          
+
+                                                                          
+</p>
+<!-- l. 81 --><div class="code-wrap"><span id="x33-372010r8"></span><span id="x33-372009r7"></span><span id="x33-372008r6"></span><span id="x33-372007r5"></span><span id="x33-372006r4"></span><span id="x33-372005r3"></span><span id="x33-372004r2"></span><span id="x33-372003r1"></span><div class="code-label">BNF</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>start-transaction-cmd ::= "START" "TRANSACTION" [ tx-characteristics ]
+tx-characteristics ::= tx-mode { "," tx-mode }
+tx-mode ::= tx-access-mode | impl-defined-mode
+tx-access-mode ::= "READ" "ONLY" | "READ" "WRITE"
+commit-cmd ::= "COMMIT"
+rollback-cmd ::= "ROLLBACK"
+impl-defined-mode ::= ...
+</code></pre></div>
+<!-- l. 90 --><p class="noindent">The syntax requires exactly one transaction access mode. Additional modes,
+including any means of selecting a less restrictive isolation level, are
+implementation-defined. Explicit transaction commands require optional Feature
+GT01, and explicit transaction characteristics require optional Feature GT02. If
+the characteristics are omitted, an implementation-defined (ID006) default
+characteristic is implicit and contains <span class="ec-lmtt-12">READ WRITE</span>.
+</p>
+<!-- l. 97 --><p class="noindent"><span class="paragraphHead"><a id="x33-37300019.1"></a><span class="ec-lmbx-12">Begin/commit/rollback.</span></span>
+   A transaction may begin in either of two ways. It is initiated explicitly by
+<span class="ec-lmtt-12">START TRANSACTION</span><a id="dx33-373001"></a>, optionally with characteristics, or, if none is active,
+implicitly at the commencement of executing a procedure. It may contain
+a sequence of procedure executions and is terminated by an attempt
+to <span class="ec-lmtt-12">COMMIT</span><a id="dx33-373002"></a> or <span class="ec-lmtt-12">ROLLBACK</span><a id="dx33-373003"></a>. On a successful <span class="ec-lmtt-12">COMMIT </span>the system applies
+<!-- l. 103 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>B</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> atomically
+to <!-- l. 103 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Ω</mi></mrow></math>. If
+the transaction is part of an encompassing transaction controlled by another
+agent, <span class="ec-lmcsc-10x-x-120">2D000 </span>is raised. If any other error prevents commitment, all changes are
+canceled and <span class="ec-lmcsc-10x-x-120">40000 </span>is raised with an implementation-defined subclass. An
+explicit <span class="ec-lmtt-12">ROLLBACK </span>likewise raises <span class="ec-lmcsc-10x-x-120">2D000 </span>rather than canceling changes when such
+an encompassing transaction is controlled by another agent; otherwise, all changes
+made by the active transaction are canceled.
+</p><!-- l. 113 --> <a id="likesection.14"></a><a id="x33-373004x14"></a>
+
+<!-- l. 114 --><p class="noindent"><span class="paragraphHead"><a id="x33-37400014"></a><span class="ec-lmbx-12">Example: transaction tuple and </span><span class="ec-lmtk-10x-x-120">COMMIT </span><span class="ec-lmbx-12">boundary.</span></span>
+                                                                          
+
+                                                                          
+   Let <span class="ec-lmtt-12">alice </span>be the session authorization identifier and let
+<!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>P</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub></mrow></math> be
+the procedure execution denoted by the call in <a href="18-procedures.html#x31-360016x12">Line 13</a>. Then, in the abstract
+serializable transaction model used here, an explicitly demarcated transaction can
+be represented by </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 119 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow>
+<mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>alice</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mstyle class="text"><mtext class="texttt" mathvariant="monospace">alice</mtext></mstyle><mo class="MathClass-punc">,</mo><mstyle class="text"><mtext class="textsf" mathvariant="sans-serif">SERIALIZABLE</mtext></mstyle><mo class="MathClass-punc">,</mo><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>P</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>none</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 128 --><p class="indent">   A corresponding GQL-program transaction activity is:
+</p>
+<!-- l. 129 --><div class="code-wrap"><span id="x33-374005r5"></span><span id="x33-374004r4"></span><span id="x33-374003r3"></span><span id="x33-374002r2"></span><span id="x33-374001r1"></span><div class="code-label">GQL</div><button aria-label="Copy code" class="copy-code">Copy</button><pre><code>START TRANSACTION READ WRITE
+CALL recomputeFees(DATE '2025-12-31')
+YIELD updatedCount AS cnt
+COMMIT
+</code></pre></div>
+<!-- l. 135 --><p class="noindent">The <span class="ec-lmtt-12">COMMIT </span>command requests termination of the transaction by
+commit; it is not an element of the procedure-execution sequence
+<!-- l. 136 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="false" class="mml-overline"><mrow><mrow><mi>P</mi></mrow><mo accent="true">¯</mo></mrow></mover></mrow></math>.
+</p>
+<!-- l. 138 --><p class="noindent"><span class="paragraphHead"><a id="x33-37500014"></a><span class="ec-lmbx-12">Visibility.</span></span>
+   For the serializable behavior assumed by the GQL core, concurrent activity is
+observed as a serial order. Under an implementation-defined relaxation,
+provisional changes may be visible, at some point or to some degree, to other
+GQL-agents executing concurrent transactions. After a successful <span class="ec-lmtt-12">COMMIT</span>,
+the transaction’s changes are eligible to be perceived by all subsequent
+                                                                          
+
+                                                                          
+transactions.
+</p><!-- l. 146 -->
+
+<h2 class="sectionHead" id="x33-37600019.2"><span class="titlemark">19.2   </span> <a></a>Serializability and Isolation</h2>
+<!-- l. 148 --><p class="noindent"><span class="paragraphHead"><a id="x33-37700019.2"></a><span class="ec-lmbx-12">Serializability</span><a id="dx33-377001"></a><span class="ec-lmbx-12">.</span></span>
+   The GQL core models only serializable transactional behavior. Thus, whenever
+transactions are described concurrently in this core model, there exists a total order
+<!-- l. 151 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">≺</mo></mrow></math> of the
+committed transactions such that the observable outcome (final state and results of
+each transaction) is equivalent to executing those transactions one-by-one in order
+<!-- l. 153 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo class="MathClass-rel">≺</mo></mrow></math>.
+An implementation-defined relaxation need not satisfy this
+criterion unless it is specified as a serializable extension. For
+<!-- l. 157 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle> <mo class="MathClass-rel">=</mo> <mo class="MathClass-open" stretchy="false">⟨</mo><mi>u</mi><mo class="MathClass-punc">,</mo><mstyle mathvariant="normal"><mrow><mi>iso</mi></mrow></mstyle><mo class="MathClass-punc">,</mo><mo class="MathClass-open" stretchy="false">⟨</mo><msub><mrow><mi>P</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mi>P</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">⟩</mo><mo class="MathClass-punc">,</mo><mstyle mathvariant="sans-serif"><mrow><mi>SP</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">⟩</mo></mrow></math>, write
+<!-- l. 158 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> for the cumulative delta
+obtained by composing <!-- l. 159 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>P</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>P</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>
+in procedure-execution order: </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 161 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-rel">=</mo> <mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>P</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-bin"> ◇</mo><mo class="MathClass-rel">⋯</mo><mo class="MathClass-bin"> ◇</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi>P</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 165 --><p class="indent">   Let <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>init</mi></mrow></mstyle></mrow></msub></mrow></math> be the initial
+shared store state and <!-- l. 166 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>final</mi></mrow></mstyle></mrow></msub></mrow></math>
+the resulting final shared store state. Formally, if the committed transactions are
+<!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>n</mi></mrow></msub></mrow></math> and
+                                                                          
+
+                                                                          
+<!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ρ</mi></mrow></math> is
+a permutation witnessing serializability, then </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 170 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>final</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-rel">=</mo><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em">(</mo><mrow><mo class="MathClass-rel">⋯</mo><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>init</mi></mrow></mstyle></mrow></msub> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>ρ</mi><mo class="MathClass-open" stretchy="false">(</mo><mn>1</mn><mo class="MathClass-close" stretchy="false">)</mo></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>ρ</mi><mo class="MathClass-open" stretchy="false">(</mo><mn>2</mn><mo class="MathClass-close" stretchy="false">)</mo></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-rel">⋯</mo> <mo class="MathClass-bin">⊕</mo><mi mathvariant="normal">Δ</mi><mo class="MathClass-open" stretchy="false">(</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>ρ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>n</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></msub><mo class="MathClass-close" stretchy="false">)</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em">)</mo></mrow><mo class="MathClass-punc">,</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 174 --><p class="indent">   and each <!-- l. 174 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>ρ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>i</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></msub></mrow></math>
+observes effects of <!-- l. 175 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>ρ</mi><mo class="MathClass-open" stretchy="false">(</mo><mi>j</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></msub></mrow></math>
+for all <!-- l. 175 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi> <mo class="MathClass-rel">&lt;</mo> <mi>i</mi></mrow></math> and
+none of <!-- l. 175 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>j</mi> <mo class="MathClass-rel">&gt;</mo> <mi>i</mi></mrow></math>.
+</p>
+<!-- l. 177 --><p class="noindent"><span class="paragraphHead"><a id="x33-37800019.2"></a><span class="ec-lmbx-12">Snapshots</span><a id="dx33-378001"></a><span class="ec-lmbx-12">.</span></span>
+   For an implementation-defined isolation extension, let
+<!-- l. 179 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>i</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>base</mi></mrow></mstyle></mrow></msubsup></mrow></math>
+denote the base store state made visible to statement
+<!-- l. 180 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+by that extension. It may, for example, be selected at transaction start
+or at a statement boundary. The GQL core does not standardize
+such snapshot-selection rules. In the serializable core model,
+<!-- l. 183 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>i</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>base</mi></mrow></mstyle></mrow></msubsup></mrow></math> is the
+committed state established by the transactions preceding this transaction in the
+witnessing serial order.
+</p>
+<!-- l. 186 --><p class="noindent"><span class="paragraphHead"><a id="x33-37900019.2"></a><span class="ec-lmbx-12">Isolation levels</span><a id="dx33-379001"></a> <span class="ec-lmbx-12">(axiomatic sketch).</span></span>
+   Isolation levels other than <span class="ec-lmbx-12">SERIALIZABLE</span>, their interactions, their
+granularity, and the means of selecting them are implementation-defined. The
+                                                                          
+
+                                                                          
+following are examples of policies an extension might choose, not GQL-defined
+levels: </p>
+<ul class="itemize1">
+<li class="itemize"><!-- l. 192 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>READ</mi><mspace class="nbsp" width="0.33em"></mspace><mi>COMMITTED</mi></mrow></mstyle></mrow></math>
+      (RC): each statement reads from the latest committed state at its start;
+      writes are private until commit.
+      </li>
+<li class="itemize"><!-- l. 193 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>REPEATABLE</mi><mspace class="nbsp" width="0.33em"></mspace><mi>READ</mi></mrow></mstyle></mrow></math>
+      (RR): the base state is fixed for the transaction.
+      </li>
+<li class="itemize"><!-- l. 194 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>SNAPSHOT</mi><mspace class="nbsp" width="0.33em"></mspace><mi>ISOLATION</mi></mrow></mstyle></mrow></math>
+      (SI): commit succeeds iff no write-write conflict on overlapping entities/fields
+      (first-committer-wins); otherwise a rollback in class <span class="ec-lmtt-12">40xxx</span>.
+      </li>
+<li class="itemize"><!-- l. 195 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="bold"><mrow><mi>SERIALIZABLE</mi></mrow></mstyle></mrow></math>
+      (SER): there exists a serial order of concurrent transactions producing
+      an equivalent outcome.</li></ul>
+<!-- l. 198 --><p class="noindent"><span class="paragraphHead"><a id="x33-38000019.2"></a><span class="ec-lmbx-12">Statement execution under isolation.</span></span>
+   Let <!-- l. 199 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+be the delta produced by a successfully completed statement
+<!-- l. 200 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>, and
+let </p><div class="table-scroll"><table class="equation-star"><tr><td>
+<!-- l. 201 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
+<msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mo class="MathClass-rel">&lt;</mo><mi>i</mi></mrow></msub> <mo class="MathClass-rel">=</mo><msub><mrow> <mi mathvariant="normal">Δ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-bin"> ◇</mo><mo class="MathClass-rel">⋯</mo><mo class="MathClass-bin"> ◇</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>i</mi><mo class="MathClass-bin">−</mo><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mspace class="qquad" width="2em"></mspace><msubsup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>i</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>vis</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-rel">=</mo><msubsup><mrow> <mi mathvariant="normal">Ω</mi></mrow><mrow>
+<mi>i</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>base</mi></mrow></mstyle></mrow></msubsup> <mo class="MathClass-bin">⊕</mo><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow>
+<mo class="MathClass-rel">&lt;</mo><mi>i</mi></mrow></msub><mo class="MathClass-punc">.</mo>
+</mrow></math></td></tr></table></div>
+<!-- l. 207 --><p class="indent">   Both the read part and the computation of the write part of
+<!-- l. 207 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math> use
+<!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mi>i</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>vis</mi></mrow></mstyle></mrow></msubsup></mrow></math>. If
+<!-- l. 208 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+completes successfully, its delta is added to the transaction-local cumulative delta,
+so the next statement observes it. This explicitly provides the standard’s
+statement sequencing rule that the effects of a successfully completed
+statement are visible to a successor statement in the same transaction. If
+<!-- l. 212 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>S</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math> signals
+an exception, evaluation of the enclosing request stops with that GQLSTATUS
+and <!-- l. 213 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>
+is not added.
+</p><!-- l. 216 -->
+
+<h2 class="sectionHead" id="x33-38100019.3"><span class="titlemark">19.3   </span> <a></a>Errors and Aborts</h2>
+<a id="dx33-381001"></a>
+<!-- l. 218 --><p class="noindent"><span class="paragraphHead"><a id="x33-38200019.3"></a><span class="ec-lmbx-12">Abort outcomes.</span></span>
+   In the abstract model, execution may terminate with a successful
+<!-- l. 220 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>RolledBack</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> or with
+<!-- l. 220 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Aborted</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>κ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>, in addition
+to <!-- l. 221 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Committed</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
+The first is an explicitly requested successful rollback; the second
+records a failed outcome and rollback attempt. In either case,
+a successful rollback leaves no lasting transaction effect, while
+<!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Aborted</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>κ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> also raises
+exception condition <!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>κ</mi></mrow></math>
+                                                                          
+
+                                                                          
+to the agent.
+</p>
+<!-- l. 227 --><p class="noindent"><span class="paragraphHead"><a id="x33-38300019.3"></a><span class="ec-lmbx-12">Sources of termination without commit.</span></span>
+   A transaction can terminate without committing in any of the following
+situations: (i) an explicit <span class="ec-lmtt-12">ROLLBACK </span>command, unless disallowed by an externally
+controlled encompassing transaction, successfully cancels its changes; (ii)
+the execution of a procedure has a failed outcome, which causes the
+GQL-implementation to attempt to roll back the current transaction; (iii)
+a <span class="ec-lmtt-12">COMMIT </span>encounters an error other than invalid termination <span class="ec-lmcsc-10x-x-120">2D000 </span>that prevents
+commitment, in which case its changes are canceled and <span class="ec-lmcsc-10x-x-120">40000 </span>is raised with an
+implementation-defined subclass; or (iv) the transaction becomes blocked, cannot
+complete without semantic inconsistency, or loses resources required to
+continue, in which case it is implementation-dependent whether rollback is
+forced.
+</p>
+<!-- l. 240 --><p class="noindent"><span class="paragraphHead"><a id="x33-38400019.3"></a><span class="ec-lmbx-12">Rollback (abort) effect.</span></span>
+   If rollback of the currently active transaction succeeds, then all changes to
+GQL-data and/or the GQL-catalog performed by that transaction are canceled;
+the transaction is terminated and the current transaction is set to “not
+set”. No provisional effect remains in the store. Under a less restrictive,
+implementation-defined isolation extension, this does not retroactively erase an
+observation that the extension may already have allowed another agent to
+make.
+</p>
+<!-- l. 249 --><p class="noindent"><span class="paragraphHead"><a id="x33-38500019.3"></a><span class="ec-lmbx-12">Error effect and diagnostics.</span></span>
+   If a statement signals an exception condition, the GQL-request is
+unsuccessful, the applicable General Rules stop, and the request has no effect on
+GQL-data or the GQL-catalog. If the exception propagates to a failed
+procedure outcome, the implementation attempts to roll back the current
+transaction. This does not replace every original statement condition with
+class <span class="ec-lmtt-12">40</span>: a transaction-rollback condition has precedence only when such
+                                                                          
+
+                                                                          
+a condition is actually raised (for example, <span class="ec-lmcsc-10x-x-120">40000 </span>when commitment is
+prevented). The presentation of diagnostics and the reporting of additional
+conditions are implementation-defined; logging and retry strategies are not
+specified.
+</p>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 19 — Takeaways.</div>
+<ul class="itemize1">
+<li class="itemize"><span class="ec-lmbx-12">Purpose:  </span>Specified  how  procedure  executions  were  grouped  into
+      transactions   and   how   their   effects   applied   atomically   under
+      concurrency.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Introduced:                                                  </span>Transactions
+      as structured units of work; explicit start/commit/rollback behavior;
+      serializable core behavior; implementation-defined isolation extensions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Key  distinctions:  </span>Recovery  atomicity  versus  isolation  visibility;
+      commit  (durable  apply)  versus  rollback  (cancellation  of  provisional
+      effects).
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Consequences: </span>Determined which updates a statement could observe
+      under  each  isolation  choice;  integrated  constraint  enforcement  and
+      abort  behavior  with  transactional  guarantees;  fixed  a correctness
+      criterion for concurrent executions.
+      </li>
+<li class="itemize"><span class="ec-lmbx-12">Bridge: </span>Made authorization meaningful by providing the execution
+      envelope  within  which  privilege  checks  and  object  availability  are
+      applied.</li></ul>
+</aside>
+<!-- l. 308 -->
+<!-- l. 308 --> <a id="tailtestch19.html"></a> 
+</article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-09-transactions-and-concurrency.html"><small>← Previous</small>Transactions and Concurrency</a><a rel="next" href="part-10-security-and-diagnostics.html"><small>Next →</small>Security and Diagnostics</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x33-36600019.1">19.1 Demarcation and Visibility</a><a href="#x33-37600019.2">19.2 Serializability and Isolation</a><a href="#x33-38100019.3">19.3 Errors and Aborts</a></nav></div>
+<dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

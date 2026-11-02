@@ -2,9 +2,9 @@
 
 Dominik Tomaszuk
 
-[Read the book](https://domel.github.io/gql/) · [Download PDF](assets/gql-essentials.pdf) · [BibTeX](assets/book.bib)
+[Read the book](https://gql.fyi/) · [Download PDF](assets/gql-essentials.pdf) · [BibTeX](assets/book.bib)
 
-Static HTML edition of *GQL Essentials*: 23 chapters, bibliography, illustrations, mathematical notation and a searchable index.
+Static HTML edition of *GQL Essentials*: 23 chapters, bibliography, illustrations, mathematical notation, a searchable index and publication details.
 
 Open `index.html` to read the book locally. All required styles, scripts, images and search data are included in `assets`.
 

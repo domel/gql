@@ -3,7 +3,7 @@
 <meta name="author" content="Dominik Tomaszuk"><meta name="description" content="Transaction Model — GQL Essentials, by Dominik Tomaszuk.">
 <title>Transaction Model · GQL Essentials</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/latex.css"><link rel="stylesheet" href="assets/book.css"><script defer src="assets/book.js"></script></head>
-<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part" open><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html" aria-current="page"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
+<body><a class="skip-link" href="#main-content">Skip to content</a><aside class="sidebar" id="book-navigation"><a class="brand" href="index.html"><strong>GQL Essentials</strong><small>Dominik Tomaszuk</small></a><nav aria-label="Book contents"><a class="nav-link" href="index.html">Contents</a><a class="nav-link" href="acknowledgments.html"><span>Acknowledgments</span></a><a class="nav-link" href="book-overview.html"><span>Book Overview</span></a><details class="nav-part"><summary>01 · Introduction</summary><a class="nav-link" href="01-history.html"><span class="nav-num">01</span><span>History</span></a><a class="nav-link" href="02-property-graph-databases.html"><span class="nav-num">02</span><span>Property Graph Databases</span></a><a class="nav-link" href="03-positioning.html"><span class="nav-num">03</span><span>Positioning</span></a><a class="nav-link" href="04-gql-by-example.html"><span class="nav-num">04</span><span>GQL by Example</span></a></details><details class="nav-part"><summary>02 · Core Model and Patterns</summary><a class="nav-link" href="05-a-conceptual-glossary-of-gql.html"><span class="nav-num">05</span><span>A Conceptual Glossary of GQL</span></a><a class="nav-link" href="06-data-model.html"><span class="nav-num">06</span><span>Data Model</span></a><a class="nav-link" href="07-patterns-and-matching.html"><span class="nav-num">07</span><span>Patterns and Matching</span></a></details><details class="nav-part"><summary>03 · Expressions and Algebra</summary><a class="nav-link" href="08-expressions-and-evaluation.html"><span class="nav-num">08</span><span>Expressions and Evaluation</span></a><a class="nav-link" href="09-algebra-of-binding-tables.html"><span class="nav-num">09</span><span>Algebra of Binding Tables</span></a></details><details class="nav-part"><summary>04 · Paths and Regular Path Expressions</summary><a class="nav-link" href="10-path-semantics.html"><span class="nav-num">10</span><span>Path Semantics</span></a><a class="nav-link" href="11-regular-path-expressions.html"><span class="nav-num">11</span><span>Regular Path Expressions</span></a></details><details class="nav-part"><summary>05 · Aggregation and Ordering</summary><a class="nav-link" href="12-grouping-and-aggregation.html"><span class="nav-num">12</span><span>Grouping and Aggregation</span></a><a class="nav-link" href="13-ordering-and-pagination.html"><span class="nav-num">13</span><span>Ordering and Pagination</span></a></details><details class="nav-part"><summary>06 · Data Modification</summary><a class="nav-link" href="14-data-modification.html"><span class="nav-num">14</span><span>Data Modification</span></a></details><details class="nav-part"><summary>07 · Types, Schemas, and Constraints</summary><a class="nav-link" href="15-types-and-schemas.html"><span class="nav-num">15</span><span>Types and Schemas</span></a><a class="nav-link" href="16-constraints.html"><span class="nav-num">16</span><span>Constraints</span></a></details><details class="nav-part"><summary>08 · Catalogs, Sessions, and Procedures</summary><a class="nav-link" href="17-catalog-names-and-session-state.html"><span class="nav-num">17</span><span>Catalog, Names and Session State</span></a><a class="nav-link" href="18-procedures.html"><span class="nav-num">18</span><span>Procedures</span></a></details><details class="nav-part" open><summary>09 · Transactions and Concurrency</summary><a class="nav-link" href="19-transaction-model.html" aria-current="page"><span class="nav-num">19</span><span>Transaction Model</span></a></details><details class="nav-part"><summary>10 · Security and Diagnostics</summary><a class="nav-link" href="20-authorization.html"><span class="nav-num">20</span><span>Authorization</span></a><a class="nav-link" href="21-diagnostics.html"><span class="nav-num">21</span><span>Diagnostics</span></a></details><details class="nav-part"><summary>11 · Future Directions</summary><a class="nav-link" href="22-future-enhancements.html"><span class="nav-num">22</span><span>Future Enhancements</span></a><a class="nav-link" href="23-research-directions.html"><span class="nav-num">23</span><span>Research Directions</span></a></details><a class="nav-link" href="bibliography.html"><span>Bibliography</span></a><a class="nav-link" href="acronyms.html"><span>Acronyms</span></a><a class="nav-link" href="symbols-and-notations.html"><span>Symbols and Notations</span></a><a class="nav-link" href="subject-index.html"><span>Index</span></a><a class="nav-link" href="publication-details.html"><span>Publication details</span></a></nav><div class="sidebar-footer">GQL Essentials<a href="assets/gql-essentials.pdf">Download the PDF ↗</a></div></aside>
 <div class="mobile-scrim"></div><div class="reading-progress" aria-hidden="true"><span></span></div>
 <header class="topbar"><button class="plain-button menu-toggle" aria-controls="book-navigation" aria-expanded="false">Contents</button><span class="topbar-title">GQL Essentials <span aria-hidden="true"> / </span> Transaction Model</span><div class="topbar-actions"><button class="plain-button" data-search>Search <kbd>⌘ / Ctrl K</kbd></button><a href="assets/gql-essentials.pdf">PDF ↗</a></div></header>
 <div class="layout"><main id="main-content" tabindex="-1"><p class="eyebrow">Transactions and Concurrency</p><article class="book-content">
@@ -154,9 +154,6 @@ made by the active transaction are canceled.
 </p><!-- l. 113 --> <a id="likesection.14"></a><a id="x33-373004x14"></a>
 
 <!-- l. 114 --><p class="noindent"><span class="paragraphHead"><a id="x33-37400014"></a><span class="ec-lmbx-12">Example: transaction tuple and </span><span class="ec-lmtk-10x-x-120">COMMIT </span><span class="ec-lmbx-12">boundary.</span></span>
-                                                                          
-
-                                                                          
    Let <span class="ec-lmtt-12">alice </span>be the session authorization identifier and let
 <!-- l. 116 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi>P</mi></mrow><mrow><mstyle mathvariant="sans-serif"><mrow><mi>fees</mi></mrow></mstyle></mrow></msub></mrow></math> be
 the procedure execution denoted by the call in <a href="18-procedures.html#x31-360016x12">Line 13</a>. Then, in the abstract
@@ -180,11 +177,11 @@ commit; it is not an element of the procedure-execution sequence
    For the serializable behavior assumed by the GQL core, concurrent activity is
 observed as a serial order. Under an implementation-defined relaxation,
 provisional changes may be visible, at some point or to some degree, to other
-GQL-agents executing concurrent transactions. After a successful <span class="ec-lmtt-12">COMMIT</span>,
-the transaction’s changes are eligible to be perceived by all subsequent
                                                                           
 
                                                                           
+GQL-agents executing concurrent transactions. After a successful <span class="ec-lmtt-12">COMMIT</span>,
+the transaction’s changes are eligible to be perceived by all subsequent
 transactions.
 </p><!-- l. 146 -->
 
@@ -207,11 +204,11 @@ in procedure-execution order: </p><div class="table-scroll"><table class="equati
 </mrow></math></td></tr></table></div>
 <!-- l. 165 --><p class="indent">   Let <!-- l. 165 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>init</mi></mrow></mstyle></mrow></msub></mrow></math> be the initial
 shared store state and <!-- l. 166 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mi mathvariant="normal">Ω</mi></mrow><mrow><mstyle mathvariant="normal"><mrow><mi>final</mi></mrow></mstyle></mrow></msub></mrow></math>
-the resulting final shared store state. Formally, if the committed transactions are
-<!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>n</mi></mrow></msub></mrow></math> and
                                                                           
 
                                                                           
+the resulting final shared store state. Formally, if the committed transactions are
+<!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mn>1</mn></mrow></msub><mo class="MathClass-punc">,</mo><mi class="MathClass-op">…</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mo class="MathClass-punc">,</mo><msub><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Tx</mi></mrow></mstyle></mrow><mrow><mi>n</mi></mrow></msub></mrow></math> and
 <!-- l. 168 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ρ</mi></mrow></math> is
 a permutation witnessing serializability, then </p><div class="table-scroll"><table class="equation-star"><tr><td>
 <!-- l. 170 --><math class="equation" display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow>
@@ -235,11 +232,11 @@ committed state established by the transactions preceding this transaction in th
 witnessing serial order.
 </p>
 <!-- l. 186 --><p class="noindent"><span class="paragraphHead"><a id="x33-37900019.2"></a><span class="ec-lmbx-12">Isolation levels</span><a id="dx33-379001"></a> <span class="ec-lmbx-12">(axiomatic sketch).</span></span>
-   Isolation levels other than <span class="ec-lmbx-12">SERIALIZABLE</span>, their interactions, their
-granularity, and the means of selecting them are implementation-defined. The
                                                                           
 
                                                                           
+   Isolation levels other than <span class="ec-lmbx-12">SERIALIZABLE</span>, their interactions, their
+granularity, and the means of selecting them are implementation-defined. The
 following are examples of policies an extension might choose, not GQL-defined
 levels: </p>
 <ul class="itemize1">
@@ -290,12 +287,12 @@ is not added.
 to <!-- l. 221 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Committed</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mo class="MathClass-bin">⋅</mo><mo class="MathClass-close" stretchy="false">)</mo></mrow></math>.
 The first is an explicitly requested successful rollback; the second
 records a failed outcome and rollback attempt. In either case,
-a successful rollback leaves no lasting transaction effect, while
-<!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Aborted</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>κ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> also raises
-exception condition <!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>κ</mi></mrow></math>
                                                                           
 
                                                                           
+a successful rollback leaves no lasting transaction effect, while
+<!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant="sans-serif"><mrow><mi>Aborted</mi></mrow></mstyle><mo class="MathClass-open" stretchy="false">(</mo><mi>κ</mi><mo class="MathClass-close" stretchy="false">)</mo></mrow></math> also raises
+exception condition <!-- l. 224 --><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>κ</mi></mrow></math>
 to the agent.
 </p>
 <!-- l. 227 --><p class="noindent"><span class="paragraphHead"><a id="x33-38300019.3"></a><span class="ec-lmbx-12">Sources of termination without commit.</span></span>
@@ -324,18 +321,18 @@ make.
    If a statement signals an exception condition, the GQL-request is
 unsuccessful, the applicable General Rules stop, and the request has no effect on
 GQL-data or the GQL-catalog. If the exception propagates to a failed
-procedure outcome, the implementation attempts to roll back the current
-transaction. This does not replace every original statement condition with
-class <span class="ec-lmtt-12">40</span>: a transaction-rollback condition has precedence only when such
                                                                           
 
                                                                           
+procedure outcome, the implementation attempts to roll back the current
+transaction. This does not replace every original statement condition with
+class <span class="ec-lmtt-12">40</span>: a transaction-rollback condition has precedence only when such
 a condition is actually raised (for example, <span class="ec-lmcsc-10x-x-120">40000 </span>when commitment is
 prevented). The presentation of diagnostics and the reporting of additional
 conditions are implementation-defined; logging and retry strategies are not
 specified.
 </p>
-<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 19 — Takeaways.</div>
+<aside class="tcolorbox takeaways"><div class="tcolorbox-title">Chapter 19 — Takeaways</div>
 <ul class="itemize1">
 <li class="itemize"><span class="ec-lmbx-12">Purpose:  </span>Specified  how  procedure  executions  were  grouped  into
       transactions   and   how   their   effects   applied   atomically   under
@@ -358,7 +355,7 @@ specified.
       envelope  within  which  privilege  checks  and  object  availability  are
       applied.</li></ul>
 </aside>
-<!-- l. 308 -->
-<!-- l. 308 --> <a id="tailtestch19.html"></a> 
+<!-- l. 313 -->
+<!-- l. 313 --> <a id="tailtestch19.html"></a> 
 </article><nav class="page-nav" aria-label="Chapter navigation"><a rel="prev" href="part-09-transactions-and-concurrency.html"><small>← Previous</small>Transactions and Concurrency</a><a rel="next" href="part-10-security-and-diagnostics.html"><small>Next →</small>Security and Diagnostics</a></nav><footer class="page-footer">GQL Essentials · Dominik Tomaszuk</footer></main><nav class="on-this-page" aria-label="On this page"><strong>On this page</strong><a href="#x33-36600019.1">19.1 Demarcation and Visibility</a><a href="#x33-37600019.2">19.2 Serializability and Isolation</a><a href="#x33-38100019.3">19.3 Errors and Aborts</a></nav></div>
 <dialog id="search-dialog" aria-labelledby="search-label"><div class="search-head"><label id="search-label" for="book-search">Search the book</label><div class="search-row"><input id="book-search" type="search" placeholder="e.g. path semantics" autocomplete="off"><button class="plain-button" data-close-search aria-label="Close search">Close</button></div></div><div class="search-results"><p class="search-status" id="search-status" role="status">Search chapters, definitions and examples.</p><div id="search-results"></div></div></dialog></body></html>

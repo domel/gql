@@ -15,3 +15,5 @@
 .citation{margin:0 0 45px}.book-content .citation h2{margin:0 0 .7em}.citation .code-label{text-transform:none}.citation .copy-code{top:-4px;opacity:1}.book-content .citation pre,.book-content .citation pre code{white-space:pre-wrap;overflow-wrap:anywhere}.citation pre:focus-visible{outline:3px solid #28b8ae;outline-offset:4px}
 .book-content .hero-intro{max-width:38em;margin:18px 0 22px;font-size:clamp(17px,1.5vw,20px);line-height:1.6;color:var(--ink)}
 .book-content math[display=block],.book-content .math-display math{display:block math}
+
+.book-content .takeaways{box-shadow:0 3px 10px #19273526}

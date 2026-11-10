@@ -155,14 +155,42 @@ guide('gql-iso-39075', 'ISO/IEC 39075: The GQL Standard Explained',
 def guide_links():
     return '<section id="learn-gql" aria-labelledby="learn-gql-title"><h2 id="learn-gql-title">Learn GQL</h2><p>Start with a short guide, then follow links to the relevant chapters.</p><ul>' + ''.join('<li><a href="' + n + '">' + html.escape(META[n][0]) + '</a></li>' for n in GUIDES) + '</ul></section>'
 
+def update_home_section(source, section_id, markup):
+    # These generated sections contain no nested sections. Replace only their
+    # markup so the rest of the homepage and converted book stay untouched.
+    section = re.compile(r'<section\b(?=[^>]*\bid=["\']' + re.escape(section_id) + r'["\'])[^>]*>.*?</section>', re.S)
+    if section.search(source):
+        return section.sub(lambda match: markup, source, count=1)
+    citation = re.compile(r'<section\b(?=[^>]*\bid=["\']cite-book["\'])[^>]*>')
+    if not citation.search(source):
+        raise ValueError('Cannot place homepage SEO section: missing #cite-book')
+    return citation.sub(lambda match: markup + match[0], source, count=1)
+
+def robots_tags(soup):
+    return soup.head.find_all('meta', attrs={'name': re.compile(r'^(robots|googlebot|bingbot)$', re.I)})
+
+def is_indexable(soup):
+    return not any(
+        {'noindex', 'none'} & set(re.split(r'[\s,]+', tag.get('content', '').lower()))
+        for tag in robots_tags(soup)
+    )
+
 def apply(site=SITE):
     home = (site / 'index.html').read_text()
-    if 'id="what-is-gql"' not in home:
-        intro = '''<section id="what-is-gql" aria-labelledby="what-is-gql-title"><h2 id="what-is-gql-title">What is GQL (Graph Query Language)?</h2><p>GQL is the international standard ISO/IEC 39075:2024 for querying and managing property graph databases. It defines a language for graph pattern matching, data modification and graph structure definitions.</p><p>This free online book by Dominik Tomaszuk is intended for developers, database professionals, students and researchers. Read it chapter by chapter or use the guides below to explore a specific question.</p></section>'''
-        home = home.replace('<section class="citation"', intro + guide_links() + '<section class="citation"', 1)
+    intro = '''<section id="what-is-gql" aria-labelledby="what-is-gql-title"><h2 id="what-is-gql-title">What is GQL (Graph Query Language)?</h2><p>GQL is the international standard ISO/IEC 39075:2024 for querying and managing property graph databases. It defines a language for graph pattern matching, data modification and graph structure definitions.</p><p>This free online book by Dominik Tomaszuk is intended for developers, database professionals, students and researchers. Read it chapter by chapter or use the guides below to explore a specific question.</p></section>'''
+    home = update_home_section(home, 'what-is-gql', intro)
+    home = update_home_section(home, 'learn-gql', guide_links())
     # Generate guides from the current shell so navigation, search and PDF links stay consistent.
     for filename, body in GUIDES.items():
         soup = BeautifulSoup(home, 'html.parser')
+        # Indexing belongs to the individual page, not to the shared homepage shell.
+        for tag in robots_tags(soup):
+            tag.decompose()
+        guide_path = site / filename
+        if guide_path.exists():
+            existing = BeautifulSoup(guide_path.read_text(), 'html.parser')
+            for tag in robots_tags(existing):
+                soup.head.append(tag)
         article = soup.select_one('article')
         article.clear()
         article.append(BeautifulSoup('<p class="eyebrow">GQL learning guide · Dominik Tomaszuk</p><h1>' + META[filename][0] + '</h1>' + body + guide_links(), 'html.parser'))
@@ -195,7 +223,11 @@ def apply(site=SITE):
         properties = {'og:type': 'book' if path.name == 'index.html' else 'website', 'og:site_name': 'GQL Essentials', 'og:title': title, 'og:description': description, 'og:url': url, 'og:image': BASE + 'assets/cover.png', 'og:image:alt': 'GQL Essentials by Dominik Tomaszuk, book cover'}
         tags += ['<meta property="' + k + '" content="' + html.escape(v, quote=True) + '">' for k, v in properties.items()]
         tags += ['<meta name="twitter:card" content="summary_large_image">']
-        if path.name.startswith('footnote-'):
+        if path.name.startswith('footnote-') and not any(
+            tag.get('name', '').lower() == 'robots'
+            and {'noindex', 'none'} & set(re.split(r'[\s,]+', tag.get('content', '').lower()))
+            for tag in robots_tags(soup)
+        ):
             tags += ['<meta name="robots" content="noindex,follow">']
         if path.name == 'index.html':
             book = {'@context': 'https://schema.org', '@type': 'Book', '@id': BASE + '#book', 'name': 'GQL Essentials', 'author': {'@type': 'Person', 'name': 'Dominik Tomaszuk', 'sameAs': 'https://orcid.org/0000-0003-1806-067X'}, 'publisher': {'@type': 'Organization', 'name': 'Wydawnictwo Uniwersytetu w Białymstoku'}, 'datePublished': '2026', 'isbn': '978-83-7431-884-6', 'identifier': 'https://doi.org/10.15290/GQL_Essentials_2026', 'inLanguage': 'en', 'bookFormat': 'https://schema.org/EBook', 'isAccessibleForFree': True, 'url': BASE, 'image': BASE + 'assets/cover.png', 'description': 'A book introducing Graph Query Language (GQL), ISO/IEC 39075, its syntax, data model and formal semantics.'}
@@ -203,7 +235,7 @@ def apply(site=SITE):
         # Replace only head metadata, leaving converted chapter text and MathML byte-for-byte intact.
         head_match = re.search(r'<head>(.*?)</head>', source, re.S)
         head = head_match[1]
-        head = re.sub(r'<title>.*?</title>|<link\b[^>]*rel="canonical"[^>]*>|<meta\b[^>]*(?:name="(?:description|robots|twitter:[^"]*)"|property="og:[^"]*")[^>]*>|<script type="application/ld\+json">.*?</script>', '', head, flags=re.S)
+        head = re.sub(r'<title>.*?</title>|<link\b[^>]*rel="canonical"[^>]*>|<meta\b[^>]*(?:name="(?:description|twitter:[^"]*)"|property="og:[^"]*")[^>]*>|<script type="application/ld\+json">.*?</script>', '', head, flags=re.S)
         head = re.sub(r'\n\s*\n', '\n', head)
         source = source[:head_match.start(1)] + head.rstrip() + '\n' + '\n'.join(tags) + source[head_match.end(1):]
         path.write_text(source)
@@ -213,12 +245,13 @@ def apply(site=SITE):
     for filename, body in GUIDES.items():
         search.append({'title': META[filename][0], 'url': filename, 'text': BeautifulSoup(body, 'html.parser').get_text(' ', strip=True)})
     search_path.write_text('window.BOOK_SEARCH = ' + json.dumps(search, ensure_ascii=False).replace('</', '<\\/') + ';\n')
-    # The section-level contents page is distinct from the homepage. Footnotes have no standalone index value.
+    # Only include pages that permit indexing. The detailed contents page is
+    # distinct from the homepage and keeps its own canonical URL.
     namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9'
     ET.register_namespace('', namespace)
     root = ET.Element('{' + namespace + '}urlset')
     for path in sorted(site.glob('*.html')):
-        if path.name.startswith('footnote-'):
+        if not is_indexable(BeautifulSoup(path.read_text(), 'html.parser')):
             continue
         entry = ET.SubElement(root, '{' + namespace + '}url')
         ET.SubElement(entry, '{' + namespace + '}loc').text = BASE + ('' if path.name == 'index.html' else path.name)

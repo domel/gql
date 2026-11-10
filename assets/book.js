@@ -10,6 +10,9 @@
   }
   menu?.addEventListener('click', () => toggleMenu(!sidebar.classList.contains('is-open')));
   scrim?.addEventListener('click', () => toggleMenu(false));
+  sidebar?.addEventListener('click', event => {
+    if (event.target.closest('a[href]')) toggleMenu(false);
+  });
   const active = sidebar?.querySelector('[aria-current="page"]');
   if (active) { for (let p = active.parentElement; p; p = p.parentElement) if (p.tagName === 'DETAILS') p.open = true; }
   const progress = document.querySelector('.reading-progress span');

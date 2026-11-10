@@ -6,6 +6,7 @@ import json
 import re
 from xml.etree import ElementTree as ET
 from bs4 import BeautifulSoup
+from cover import update_home_cover
 
 SITE = Path(__file__).resolve().parents[1]
 BASE = 'https://gql.fyi/'
@@ -176,7 +177,7 @@ def is_indexable(soup):
     )
 
 def apply(site=SITE):
-    home = (site / 'index.html').read_text()
+    home = update_home_cover((site / 'index.html').read_text())
     intro = '''<section id="what-is-gql" aria-labelledby="what-is-gql-title"><h2 id="what-is-gql-title">What is GQL (Graph Query Language)?</h2><p>GQL is the international standard ISO/IEC 39075:2024 for querying and managing property graph databases. It defines a language for graph pattern matching, data modification and graph structure definitions.</p><p>This free online book by Dominik Tomaszuk is intended for developers, database professionals, students and researchers. Read it chapter by chapter or use the guides below to explore a specific question.</p></section>'''
     home = update_home_section(home, 'what-is-gql', intro)
     home = update_home_section(home, 'learn-gql', guide_links())

@@ -19,3 +19,5 @@ The detailed contents page has its own canonical URL. Standalone footnotes use `
 Rerunning the SEO script refreshes the homepage guide list and preserves each page's `robots`, `googlebot` and `bingbot` directives. Pages marked `noindex` or `none` are excluded from the sitemap. New guides do not inherit the homepage's indexing directives.
 
 Run the regression checks with `python3 -m unittest discover -s tools -p 'test_seo.py'`.
+
+The homepage uses responsive WebP covers at 230, 460 and 690 pixels wide, with explicit width and height to reserve the image's space before loading. The cover is hidden below 951 pixels and does not download an image file there. Regenerate the WebP files after replacing the original cover with `python3 tools/cover.py` (requires `Pillow`). The original PNG remains available for book metadata and Open Graph.

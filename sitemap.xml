@@ -85,10 +85,19 @@
     <loc>https://gql.fyi/contents.html</loc>
   </url>
   <url>
-    <loc>https://gql.fyi/footnote-17.html</loc>
+    <loc>https://gql.fyi/gql-examples.html</loc>
   </url>
   <url>
-    <loc>https://gql.fyi/footnote-6.html</loc>
+    <loc>https://gql.fyi/gql-iso-39075.html</loc>
+  </url>
+  <url>
+    <loc>https://gql.fyi/gql-tutorial.html</loc>
+  </url>
+  <url>
+    <loc>https://gql.fyi/gql-vs-cypher.html</loc>
+  </url>
+  <url>
+    <loc>https://gql.fyi/gql-vs-sql.html</loc>
   </url>
   <url>
     <loc>https://gql.fyi/</loc>
@@ -134,5 +143,8 @@
   </url>
   <url>
     <loc>https://gql.fyi/symbols-and-notations.html</loc>
+  </url>
+  <url>
+    <loc>https://gql.fyi/what-is-gql.html</loc>
   </url>
 </urlset>

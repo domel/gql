@@ -1,0 +1,72 @@
+# GQL Essentials
+
+> GQL Essentials is a free online book by Dominik Tomaszuk about Graph Query Language (GQL), standardized as ISO/IEC 39075:2024. It uses a library graph to explain queries, then develops a mathematical model of the data and query semantics.
+
+Published in 2026 by Wydawnictwo Uniwersytetu w Białymstoku. ISBN: 978-83-7431-884-6. DOI: 10.15290/GQL_Essentials_2026.
+
+The book has 23 chapters in 11 parts. The HTML edition also includes six short learning guides. The links below lead to the chapters, guides, references, and full PDF.
+
+For normative GQL requirements, consult the ISO specification. GraphQL is a separate API query language.
+
+## Start here
+
+- [GQL Essentials](https://gql.fyi/): Table of contents, learning guides, and citation details.
+- [Book Overview](https://gql.fyi/book-overview.html): The book's scope, structure, and approach to the GQL standard.
+- [Full book (PDF)](https://gql.fyi/assets/gql-essentials.pdf): Download the published book.
+
+## Learning guides
+
+- [What Is GQL?](https://gql.fyi/what-is-gql.html): Property graphs and pattern notation, with a short query to get started.
+- [GQL Tutorial for Beginners](https://gql.fyi/gql-tutorial.html): Write a query with USE, MATCH, WHERE, and RETURN over the library graph.
+- [GQL Query Examples](https://gql.fyi/gql-examples.html): Find late fees, sort loans by due date, and calculate totals by author.
+- [GQL vs SQL](https://gql.fyi/gql-vs-sql.html): Answer the same question with a graph pattern and SQL joins.
+- [GQL vs Cypher](https://gql.fyi/gql-vs-cypher.html): Shared syntax and what to check before moving queries between implementations.
+- [ISO/IEC 39075: The GQL Standard](https://gql.fyi/gql-iso-39075.html): What the standard specifies and which chapters explain its concepts.
+
+## Chapters: Introduction and core model
+
+- [01 History](https://gql.fyi/01-history.html): How graph databases and their query languages developed.
+- [02 Property Graph Databases](https://gql.fyi/02-property-graph-databases.html): Nodes, edges, labels, and properties, with use cases and limitations.
+- [03 Positioning](https://gql.fyi/03-positioning.html): How GQL relates to SQL, SPARQL, and other database languages.
+- [04 GQL by Example](https://gql.fyi/04-gql-by-example.html): Define a library graph, insert data, and write queries and updates.
+- [05 A Conceptual Glossary of GQL](https://gql.fyi/05-a-conceptual-glossary-of-gql.html): Definitions of the terms used in the book.
+- [06 Data Model](https://gql.fyi/06-data-model.html): A formal model of nodes, edges, labels, property values, and paths.
+- [07 Patterns and Matching](https://gql.fyi/07-patterns-and-matching.html): MATCH syntax, variable bindings, and how patterns produce binding tables.
+
+## Chapters: Expressions, paths, and query results
+
+- [08 Expressions and Evaluation](https://gql.fyi/08-expressions-and-evaluation.html): Expression evaluation, typing, truth values, and NULL.
+- [09 Algebra of Binding Tables](https://gql.fyi/09-algebra-of-binding-tables.html): Selection, projection, joins, OPTIONAL, subqueries, and set operators.
+- [10 Path Semantics](https://gql.fyi/10-path-semantics.html): The differences between WALK, TRAIL, SIMPLE, and ACYCLIC paths.
+- [11 Regular Path Expressions](https://gql.fyi/11-regular-path-expressions.html): Repeated path patterns and shortest-path semantics.
+- [12 Grouping and Aggregation](https://gql.fyi/12-grouping-and-aggregation.html): GROUP BY, aggregate functions, HAVING, and DISTINCT.
+- [13 Ordering and Pagination](https://gql.fyi/13-ordering-and-pagination.html): Sort and page results with ORDER BY, OFFSET, and LIMIT.
+
+## Chapters: Updates, schemas, and execution
+
+- [14 Data Modification](https://gql.fyi/14-data-modification.html): INSERT, SET, REMOVE, DELETE, write conflicts, and constraint validation.
+- [15 Types and Schemas](https://gql.fyi/15-types-and-schemas.html): Property, node, edge, and graph types, with schema definitions and DDL semantics.
+- [16 Constraints](https://gql.fyi/16-constraints.html): Keys, uniqueness, and how constraints are enforced.
+- [17 Catalog, Names and Session State](https://gql.fyi/17-catalog-names-and-session-state.html): Named objects, namespaces, qualified references, USE, and session state.
+- [18 Procedures](https://gql.fyi/18-procedures.html): Procedure signatures, body typing, calls, and scope.
+- [19 Transaction Model](https://gql.fyi/19-transaction-model.html): Transaction boundaries, visibility, isolation, and aborts.
+- [20 Authorization](https://gql.fyi/20-authorization.html): Roles, privileges, and access checks for reading and updating graph data.
+- [21 Diagnostics](https://gql.fyi/21-diagnostics.html): Errors, exceptions, status codes, and control flow.
+
+## Chapters: Future directions
+
+- [22 Future Enhancements](https://gql.fyi/22-future-enhancements.html): Proposals for query composition, schemas, data model extensions, and AI integration.
+- [23 Research Directions](https://gql.fyi/23-research-directions.html): Open questions in expressiveness, query optimization, transactions, and interoperability.
+
+## Bibliography and citation
+
+- [Bibliography](https://gql.fyi/bibliography.html): Standards, papers, and books cited in GQL Essentials.
+- [Publication Details](https://gql.fyi/publication-details.html): Author, publisher, reviewers, copyright, ISBN, and DOI.
+- [BibTeX citation](https://gql.fyi/assets/book.bib): Download the book's citation record.
+- [Persistent DOI](https://doi.org/10.15290/GQL_Essentials_2026): The book's DOI record.
+
+## Optional
+
+- [Acronyms](https://gql.fyi/acronyms.html): Abbreviations used in the book.
+- [Symbols and Notations](https://gql.fyi/symbols-and-notations.html): A reference for the book's mathematical notation.
+- [Subject Index](https://gql.fyi/subject-index.html): Find a topic and follow links to its sections.
